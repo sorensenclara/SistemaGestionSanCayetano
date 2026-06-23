@@ -1,0 +1,5 @@
+.DS_Store
+municipio/db.sqlite3
+municipio/media/
+__pycache__/
+*.pyc
