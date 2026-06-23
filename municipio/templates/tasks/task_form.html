@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="task-form-page">
+
+    <div class="page-heading">
+        <div>
+            <p class="page-eyebrow">Gestión operativa</p>
+            <h1 class="page-title">
+                <i class="bi bi-card-checklist"></i>
+                {{ title }}
+            </h1>
+            <p class="page-subtitle">
+                Cargá la información de la tarea, su planificación y los recursos utilizados.
+            </p>
+        </div>
+
+        <a href="{% url 'kanban' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver al tablero
+        </a>
+    </div>
+
+    <form method="post" id="task-form">
+        {% csrf_token %}
+
+        <div class="task-form-layout">
+
+            <div class="task-form-main">
+                <div class="form-panel">
+                    <div class="form-panel-header">
+                        <div>
+                            <h2>
+                                <i class="bi bi-pencil-square"></i>
+                                Información de la tarea
+                            </h2>
+                            <p>Datos principales, responsable, estado y horas de trabajo.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-panel-body">
+                        {% crispy form %}
+                    </div>
+                </div>
+            </div>
+
+            <aside class="task-form-sidebar">
+
+                <div class="form-panel resources-panel">
+                    <div class="resources-header">
+                        <h2>
+                            <i class="bi bi-box-seam"></i>
+                            Recursos Utilizados
+                        </h2>
+                        <p>Materiales, insumos o elementos asignados a la tarea.</p>
+                    </div>
+
+                    <div class="resources-body">
+                        {{ formset.management_form }}
+
+                        <div id="formset-container">
+                            {% for resource_form in formset %}
+                            <div class="resource-form-row">
+                                <div class="resource-grid">
+                                    <div>
+                                        {{ resource_form.article|as_crispy_field }}
+                                    </div>
+
+                                    <div>
+                                        {{ resource_form.quantity|as_crispy_field }}
+                                    </div>
+
+                                    <div class="resource-delete">
+                                        {% if formset.can_delete %}
+                                            {{ resource_form.DELETE|as_crispy_field }}
+                                        {% endif %}
+                                    </div>
+
+                                    {% for hidden in resource_form.hidden_fields %}
+                                        {{ hidden }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="button" id="add-resource-btn" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-plus-circle"></i> Añadir Recurso
+                        </button>
+                    </div>
+                </div>
+
+                <div class="task-actions-panel">
+                    <button type="submit" class="btn platform-btn platform-btn-primary btn-lg w-100">
+                        <i class="bi bi-save"></i> Guardar Tarea
+                    </button>
+
+                    <a href="{% url 'kanban' %}" class="btn btn-link text-secondary text-decoration-none w-100">
+                        Cancelar y volver
+                    </a>
+                </div>
+
+            </aside>
+
+        </div>
+    </form>
+
+</section>
+
+<div id="empty-form-template" style="display: none;">
+    <div class="resource-form-row">
+        <div class="resource-grid">
+            <div>
+                {{ formset.empty_form.article|as_crispy_field }}
+            </div>
+
+            <div>
+                {{ formset.empty_form.quantity|as_crispy_field }}
+            </div>
+
+            <div class="resource-delete">
+                {% if formset.can_delete %}
+                    {{ formset.empty_form.DELETE|as_crispy_field }}
+                {% endif %}
+            </div>
+
+            {% for hidden in formset.empty_form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addBtn = document.getElementById('add-resource-btn');
+    const container = document.getElementById('formset-container');
+    const totalForms = document.getElementById('id_resources-TOTAL_FORMS');
+
+    if (addBtn && container && totalForms) {
+        addBtn.addEventListener('click', function() {
+            const formCount = parseInt(totalForms.value);
+            const template = document.getElementById('empty-form-template').innerHTML;
+            const newFormHtml = template.replace(/__prefix__/g, formCount);
+
+            container.insertAdjacentHTML('beforeend', newFormHtml);
+            totalForms.value = formCount + 1;
+        });
+    }
+});
+</script>
+{% endblock %}

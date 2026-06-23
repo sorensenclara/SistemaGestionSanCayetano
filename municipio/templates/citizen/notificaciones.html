@@ -1,0 +1,163 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Notificaciones - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-page-wide notifications-page">
+
+    <a href="{% url 'citizen_home' %}" class="gestion-detail-back">
+        <i class="bi bi-arrow-left"></i>
+        Volver al inicio
+    </a>
+
+    <div class="citizen-page-head">
+        <div>
+            <p class="flow-title tramite">Notificaciones</p>
+            <h1>Notificaciones</h1>
+        </div>
+    </div>
+
+    <div class="notifications-filter-card">
+        <button type="button" class="notification-tab is-active">Todas</button>
+        <button type="button" class="notification-tab">Reclamos</button>
+        <button type="button" class="notification-tab">Solicitudes</button>
+        <button type="button" class="notification-tab">Trámites</button>
+        <button type="button" class="notification-tab">Turnos</button>
+    </div>
+
+    <div class="notifications-list">
+
+        <article class="notification-card notification-unread">
+            <div class="notification-icon notification-icon-reclamo">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-head">
+                    <span class="notification-dot dot-green"></span>
+                    <small>Ahora</small>
+                </div>
+
+                <h2>El reclamo Nº 3 se encuentra <strong>En análisis.</strong></h2>
+
+                <div class="notification-meta">
+                    <span><i class="bi bi-calendar-event"></i> 19/06/2026</span>
+                    <span><i class="bi bi-clock"></i> 10:45 hs</span>
+                </div>
+
+                <div class="notification-actions">
+                    <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="platform-btn platform-btn-outline-primary platform-btn-sm">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        Ver en el mapa
+                    </a>
+
+                    <a href="{% url 'citizen_gestion_detalle' 3 %}" class="platform-btn platform-btn-outline-primary platform-btn-sm">
+                        <i class="bi bi-eye"></i>
+                        Detalle del reclamo
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <article class="notification-card">
+            <div class="notification-icon notification-icon-reclamo">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-head">
+                    <span class="notification-dot dot-yellow"></span>
+                    <small>Ayer</small>
+                </div>
+
+                <h2>El reclamo Nº 4 fue marcado como <strong>Programado.</strong></h2>
+
+                <div class="notification-meta">
+                    <span><i class="bi bi-calendar-event"></i> 18/06/2026</span>
+                    <span><i class="bi bi-clock"></i> 15:30 hs</span>
+                </div>
+
+                <div class="notification-actions">
+                    <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="platform-btn platform-btn-outline-primary platform-btn-sm">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        Ver en el mapa
+                    </a>
+
+                    <a href="{% url 'citizen_gestion_detalle' 4 %}" class="platform-btn platform-btn-outline-primary platform-btn-sm">
+                        <i class="bi bi-eye"></i>
+                        Detalle del reclamo
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <article class="notification-card">
+            <div class="notification-icon notification-icon-solicitud">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-head">
+                    <span class="notification-dot dot-blue"></span>
+                    <small>Ayer</small>
+                </div>
+
+                <h2>Tu solicitud Nº 5 fue <strong>recibida correctamente.</strong></h2>
+
+                <div class="notification-meta">
+                    <span><i class="bi bi-calendar-event"></i> 19/06/2026</span>
+                    <span><i class="bi bi-clock"></i> 10:00 hs</span>
+                </div>
+
+                <div class="notification-actions">
+                    <a href="{% url 'citizen_mis_gestiones' %}?tipo=solicitud" class="platform-btn platform-btn-outline-secondary platform-btn-sm">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        Ver en el mapa
+                    </a>
+
+                    <a href="{% url 'citizen_gestion_detalle' 5 %}" class="platform-btn platform-btn-outline-secondary platform-btn-sm">
+                        <i class="bi bi-eye"></i>
+                        Detalle de solicitud
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        <article class="notification-card">
+            <div class="notification-icon notification-icon-turno">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+
+            <div class="notification-content">
+                <div class="notification-head">
+                    <span class="notification-dot dot-orange"></span>
+                    <small>1/1/2026</small>
+                </div>
+
+                <h2>Tu turno para Licencia de conducir fue <strong>confirmado.</strong></h2>
+
+                <div class="notification-meta">
+                    <span><i class="bi bi-calendar-event"></i> 25/06/2026</span>
+                    <span><i class="bi bi-clock"></i> 09:30 hs</span>
+                </div>
+
+                <div class="notification-actions">
+                    <a href="{% url 'citizen_mis_gestiones' %}?tipo=turno" class="platform-btn platform-btn-outline-warning platform-btn-sm">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        Ver en el mapa
+                    </a>
+
+                    <a href="{% url 'citizen_mis_gestiones' %}?tipo=turno" class="platform-btn platform-btn-outline-warning platform-btn-sm">
+                        <i class="bi bi-eye"></i>
+                        Detalle del turno
+                    </a>
+                </div>
+            </div>
+        </article>
+
+    </div>
+
+</section>
+
+{% endblock %}

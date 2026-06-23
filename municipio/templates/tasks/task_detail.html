@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle de Tarea - San Cayetano{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="fa-solid fa-file-lines"></i> Detalle de Tarea</h2>
+    <div>
+        <a href="{% url 'task_update' task.id %}" class="btn platform-btn platform-btn-primary"><i class="fa-solid fa-pen-to-square"></i> Editar</a>
+        <a href="{% url 'task_list' %}" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom pt-3 pb-2">
+                <h4 class="fw-bold">{{ task.title }}</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Descripción:</strong><br> {{ task.description|default:"Sin descripción" }}</p>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Estado</small>
+                        <span class="badge 
+                            {% if task.status == 'REG' %}bg-secondary
+                            {% elif task.status == 'PEN' %}bg-warning text-dark
+                            {% elif task.status == 'INP' %}bg-info text-white
+                            {% elif task.status == 'COM' %}bg-success
+                            {% endif %} fs-6">
+                            {{ task.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Vencimiento</small>
+                        <span class="{% if task.is_overdue %}text-danger fw-bold{% endif %}"><i class="fa-regular fa-calendar"></i> {{ task.due_date|date:"d M, Y" }}</span>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Responsable</small>
+                        <span><i class="fa-solid fa-user"></i> 
+                            {% if task.assigned_to %}
+                                {{ task.assigned_to.get_full_name|default:task.assigned_to.username }}
+                            {% else %}
+                                Nadie
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Creado por</small>
+                        <span>{{ task.created_by.get_full_name|default:task.created_by.username }} el {{ task.created_at|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Horas Planificadas</small>
+                        <span><i class="fa-regular fa-clock"></i> {{ task.planned_hours }} hs</span>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <small class="text-muted d-block">Horas Ejecutadas</small>
+                        <span><i class="fa-solid fa-clock-rotate-left"></i> {{ task.executed_hours }} hs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom pt-3 pb-2">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-users"></i> Personas Involucradas</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for person in task.involved_persons.all %}
+                    <li class="list-group-item"><i class="fa-solid fa-user-check text-secondary me-2"></i> {{ person.get_full_name|default:person.username }} ({{ person.get_role_display }})</li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">No hay personas involucradas adicionales.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 mb-4 bg-light">
+            <div class="card-header bg-secondary text-white border-bottom pt-3 pb-2">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-cubes"></i> Recursos Usados</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Artículo</th>
+                            <th class="text-end">Cant.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for resource in task.resources.all %}
+                        <tr>
+                            <td>{{ resource.article.name }} <small class="text-muted">({{ resource.article.unit }})</small></td>
+                            <td class="text-end fw-bold">{{ resource.quantity }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-3">No hay recursos registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

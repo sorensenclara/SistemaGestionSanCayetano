@@ -1,0 +1,41 @@
+{% extends 'base_auth.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+Centro de Operaciones Municipal
+{% endblock %}
+
+{% block content %}
+
+<div class="login-page">
+
+    <div class="login-card">
+
+        <div class="text-center">
+
+            <img
+                src="{% static 'img/logo-COM-Horizontal.svg' %}"
+                alt="Centro de Operaciones Municipal"
+                class="login-logo-com">
+
+        </div>
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+
+            {{ form|crispy }}
+
+            <button
+                type="submit"
+                class="login-btn">
+                Ingresar al Sistema
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

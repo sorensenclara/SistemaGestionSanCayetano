@@ -1,0 +1,433 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Mis Turnos - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-page-wide mis-turnos-page">
+
+    <div class="citizen-page-head">
+        <div>
+            <p class="flow-title tramite">Mis Turnos</p>
+            <h1>Turnos Hospital Municipal</h1>
+            <p class="page-subtitle">
+                Consultá u obtené nuevos turnos desde la app.
+            </p>
+        </div>
+
+        <a href="{% url 'citizen_obtener_turno' %}" class="platform-btn platform-btn-primary">
+            <i class="bi bi-calendar-plus"></i>
+            Obtener turno
+        </a>
+    </div>
+
+    <div class="platform-form-card gestiones-filter-card">
+        <div class="gestion-filter-row">
+            <div class="gestion-filter-tabs">
+                <button class="gestion-filter-tab is-active" type="button" data-turnos-tab="proximos">
+                    Próximos
+                </button>
+
+                <button class="gestion-filter-tab" type="button" data-turnos-tab="historial">
+                    Historial
+                </button>
+
+                <button class="gestion-filter-tab" type="button" data-turnos-tab="cancelados">
+                    Cancelados
+                </button>
+            </div>
+
+            <div class="gestion-status-select-wrap">
+                <select class="gestion-status-select">
+                    <option>Especialidades</option>
+                    <option>Clínica Médica</option>
+                    <option>Pediatría</option>
+                    <option>Odontología</option>
+                    <option>Psicología</option>
+                    <option>Cardiología</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRÓXIMOS -->
+    <div class="turnos-tab-panel is-active" data-turnos-panel="proximos">
+        <div class="gestiones-section">
+            <div class="platform-section-head">
+                <h2>Próximos turnos</h2>
+                <span>2 turnos</span>
+            </div>
+
+            <div class="turnos-card-list">
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>25</strong>
+                        <span>JUN</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Psicología</h3>
+                        <p>Psico. Lucas Bella</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 09:30 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-journal-text"></i> Presencial</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-registrado">Confirmado</span>
+
+                        <button
+                            type="button"
+                            class="platform-btn platform-btn-outline-danger platform-btn-sm js-open-cancel-modal"
+                            data-specialty="Psicología"
+                            data-professional="Psico. Lucas Bella"
+                            data-date="25/06/2026"
+                            data-time="09:30"
+                        >
+                            Cancelar turno
+                        </button>
+                    </div>
+                </article>
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>28</strong>
+                        <span>JUN</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Pediatría</h3>
+                        <p>Dra. Ana Schierloh</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 11:15 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-journal-text"></i> Presencial</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-programada">Programado</span>
+
+                        <button
+                            type="button"
+                            class="platform-btn platform-btn-outline-danger platform-btn-sm js-open-cancel-modal"
+                            data-specialty="Pediatría"
+                            data-professional="Dra. Ana Schierloh"
+                            data-date="28/06/2026"
+                            data-time="11:15"
+                        >
+                            Cancelar turno
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="turnos-tab-panel" data-turnos-panel="historial">
+        <div class="gestiones-section">
+            <div class="platform-section-head">
+                <h2>Historial de turnos</h2>
+                <span>3 turnos</span>
+            </div>
+
+            <div class="turnos-card-list">
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>12</strong>
+                        <span>MAY</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Clínica Médica</h3>
+                        <p>Dr. Martín Álvarez</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 10:00 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-journal-text"></i> Presencial</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-finalizada">Finalizado</span>
+                    </div>
+                </article>
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>04</strong>
+                        <span>ABR</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Odontología</h3>
+                        <p>Dra. Paula Gómez</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 08:45 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-journal-text"></i> Presencial</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-finalizada">Atendido</span>
+                    </div>
+                </article>
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>18</strong>
+                        <span>MAR</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Psicología</h3>
+                        <p>Psico. Lucas Bella</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 09:30 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-journal-text"></i> Presencial</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-programada">Ausente</span>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- CANCELADOS -->
+    <div class="turnos-tab-panel" data-turnos-panel="cancelados">
+        <div class="gestiones-section">
+            <div class="platform-section-head">
+                <h2>Turnos cancelados</h2>
+                <span>2 turnos</span>
+            </div>
+
+            <div class="turnos-card-list">
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>20</strong>
+                        <span>JUN</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Pediatría</h3>
+                        <p>Dra. Ana Schierloh</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 11:15 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-x-circle"></i> Cancelado por paciente</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-rechazada">Cancelado</span>
+                    </div>
+                </article>
+
+                <article class="turno-card">
+                    <div class="turno-date">
+                        <strong>07</strong>
+                        <span>MAY</span>
+                    </div>
+
+                    <div class="turno-info">
+                        <h3>Cardiología</h3>
+                        <p>Dr. Sebastián Molina</p>
+
+                        <div class="turno-meta">
+                            <span><i class="bi bi-clock"></i> 12:00 hs</span>
+                            <span><i class="bi bi-geo-alt"></i> Hospital Municipal</span>
+                            <span><i class="bi bi-building"></i> Cancelado por administración</span>
+                        </div>
+                    </div>
+
+                    <div class="turno-status">
+                        <span class="gestion-status status-rechazada">Cancelado</span>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="gestiones-section">
+        <div class="platform-section-head">
+            <h2>Accesos rápidos</h2>
+            <span>Gestión de turnos</span>
+        </div>
+
+        <div class="citizen-quick-grid">
+
+            <a href="{% url 'citizen_obtener_turno' %}" class="citizen-quick-card">
+                <div class="citizen-quick-icon">
+                    <i class="bi bi-calendar2-check"></i>
+                </div>
+                <div>
+                    <h3>Obtener turno</h3>
+                    <p>Buscá disponibilidad por área, servicio, día y horario.</p>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <a href="{% url 'citizen_mis_datos_turnero' %}" class="citizen-quick-card">
+                <div class="citizen-quick-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
+                <div>
+                    <h3>Mis datos</h3>
+                    <p>Verificá tu información antes de solicitar un turno.</p>
+                </div>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+        </div>
+    </div>
+
+</section>
+
+<div class="app-modal" id="cancelAppointmentModal">
+
+    <div class="app-modal-backdrop js-close-cancel-modal"></div>
+
+    <div class="app-modal-dialog">
+
+        <button class="app-modal-close js-close-cancel-modal">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="app-modal-head">
+            <span class="app-modal-eyebrow">
+                Cancelar turno
+            </span>
+
+            <h3>
+                ¿Querés cancelar este turno?
+            </h3>
+
+            <p>
+                El turno quedará liberado para que otra persona pueda reservarlo.
+            </p>
+        </div>
+
+        <div class="app-modal-summary">
+
+            <div class="app-modal-row">
+                <strong>Especialidad</strong>
+                <span id="cancelModalSpecialty"></span>
+            </div>
+
+            <div class="app-modal-row">
+                <strong>Profesional</strong>
+                <span id="cancelModalProfessional"></span>
+            </div>
+
+            <div class="app-modal-row">
+                <strong>Fecha</strong>
+                <span id="cancelModalDate"></span>
+            </div>
+
+            <div class="app-modal-row">
+                <strong>Horario</strong>
+                <span id="cancelModalTime"></span>
+            </div>
+
+        </div>
+
+        <div class="app-modal-actions">
+
+            <button
+                type="button"
+                class="app-btn app-btn-outline js-close-cancel-modal">
+                No, volver
+            </button>
+
+            <button
+                type="button"
+                class="app-btn app-btn-danger-soft js-confirm-cancel-modal">
+                Sí, cancelar turno
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("cancelAppointmentModal");
+
+    if (modal) {
+        document.querySelectorAll(".js-open-cancel-modal").forEach(function (button) {
+            button.addEventListener("click", function () {
+                document.getElementById("cancelModalSpecialty").innerText = this.dataset.specialty || "-";
+                document.getElementById("cancelModalProfessional").innerText = this.dataset.professional || "-";
+                document.getElementById("cancelModalDate").innerText = this.dataset.date || "-";
+                document.getElementById("cancelModalTime").innerText = this.dataset.time || "-";
+
+                modal.classList.add("is-open");
+                document.body.classList.add("app-modal-open");
+            });
+        });
+
+        document.querySelectorAll(".js-close-cancel-modal").forEach(function (button) {
+            button.addEventListener("click", function () {
+                modal.classList.remove("is-open");
+                document.body.classList.remove("app-modal-open");
+            });
+        });
+
+        const confirmButton = document.querySelector(".js-confirm-cancel-modal");
+
+        if (confirmButton) {
+            confirmButton.addEventListener("click", function () {
+                modal.classList.remove("is-open");
+                document.body.classList.remove("app-modal-open");
+
+                alert("Turno cancelado correctamente.");
+            });
+        }
+    }
+
+    document.querySelectorAll("[data-turnos-tab]").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+            const target = this.dataset.turnosTab;
+            const panel = document.querySelector('[data-turnos-panel="' + target + '"]');
+
+            if (!panel) return;
+
+            document.querySelectorAll("[data-turnos-tab]").forEach(function (btn) {
+                btn.classList.remove("is-active");
+            });
+
+            document.querySelectorAll("[data-turnos-panel]").forEach(function (item) {
+                item.classList.remove("is-active");
+            });
+
+            this.classList.add("is-active");
+            panel.classList.add("is-active");
+        });
+    });
+});
+</script>
+
+{% endblock %}

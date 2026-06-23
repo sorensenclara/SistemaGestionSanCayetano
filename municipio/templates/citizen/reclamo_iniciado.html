@@ -1,0 +1,37 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Reclamo iniciado{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-reclamo">
+
+    <div class="platform-form-card text-center">
+        <div class="mb-3">
+            <i class="bi bi-check-circle" style="font-size: 3rem; color: var(--sc-green);"></i>
+        </div>
+
+        <p class="platform-form-label">Reclamo iniciado</p>
+
+        <h1>Tu reclamo fue enviado</h1>
+
+        <p>Número de expediente</p>
+        <h2>#{{ gestion.id }}</h2>
+
+        <p>Fecha: {{ gestion.creada|date:"d/m/Y H:i" }}</p>
+        <p>Estado inicial: {{ gestion.estado.nombre }}</p>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_home' %}" class="btn platform-btn platform-btn-outline-primary">
+                Volver al inicio
+            </a>
+
+            <a href="{% url 'citizen_mis_reclamos' %}" class="btn platform-btn platform-btn-primary">
+                Ver seguimiento
+            </a>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

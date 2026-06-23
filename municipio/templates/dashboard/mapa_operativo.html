@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}Mapa Operativo - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="map-page">
+
+    <div class="page-heading">
+        <div>
+            <p class="page-eyebrow">Gestión territorial</p>
+            <h1 class="page-title">
+                <i class="bi bi-map"></i>
+                Mapa Operativo
+            </h1>
+            <p class="page-subtitle">
+                Visualización georreferenciada de tareas, reclamos, capas territoriales y recorridos.
+            </p>
+        </div>
+
+        <div class="map-heading-actions">
+            <button type="button" class="btn btn-outline-secondary" id="btnCity">
+                <i class="bi bi-building"></i> Ciudad
+            </button>
+            <button type="button" class="btn platform-btn platform-btn-primary" id="btnDistrict">
+                <i class="bi bi-map"></i> Partido
+            </button>
+        </div>
+    </div>
+
+    <div class="map-layout">
+
+        <aside class="map-sidebar">
+
+            <div class="map-panel">
+                <h2>
+                    <i class="bi bi-layers"></i>
+                    Capas operativas
+                </h2>
+
+                <label class="map-layer-check">
+                    <input type="checkbox" checked data-layer="reclamos">
+                    <span class="layer-dot layer-red"></span>
+                    Reclamos ciudadanos
+                </label>
+
+                <label class="map-layer-check">
+                    <input type="checkbox" checked data-layer="tareas">
+                    <span class="layer-dot layer-blue"></span>
+                    Tareas operativas
+                </label>
+
+                <label class="map-layer-check">
+                    <input type="checkbox" checked data-layer="luminarias">
+                    <span class="layer-dot layer-yellow"></span>
+                    Alumbrado público
+                </label>
+
+                <label class="map-layer-check">
+                    <input type="checkbox" checked data-layer="verdes">
+                    <span class="layer-dot layer-green"></span>
+                    Espacios verdes
+                </label>
+
+                <label class="map-layer-check">
+                    <input type="checkbox" checked data-layer="recorridos">
+                    <span class="layer-line"></span>
+                    Recorridos programados
+                </label>
+            </div>
+
+            <div class="map-panel">
+                <h2>
+                    <i class="bi bi-funnel"></i>
+                    Estado
+                </h2>
+
+                <div class="map-status-list">
+                    <span><strong>12</strong> Pendientes</span>
+                    <span><strong>8</strong> En proceso</span>
+                    <span><strong>21</strong> Finalizadas</span>
+                    <span><strong>3</strong> Críticas</span>
+                </div>
+            </div>
+
+            <div class="map-panel map-note">
+                <h2>
+                    <i class="bi bi-info-circle"></i>
+                    Integración GIS
+                </h2>
+                <p>
+                    Maqueta visual preparada para integrarse con IDE municipal, capas GIS,
+                    catastro, reclamos y ruteo operativo.
+                </p>
+            </div>
+
+        </aside>
+
+        <div class="map-main-card">
+            <div id="operationalMap"></div>
+        </div>
+
+        <aside class="map-detail-panel" id="mapDetailPanel">
+            <div class="map-detail-empty">
+                <i class="bi bi-geo-alt"></i>
+                <strong>Seleccioná un punto del mapa</strong>
+                <span>Vas a ver el detalle operativo de la tarea o reclamo.</span>
+            </div>
+        </aside>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const cityCenter = [-38.3167, -59.6167];
+    const districtCenter = [-38.4167, -59.6667];
+
+    const map = L.map('operationalMap', {
+        zoomControl: false
+    }).setView(cityCenter, 14);
+
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const layers = {
+        reclamos: L.layerGroup().addTo(map),
+        tareas: L.layerGroup().addTo(map),
+        luminarias: L.layerGroup().addTo(map),
+        verdes: L.layerGroup().addTo(map),
+        recorridos: L.layerGroup().addTo(map)
+    };
+
+    function markerIcon(color) {
+        return L.divIcon({
+            className: '',
+            html: `<div class="custom-map-marker marker-${color}"><i class="bi bi-geo-alt-fill"></i></div>`,
+            iconSize: [34, 34],
+            iconAnchor: [17, 34],
+            popupAnchor: [0, -34]
+        });
+    }
+
+    const points = [
+        {
+            layer: 'reclamos',
+            color: 'red',
+            coords: [-38.3162, -59.6196],
+            title: 'Bache en Av. Independencia',
+            type: 'Reclamo ciudadano',
+            status: 'Pendiente',
+            area: 'Obras Públicas',
+            date: '03/06/2026',
+            address: 'Av. Independencia y Belgrano',
+            citizen: 'Juan Pérez'
+        },
+        {
+            layer: 'luminarias',
+            color: 'yellow',
+            coords: [-38.3181, -59.6138],
+            title: 'Luminaria apagada',
+            type: 'Alumbrado público',
+            status: 'En proceso',
+            area: 'Servicios Urbanos',
+            date: '03/06/2026',
+            address: 'Calle Sarmiento 450',
+            citizen: 'María Gómez'
+        },
+        {
+            layer: 'verdes',
+            color: 'green',
+            coords: [-38.3144, -59.6116],
+            title: 'Corte de pasto en plaza',
+            type: 'Espacios verdes',
+            status: 'Finalizada',
+            area: 'Espacios Verdes',
+            date: '02/06/2026',
+            address: 'Plaza principal',
+            citizen: 'Municipio'
+        },
+        {
+            layer: 'tareas',
+            color: 'blue',
+            coords: [-38.3204, -59.6212],
+            title: 'Limpieza de pastizales',
+            type: 'Tarea operativa',
+            status: 'En proceso',
+            area: 'Servicios Urbanos',
+            date: '06/06/2026',
+            address: 'Zona periurbana',
+            citizen: 'Carga interna'
+        },
+        {
+            layer: 'reclamos',
+            color: 'red',
+            coords: [-38.3136, -59.6240],
+            title: 'Residuos no domiciliarios',
+            type: 'Solicitud ciudadana',
+            status: 'Pendiente',
+            area: 'Recolección',
+            date: '04/06/2026',
+            address: 'Barrio Norte',
+            citizen: 'Ana López'
+        }
+    ];
+
+    points.forEach(item => {
+        const marker = L.marker(item.coords, {
+            icon: markerIcon(item.color)
+        });
+
+        marker.on('click', function () {
+            showDetail(item);
+        });
+
+        marker.addTo(layers[item.layer]);
+    });
+
+    const route1 = L.polyline([
+        [-38.3136, -59.6240],
+        [-38.3162, -59.6196],
+        [-38.3181, -59.6138],
+        [-38.3144, -59.6116]
+    ], {
+        color: '#064f22',
+        weight: 5,
+        opacity: 0.75,
+        dashArray: '8, 8'
+    }).addTo(layers.recorridos);
+
+    const route2 = L.polyline([
+        [-38.3204, -59.6212],
+        [-38.3181, -59.6138],
+        [-38.3162, -59.6196]
+    ], {
+        color: '#f6aa1c',
+        weight: 4,
+        opacity: 0.8
+    }).addTo(layers.recorridos);
+
+    function showDetail(item) {
+        const panel = document.getElementById('mapDetailPanel');
+
+        panel.innerHTML = `
+            <div class="map-detail-content">
+                <div class="map-detail-header">
+                    <span class="map-detail-type">${item.type}</span>
+                    <h2>${item.title}</h2>
+                </div>
+
+                <div class="map-status-badge">${item.status}</div>
+
+                <div class="map-detail-list">
+                    <div>
+                        <i class="bi bi-building"></i>
+                        <span>Área</span>
+                        <strong>${item.area}</strong>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Fecha</span>
+                        <strong>${item.date}</strong>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Ubicación</span>
+                        <strong>${item.address}</strong>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-person"></i>
+                        <span>Origen</span>
+                        <strong>${item.citizen}</strong>
+                    </div>
+                </div>
+
+                <div class="map-detail-actions">
+                    <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary w-100">
+                        <i class="bi bi-plus-circle"></i> Crear tarea asociada
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-signpost-split"></i> Agregar a recorrido
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    document.querySelectorAll('[data-layer]').forEach(input => {
+        input.addEventListener('change', function () {
+            const layerName = this.dataset.layer;
+
+            if (this.checked) {
+                layers[layerName].addTo(map);
+            } else {
+                map.removeLayer(layers[layerName]);
+            }
+        });
+    });
+
+    document.getElementById('btnCity').addEventListener('click', function () {
+        map.setView(cityCenter, 14);
+    });
+
+    document.getElementById('btnDistrict').addEventListener('click', function () {
+        map.setView(districtCenter, 10);
+    });
+
+});
+</script>
+{% endblock %}

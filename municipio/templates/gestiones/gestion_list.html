@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestiones - Centro de Operaciones{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+    <div class="dashboard-hero dashboard-hero-compact">
+        <div>
+            <p class="dashboard-welcome">
+                Centro de Operaciones
+            </p>
+
+            <h1 class="dashboard-title">
+                Bandeja de Gestiones
+            </h1>
+
+            <div class="dashboard-update">
+                <i class="bi bi-inbox"></i>
+                Reclamos y solicitudes ingresadas desde la App Ciudadana
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear tarea
+            </a>
+
+            <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-outline-primary">
+                <i class="bi bi-map"></i> Mapa operativo
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-tools-card mb-4">
+
+        <div class="dashboard-current-date">
+            <i class="bi bi-filter"></i>
+            <span>Filtrar gestiones</span>
+        </div>
+
+        <form class="dashboard-filters dashboard-filters-compact" method="get">
+
+            <select name="tipo" class="form-control">
+                <option value="">Todas</option>
+                <option value="RECLAMO" {% if selected_tipo == "RECLAMO" %}selected{% endif %}>Reclamos</option>
+                <option value="SOLICITUD" {% if selected_tipo == "SOLICITUD" %}selected{% endif %}>Solicitudes</option>
+            </select>
+
+            <select name="estado" class="form-control">
+                <option value="">Todos los estados</option>
+                <option value="registrado" {% if selected_estado == "registrado" %}selected{% endif %}>Iniciadas</option>
+                <option value="analisis" {% if selected_estado == "analisis" %}selected{% endif %}>En análisis</option>
+                <option value="programada" {% if selected_estado == "programada" %}selected{% endif %}>Programadas</option>
+                <option value="ejecucion" {% if selected_estado == "ejecucion" %}selected{% endif %}>En ejecución</option>
+                <option value="finalizada" {% if selected_estado == "finalizada" %}selected{% endif %}>Finalizadas</option>
+                <option value="rechazada" {% if selected_estado == "rechazada" %}selected{% endif %}>Rechazadas</option>
+                <option value="reabierta" {% if selected_estado == "reabierta" %}selected{% endif %}>Reabiertas</option>
+            </select>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                <i class="fa-solid fa-filter"></i> Filtrar
+            </button>
+
+            <a href="{% url 'gestion_list' %}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Limpiar
+            </a>
+
+        </form>
+
+    </div>
+
+    <div class="platform-form-card">
+
+        <div class="activity-header mb-3">
+            <h2 class="platform-section-title mb-0">
+                <i class="bi bi-folder2-open"></i> Gestiones registradas
+            </h2>
+        </div>
+
+        {% if gestiones %}
+
+        <div class="platform-table-wrap">
+
+            <table class="platform-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Categoría</th>
+                        <th>Área</th>
+                        <th>Estado</th>
+                        <th>Ciudadano</th>
+                        <th>Fecha</th>
+                        <th class="text-end">Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for gestion in gestiones %}
+                    <tr>
+
+                        <td data-label="ID">
+                            <strong>#{{ gestion.id }}</strong>
+                        </td>
+
+                        <td data-label="Tipo">
+
+                            {% if gestion.categoria.tipo == "RECLAMO" %}
+                                <span class="activity-badge bg-soft-yellow">
+                                    Reclamo
+                                </span>
+
+                            {% elif gestion.categoria.tipo == "SOLICITUD" %}
+                                <span class="activity-badge bg-soft-blue">
+                                    Solicitud
+                                </span>
+
+                            {% else %}
+                                <span class="activity-badge bg-soft-green">
+                                    {{ gestion.categoria.get_tipo_display }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td data-label="Categoría">
+
+                            <strong>
+                                {{ gestion.categoria.nombre }}
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+                                {{ gestion.descripcion|truncatechars:80 }}
+                            </small>
+
+                        </td>
+
+                        <td data-label="Área">
+
+                            {{ gestion.area_responsable.nombre }}
+
+                        </td>
+
+                        <td data-label="Estado">
+
+                            <span class="activity-badge bg-soft-green">
+                                {{ gestion.estado.nombre }}
+                            </span>
+
+                        </td>
+
+                        <td data-label="Ciudadano">
+
+                            {{ gestion.ciudadano.get_full_name|default:gestion.ciudadano.username }}
+
+                        </td>
+
+                        <td data-label="Fecha">
+
+                            {{ gestion.creada|date:"d/m/Y H:i" }}
+
+                        </td>
+
+                        <td data-label="Acciones">
+
+                            <div class="platform-table-actions">
+
+                                <a
+                                    href="{% url 'gestion_detail' gestion.id %}"
+                                    class="platform-icon-action"
+                                    title="Ver detalle"
+                                    aria-label="Ver detalle">
+
+                                    <i class="bi bi-eye"></i>
+
+                                </a>
+
+                                <div class="dropdown">
+
+                                    <button
+                                        class="platform-icon-action"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        title="Más acciones"
+                                        aria-label="Más acciones">
+
+                                        <i class="bi bi-three-dots-vertical"></i>
+
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end platform-actions-menu">
+
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'task_create' %}">
+                                                <i class="bi bi-plus-circle"></i>
+                                                Crear tarea
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                                Cambiar estado
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="bi bi-diagram-3"></i>
+                                                Asignar área
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="#">
+                                                <i class="bi bi-chat-left-text"></i>
+                                                Notificar ciudadano
+                                            </a>
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="platform-empty-state">
+            <i class="bi bi-inbox"></i>
+
+            <strong>
+                No hay gestiones registradas
+            </strong>
+
+            <span>
+                Cuando un ciudadano cree un reclamo o solicitud,
+                aparecerá en esta bandeja.
+            </span>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

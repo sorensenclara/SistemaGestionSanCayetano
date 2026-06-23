@@ -1,0 +1,95 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}Nueva Gestión - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page citizen-new-page">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_home' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p>Nueva gestión</p>
+            <h1>¿Qué necesitás hacer?</h1>
+        </div>
+    </div>
+
+    <div class="citizen-search-box">
+        <i class="bi bi-search"></i>
+        <input type="search" id="citizenSearchInput" placeholder="Realizar reclamo o solicitud...">
+    </div>
+
+    <div class="citizen-search-results" id="citizenSearchResults"></div>
+
+
+
+    <section class="citizen-grid-3 citizen-new-types">
+
+        <a href="{% url 'citizen_reclamos_categorias' %}" class="citizen-card-link citizen-management-card">
+            <div class="citizen-icon-box citizen-icon-green">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <div>
+                <strong>Nuevo Reclamo</strong>
+                <span>Reportá un problema en tu barrio.</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+        <a href="{% url 'citizen_solicitudes_categorias' %}" class="citizen-card-link citizen-management-card">
+            <div class="citizen-icon-box citizen-icon-blue">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+            <div>
+                <strong>Nueva Solicitud</strong>
+                <span>Pedí un servicio municipal.</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+       <a href="{% url 'citizen_obtener_turno' %}" class="citizen-card-link citizen-management-card">
+            <div class="citizen-icon-box citizen-icon-red">
+                <i class="bi bi-calendar2-check"></i>
+            </div>
+            <div>
+                <strong>Nuevo Turno</strong>
+                <span>Solicitá un turno médico.</span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+        </a>
+
+    </section>
+
+    <section class="citizen-section">
+        <div class="citizen-section-head">
+            <h2>Accesos rápidos</h2>
+        </div>
+
+        <div class="citizen-tag-list">
+            {% for categoria in categorias_destacadas %}
+                <button type="button">
+                    {{ categoria.nombre }}
+                </button>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="citizen-helper-card">
+        <i class="bi bi-info-circle"></i>
+        <div>
+            <strong>No necesitás conocer el área municipal.</strong>
+            <span>Escribí lo que necesitás y el sistema te orientará hacia el reclamo o solicitud correspondiente.</span>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/citizen-nueva-gestion.js' %}"></script>
+{% endblock %}

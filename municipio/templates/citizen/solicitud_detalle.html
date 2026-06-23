@@ -1,0 +1,138 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}Detalle de la solicitud - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-solicitud">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_solicitudes_categorias' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title solicitud">Detalle de la solicitud</p>
+            <h1>Contanos qué necesitás</h1>
+        </div>
+    </div>
+
+    <div class="platform-selected-card">
+        <i class="bi bi-check-circle"></i>
+        <div>
+            <strong>{{ categoria.nombre }}</strong>
+            <span>{{ categoria.get_tipo_display }} / {{ categoria.area.nombre }}</span>
+        </div>
+    </div>
+
+    <form method="post" class="platform-form-card">
+        {% csrf_token %}
+
+        <div class="platform-form-group">
+            <label for="descripcion" class="platform-form-label">Descripción de la solicitud</label>
+
+            <textarea
+    id="descripcion"
+    name="descripcion"
+    class="platform-textarea"
+    maxlength="800"
+    required
+    placeholder="Ejemplo: Necesito solicitar poda de un árbol frente a mi domicilio antes de realizar una obra."
+>{{ request.session.solicitud.descripcion|default:'' }}</textarea>
+
+            <div class="platform-form-help">
+                <span>Contanos qué servicio necesitás y cualquier detalle importante.</span>
+                <span><strong id="descripcionCounter">0</strong>/800</span>
+            </div>
+        </div>
+
+        <div class="platform-form-group">
+            <label class="platform-form-label">Urgencia</label>
+
+                <div class="platform-radio-group">
+
+                    <label class="platform-radio-card urgency-low">
+                        <input type="radio" name="urgencia" value="baja">
+                        <div>
+                            <strong>Baja</strong>
+                            <span>Sin urgencia</span>
+                        </div>
+                    </label>
+
+                    <label class="platform-radio-card urgency-medium">
+                        <input type="radio" name="urgencia" value="media" checked>
+                        <div>
+                            <strong>Media</strong>
+                            <span>Deseable en los próximos 5 días</span>
+                        </div>
+                    </label>
+
+                    <label class="platform-radio-card urgency-high">
+                        <input type="radio" name="urgencia" value="alta">
+                        <div>
+                            <strong>Alta</strong>
+                            <span>Necesaria a la brevedad</span>
+                        </div>
+                    </label>
+
+                </div>
+        </div>
+
+        <div class="platform-form-row">
+            <div class="platform-form-group">
+                <label for="desde_cuando" class="platform-form-label">
+                ¿Desde cuándo necesitás el servicio?
+                </label>
+                <input type="date" id="desde_cuando" name="desde_cuando" class="platform-input">
+            </div>
+
+            <div class="platform-form-group">
+                <label for="fecha_requerida" class="platform-form-label">
+                    Fecha requerida
+                </label>
+
+                <input
+                    type="date"
+                    id="fecha_requerida"
+                    name="fecha_requerida"
+                    class="platform-input">
+                <div class="platform-form-help">
+                    <span>
+                    Opcional. Indicá una fecha estimada si la solicitud debe realizarse antes de un evento o situación particular.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_solicitudes_categorias' %}" class="btn platform-btn platform-btn-outline-secondary">Volver</a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Siguiente
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const textarea = document.getElementById("descripcion");
+    const counter = document.getElementById("descripcionCounter");
+
+    if (!textarea || !counter) return;
+
+    function updateCounter() {
+        counter.textContent = textarea.value.length;
+    }
+
+    textarea.addEventListener("input", updateCounter);
+    updateCounter();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,493 @@
+{% extends "citizen/base_citizen.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil | App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-profile-page">
+
+  <div class="citizen-page-head">
+    <div>
+      <span class="flow-title tramite">Mi cuenta</span>
+      <h1>Mi Perfil</h1>
+      <p>Actualizá tus datos, vínculos familiares, inmuebles y preferencias.</p>
+    </div>
+  </div>
+
+  <nav class="citizen-profile-nav" aria-label="Navegación de perfil">
+    <button type="button" class="citizen-profile-nav-btn is-active" data-profile-tab="datos">
+      <i class="bi bi-person"></i>
+      <span>Datos</span>
+    </button>
+    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="inmuebles">
+      <i class="bi bi-house-door"></i>
+      <span>Inmuebles</span>
+    </button>
+    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="familia">
+      <i class="bi bi-people"></i>
+      <span>Familia</span>
+    </button>
+    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="avisos">
+      <i class="bi bi-bell"></i>
+      <span>Avisos</span>
+    </button>
+  </nav>
+
+  <div class="citizen-profile-tab-panel is-active" id="profile-tab-datos">
+
+    <form method="post" enctype="multipart/form-data" class="platform-form-card">
+      {% csrf_token %}
+      <input type="hidden" name="form_type" value="profile">
+
+      <div class="citizen-profile-top">
+        <div class="citizen-profile-photo">
+          <div class="citizen-photo-preview">
+            {% if profile.photo %}
+              <img src="{{ profile.photo.url }}" alt="Foto de perfil">
+            {% else %}
+              <i class="bi bi-person-circle"></i>
+            {% endif %}
+          </div>
+
+          <label for="id_photo">Cambiar foto</label>
+          <input type="file" id="id_photo" name="photo" accept="image/*">
+        </div>
+
+        <div class="citizen-profile-main">
+          <div class="platform-section-head">
+            <div>
+              <h2>Identidad ciudadana</h2>
+              <p>Datos obligatorios del registro. No se modifican desde el portal.</p>
+            </div>
+          </div>
+
+          <div class="citizen-readonly-grid">
+            <div>
+              <span>Nombre</span>
+              <strong>{{ first_name|default:"-" }}</strong>
+            </div>
+
+            <div>
+              <span>Apellido</span>
+              <strong>{{ last_name|default:"-" }}</strong>
+            </div>
+
+            <div>
+              <span>DNI</span>
+              <strong>{{ document_number|default:"-" }}</strong>
+            </div>
+
+            <div>
+              <span>Celular</span>
+              <strong>{{ phone|default:"-" }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="citizen-info-note">
+        <i class="bi bi-info-circle"></i>
+        <span>Para corregir nombre, apellido, DNI o celular comunicate con el municipio.</span>
+      </div>
+
+      <div class="citizen-subsection-head">
+        <h2>Datos complementarios</h2>
+        <p>Si ya fueron cargados en el registro quedan bloqueados. Si están vacíos, podés completarlos.</p>
+      </div>
+
+      <div class="platform-form-row">
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_birth_date">Nacimiento</label>
+          {% if birth_date %}
+            <input class="platform-input is-readonly" id="id_birth_date" value="{{ birth_date|date:'d/m/Y' }}" disabled>
+            <small class="citizen-field-help">Dato cargado en el registro.</small>
+          {% else %}
+            <input class="platform-input" type="date" id="id_birth_date" name="birth_date">
+            <small class="citizen-field-help">Completá tu fecha de nacimiento.</small>
+          {% endif %}
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_email">Email</label>
+          {% if email %}
+            <input class="platform-input is-readonly" type="email" id="id_email" value="{{ email }}" disabled>
+            <small class="citizen-field-help">Dato cargado en el registro.</small>
+          {% else %}
+            <input class="platform-input" type="email" id="id_email" name="email" placeholder="Ingresá tu email">
+            <small class="citizen-field-help">Usaremos este email para avisos y notificaciones.</small>
+          {% endif %}
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_address">Domicilio</label>
+          {% if address %}
+            <input class="platform-input is-readonly" id="id_address" value="{{ address }}" disabled>
+            <small class="citizen-field-help">Dato cargado en el registro.</small>
+          {% else %}
+            <input class="platform-input" id="id_address" name="address" placeholder="Ingresá tu domicilio">
+            <small class="citizen-field-help">Ejemplo: Av. Independencia 760.</small>
+          {% endif %}
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_city">Localidad</label>
+          {% if city %}
+            <input class="platform-input is-readonly" id="id_city" value="{{ city }}" disabled>
+            <small class="citizen-field-help">Dato cargado en el registro.</small>
+          {% else %}
+            <input class="platform-input" id="id_city" name="city" value="San Cayetano">
+            <small class="citizen-field-help">Localidad de residencia.</small>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <div class="platform-form-actions">
+        <a href="{% url 'citizen_home' %}" class="platform-btn platform-btn-outline-primary">Volver</a>
+        <button class="platform-btn platform-btn-primary" type="submit">Guardar cambios</button>
+      </div>
+    </form>
+
+  </div>
+
+
+  <div class="citizen-profile-tab-panel" id="profile-tab-inmuebles">
+
+    <section class="platform-form-card">
+      <div class="platform-section-head">
+        <div>
+          <span class="flow-title tramite">Vinculación municipal</span>
+          <h2>Mis inmuebles</h2>
+          <p>Inmuebles asociados a tu cuenta ciudadana.</p>
+        </div>
+      </div>
+
+      <div class="citizen-property-grid">
+        {% for property in properties %}
+          <article class="citizen-property-card">
+            <div class="citizen-property-icon">
+              <i class="bi bi-house-door"></i>
+            </div>
+
+            <div>
+              <h3>{{ property.address }}</h3>
+              <p>PIN asociado: {{ property.pin|default:"-" }}</p>
+
+              <div class="citizen-tags">
+                <span>{{ property.get_link_type_display }}</span>
+                {% if property.is_main %}
+                  <span>Principal</span>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="platform-empty-state">
+            <i class="bi bi-house-add"></i>
+            <strong>No tenés inmuebles vinculados</strong>
+            <p>Podés asociar un inmueble con el PIN municipal.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form method="post" class="citizen-inline-form">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="property">
+
+        <div class="citizen-subsection-head">
+          <h2>Asociar inmueble</h2>
+          <p>Ingresá el PIN informado por el municipio.</p>
+        </div>
+
+        <div class="platform-form-row">
+          <div class="platform-form-group">
+            <label class="platform-form-label" for="id_property_pin">PIN asociado</label>
+            <input class="platform-input" id="id_property_pin" name="property_pin">
+          </div>
+
+          <div class="platform-form-group">
+            <label class="platform-form-label" for="id_property_link_type">Tipo de vínculo</label>
+            <select class="platform-input" id="id_property_link_type" name="property_link_type">
+              <option value="">Seleccionar</option>
+              <option value="owner">Titular</option>
+              <option value="tenant">Inquilino</option>
+              <option value="holder">Poseedor</option>
+              <option value="manager">Administrador</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="platform-form-actions">
+          <span></span>
+          <button class="platform-btn platform-btn-primary" type="submit">Asociar inmueble</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+
+  <div class="citizen-profile-tab-panel" id="profile-tab-familia">
+
+    <section class="platform-form-card">
+      <div class="platform-section-head">
+        <div>
+          <span class="flow-title tramite">Grupo familiar</span>
+          <h2>Familiares y responsables</h2>
+          <p>Personas vinculadas a tu cuenta para salud, trámites o avisos.</p>
+        </div>
+      </div>
+
+      <div class="citizen-family-grid">
+        {% for link in family_links %}
+          <article class="citizen-family-card">
+            <div class="citizen-family-avatar">
+              <i class="bi bi-person-heart"></i>
+            </div>
+
+            <div>
+              <h3>{{ link.related_profile.full_name }}</h3>
+              <p>{{ link.get_relationship_display }}</p>
+
+              <div class="citizen-tags">
+                {% if link.can_manage_appointments %}<span>Gestiona turnos</span>{% endif %}
+                {% if link.receives_notifications %}<span>Recibe avisos</span>{% endif %}
+                {% if link.is_legal_responsible %}<span>Responsable legal</span>{% endif %}
+                {% if link.is_emergency_contact %}<span>Emergencia</span>{% endif %}
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="platform-empty-state">
+            <i class="bi bi-people"></i>
+            <strong>No tenés familiares vinculados</strong>
+            <p>Podés agregar familiares o contactos responsables.</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="citizen-family-tabs">
+        <button type="button" class="citizen-family-tab is-active" data-family-tab="registered">
+          Familiar con cuenta
+        </button>
+        <button type="button" class="citizen-family-tab" data-family-tab="external">
+          Responsable / contacto
+        </button>
+      </div>
+
+      <div class="citizen-family-panel is-active" id="family-tab-registered">
+        <form method="post" class="citizen-inline-form">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="family">
+
+          <div class="platform-form-row">
+            <div class="platform-form-group">
+              <label class="platform-form-label" for="id_family_dni">DNI del familiar</label>
+              <input class="platform-input js-only-numbers" id="id_family_dni" name="family_dni">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label" for="id_relationship">Parentesco / vínculo</label>
+              <select class="platform-input" id="id_relationship" name="relationship">
+                <option value="">Seleccionar</option>
+                <option value="mother">Madre</option>
+                <option value="father">Padre</option>
+                <option value="son_daughter">Hijo/a</option>
+                <option value="guardian">Tutor/a</option>
+                <option value="other">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="citizen-permission-grid">
+            <label>
+              <input type="checkbox" name="can_manage_appointments">
+              <span>Puede gestionar turnos</span>
+            </label>
+            <label>
+              <input type="checkbox" name="receives_notifications" checked>
+              <span>Recibe notificaciones</span>
+            </label>
+            <label>
+              <input type="checkbox" name="is_legal_responsible">
+              <span>Responsable legal / tutor</span>
+            </label>
+            <label>
+              <input type="checkbox" name="is_emergency_contact">
+              <span>Contacto de emergencia</span>
+            </label>
+          </div>
+
+          <div class="platform-form-actions">
+            <span></span>
+            <button class="platform-btn platform-btn-primary" type="submit">Vincular familiar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="citizen-family-panel" id="family-tab-external">
+        <form method="post" class="citizen-inline-form">
+          {% csrf_token %}
+          <input type="hidden" name="form_type" value="responsible_contact">
+
+          <div class="platform-form-row">
+            <div class="platform-form-group">
+              <label class="platform-form-label">Nombre</label>
+              <input class="platform-input" name="responsible_first_name">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label">Apellido</label>
+              <input class="platform-input" name="responsible_last_name">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label">DNI</label>
+              <input class="platform-input js-only-numbers" name="responsible_document_number">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label">Celular</label>
+              <input class="platform-input js-only-numbers" name="responsible_phone">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label">Email</label>
+              <input class="platform-input" type="email" name="responsible_email">
+            </div>
+
+            <div class="platform-form-group">
+              <label class="platform-form-label">Parentesco / vínculo</label>
+              <select class="platform-input" name="responsible_relationship">
+                <option value="">Seleccionar</option>
+                <option value="mother">Madre</option>
+                <option value="father">Padre</option>
+                <option value="guardian">Tutor/a</option>
+                <option value="grandmother">Abuela</option>
+                <option value="grandfather">Abuelo</option>
+                <option value="aunt_uncle">Tía/o</option>
+                <option value="other">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="citizen-permission-grid">
+            <label>
+              <input type="checkbox" name="is_primary">
+              <span>Responsable principal</span>
+            </label>
+            <label>
+              <input type="checkbox" name="is_emergency_contact">
+              <span>Contacto de emergencia</span>
+            </label>
+          </div>
+
+          <div class="platform-form-actions">
+            <span></span>
+            <button class="platform-btn platform-btn-primary" type="submit">Guardar responsable</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+
+  <div class="citizen-profile-tab-panel" id="profile-tab-avisos">
+
+    <section class="platform-form-card">
+      <div class="platform-section-head">
+        <div>
+          <span class="flow-title tramite">Configuración</span>
+          <h2>Notificaciones</h2>
+          <p>Elegí cómo querés recibir avisos municipales.</p>
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="notifications">
+
+        <div class="citizen-permission-grid">
+          <label>
+            <input type="checkbox" name="push_notifications" checked>
+            <span>Notificaciones push</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="email_notifications" checked>
+            <span>Email</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="claims_notifications" checked>
+            <span>Reclamos y solicitudes</span>
+          </label>
+
+          <label>
+            <input type="checkbox" name="appointment_notifications" checked>
+            <span>Turnos y recordatorios</span>
+          </label>
+        </div>
+
+        <div class="platform-form-actions">
+          <button class="platform-btn platform-btn-primary" type="submit">Guardar configuración</button>
+        </div>
+      </form>
+    </section>
+
+  </div>
+
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const profileTabs = document.querySelectorAll("[data-profile-tab]");
+  const profilePanels = document.querySelectorAll(".citizen-profile-tab-panel");
+
+  profileTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      const target = tab.dataset.profileTab;
+
+      profileTabs.forEach(function (item) {
+        item.classList.remove("is-active");
+      });
+
+      profilePanels.forEach(function (panel) {
+        panel.classList.remove("is-active");
+      });
+
+      tab.classList.add("is-active");
+      document.getElementById("profile-tab-" + target).classList.add("is-active");
+
+      window.scrollTo({
+        top: document.querySelector(".citizen-profile-page").offsetTop - 90,
+        behavior: "smooth"
+      });
+    });
+  });
+
+  const familyTabs = document.querySelectorAll("[data-family-tab]");
+
+  familyTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      const target = tab.dataset.familyTab;
+
+      document.querySelectorAll(".citizen-family-tab").forEach(function (item) {
+        item.classList.remove("is-active");
+      });
+
+      document.querySelectorAll(".citizen-family-panel").forEach(function (panel) {
+        panel.classList.remove("is-active");
+      });
+
+      tab.classList.add("is-active");
+      document.getElementById("family-tab-" + target).classList.add("is-active");
+    });
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base_auth.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Acceso - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<div class="citizen-login-page">
+
+    <div class="citizen-login-card">
+
+        <div class="text-center">
+
+            <img
+                src="{% static 'img/logo-sancaap-horizontal.svg' %}"
+                alt="SancApp"
+                class="citizen-login-logo">
+
+        </div>
+
+        <form method="post" class="citizen-login-form">
+            {% csrf_token %}
+
+            {{ form|crispy }}
+
+            <button
+                type="submit"
+                class="login-btn">
+                Ingresar
+            </button>
+
+        </form>
+
+        <div class="citizen-login-links">
+
+            <a href="#" class="citizen-login-register">
+                Registrarse
+            </a>
+
+            <div class="citizen-login-links-grid">
+
+                <a href="#">
+                    <i class="bi bi-key"></i>
+                    ¿Olvidaste la contraseña?
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-question-circle"></i>
+                    Ayuda
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}Detalle del reclamo - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-reclamo">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_reclamo_tipo' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title reclamo">Detalle del reclamo</p>
+            <h1>Contanos qué está pasando</h1>
+        </div>
+    </div>
+
+    <div class="platform-selected-card">
+        <i class="bi bi-check-circle"></i>
+        <div>
+            <strong>{{ categoria.nombre }}</strong>
+            <span>{{ categoria.get_tipo_display }} / {{ categoria.area.nombre }}</span>
+        </div>
+    </div>
+
+    <form method="post" class="platform-form-card">
+        {% csrf_token %}
+
+        <div class="platform-form-group">
+            <label for="descripcion" class="platform-form-label">Descripción del problema</label>
+
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                class="platform-textarea"
+                maxlength="800"
+                required
+                placeholder="Ejemplo: Hay un árbol con ramas grandes tocando los cables frente a mi casa. Pasa desde hace varios días."
+            >{{ request.session.reclamo.descripcion|default:'' }}</textarea>
+
+            <div class="platform-form-help">
+                <span>Cuéntanos sobre el problema.</span>
+                <span><strong id="descripcionCounter">0</strong>/800</span>
+            </div>
+        </div>
+
+        <div class="platform-form-group">
+            <label class="platform-form-label">Urgencia</label>
+
+                <div class="platform-radio-group">
+
+                    <label class="platform-radio-card urgency-low">
+                        <input type="radio" name="urgencia" value="baja">
+                        <div>
+                            <strong>Baja</strong>
+                            <span>Puede esperar</span>
+                        </div>
+                    </label>
+
+                    <label class="platform-radio-card urgency-medium">
+                        <input type="radio" name="urgencia" value="media" checked>
+                        <div>
+                            <strong>Media</strong>
+                            <span>Requiere atención</span>
+                        </div>
+                    </label>
+
+                    <label class="platform-radio-card urgency-high">
+                        <input type="radio" name="urgencia" value="alta">
+                        <div>
+                            <strong>Alta</strong>
+                            <span>Puede afectar seguridad</span>
+                        </div>
+                    </label>
+
+                </div>
+        </div>
+
+        <div class="platform-form-row">
+            <div class="platform-form-group">
+                <label for="desde_cuando" class="platform-form-label">¿Desde cuándo ocurre?</label>
+                <input type="date" id="desde_cuando" name="desde_cuando" class="platform-input">
+            </div>
+
+            <div class="platform-form-group">
+                <label for="solucionar_antes_de" class="platform-form-label">Solucionar antes de</label>
+                <input type="date" id="solucionar_antes_de" name="solucionar_antes_de" class="platform-input">
+                <div class="platform-form-help">
+                    <span>Opcional. Usalo si hay una fecha importante.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_reclamo_tipo' %}" 
+            class="btn platform-btn platform-btn-outline-primary">Volver</a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Siguiente
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const textarea = document.getElementById("descripcion");
+    const counter = document.getElementById("descripcionCounter");
+
+    if (!textarea || !counter) return;
+
+    function updateCounter() {
+        counter.textContent = textarea.value.length;
+    }
+
+    textarea.addEventListener("input", updateCounter);
+    updateCounter();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,392 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}Mis datos - Turnos de salud{% endblock %}
+
+{% block content %}
+
+<section class="app-panel-section app-profile-page">
+  <div class="app-page app-dashboard-app">
+
+    <div class="app-main-content">
+
+      <div class="app-page-header">
+        <h1 class="app-page-title">Mis Datos</h1>
+        <p>Actualizá contacto, cobertura y vínculos familiares para turnos de salud.</p>
+      </div>
+
+      <form method="post" action="#" class="app-profile-layout" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <section class="app-card app-profile-card-main app-profile-card-compact">
+
+          <div class="app-profile-top">
+
+            <div class="app-profile-photo">
+              <div class="app-photo-preview">
+                <i class="bi bi-person-circle"></i>
+              </div>
+
+              <label for="id_photo" class="app-photo-upload-label">Cambiar foto</label>
+              <input type="file" id="id_photo" name="photo" class="app-photo-input" accept="image/*">
+            </div>
+
+            <div class="app-profile-identity">
+              <div class="app-card-header">
+                <h2>Datos del paciente</h2>
+                <p>Los datos de identidad no se modifican desde el portal.</p>
+              </div>
+
+              <div class="app-readonly-grid">
+                <div>
+                  <span>Nombre</span>
+                  <strong>María</strong>
+                </div>
+
+                <div>
+                  <span>Apellido</span>
+                  <strong>Sorensen</strong>
+                </div>
+
+                <div>
+                  <span>DNI</span>
+                  <strong>33842066</strong>
+                </div>
+
+                <div>
+                  <span>Nacimiento</span>
+                  <strong>12/08/1988</strong>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="app-info-note">
+            <i class="bi bi-info-circle"></i>
+            <span>Para corregir identidad o DNI, comunicate con administración del Hospital Municipal.</span>
+          </div>
+
+          <div class="app-divider"></div>
+
+          <div class="app-two-columns">
+
+            <div>
+              <div class="app-card-header">
+                <h2>Contacto</h2>
+                <p>Datos para avisos y recordatorios.</p>
+              </div>
+
+              <div class="app-form-grid">
+                <div class="app-form-group app-col-12">
+                  <label for="id_phone">Celular</label>
+                  <input type="text" id="id_phone" name="phone" class="app-input" value="2983417565">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_email">Email</label>
+                  <input type="email" id="id_email" name="email" class="app-input" value="clara.sorensen@geneos.com.ar">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_address">Dirección</label>
+                  <input type="text" id="id_address" name="address" class="app-input" value="Av. Independencia 760">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_city">Ciudad</label>
+                  <input type="text" id="id_city" name="city" class="app-input" value="San Cayetano">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="app-card-header">
+                <h2>Cobertura médica</h2>
+                <p>Completá o actualizá tu cobertura.</p>
+              </div>
+
+              <div class="app-form-grid">
+                <div class="app-form-group app-col-12">
+                  <label for="id_provider">Obra social / Prepaga</label>
+                  <input type="text" id="id_provider" name="provider" class="app-input" value="">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_plan">Plan</label>
+                  <input type="text" id="id_plan" name="plan" class="app-input" value="">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_member_number">N° de afiliado</label>
+                  <input type="text" id="id_member_number" name="member_number" class="app-input" value="">
+                </div>
+
+                <div class="app-form-group app-col-12">
+                  <label for="id_holder_name">Titular</label>
+                  <input type="text" id="id_holder_name" name="holder_name" class="app-input" value="">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="app-actions app-actions-inside">
+            <a href="/ciudadano/mis-turnos/" class="app-btn app-btn-outline">Volver</a>
+            <button type="submit" class="app-btn app-btn-primary app-btn-fixed">
+              Guardar cambios
+            </button>
+          </div>
+
+        </section>
+      </form>
+
+      <section class="app-family-module" id="grupo-familiar">
+
+        <div class="app-family-module-head">
+          <div>
+            <span class="app-eyebrow">Grupo familiar</span>
+            <h2>Familiares y responsables</h2>
+            <p>Vinculá personas autorizadas para gestionar turnos o recibir avisos importantes.</p>
+          </div>
+
+          <div class="app-family-count">
+            <strong>2</strong>
+            <span>integrantes</span>
+          </div>
+        </div>
+
+        <div class="app-responsible-block">
+          <div class="app-family-form-head">
+            <h3>Responsables y contactos cargados</h3>
+            <p>Personas autorizadas como tutores, responsables o contactos de emergencia.</p>
+          </div>
+
+          <div class="app-contact-summary-grid">
+            <article class="app-contact-summary-card">
+              <div class="app-contact-avatar">
+                <i class="bi bi-person-check"></i>
+              </div>
+
+              <div class="app-contact-info">
+                <h4>Arturo Carlos Sorensen</h4>
+                <p>Padre · DNI 8371472</p>
+
+                <div class="app-contact-phone">
+                  <i class="bi bi-telephone"></i>
+                  <span>2983417565</span>
+                </div>
+
+                <div class="app-family-tags">
+                  <span>Responsable principal</span>
+                  <span>Cuenta vinculada</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="app-contact-summary-card">
+              <div class="app-contact-avatar">
+                <i class="bi bi-person-heart"></i>
+              </div>
+
+              <div class="app-contact-info">
+                <h4>Rafaela Sorensen</h4>
+                <p>Hija · Menor de edad</p>
+
+                <div class="app-contact-phone">
+                  <i class="bi bi-telephone"></i>
+                  <span>2983417565</span>
+                </div>
+
+                <div class="app-family-tags">
+                  <span>Gestiona turnos</span>
+                  <span>Recibe avisos</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div style="margin-top:48px;">
+          <div class="app-family-form-head">
+            <h3>Agregar responsable o contacto</h3>
+          </div>
+        </div>
+
+        <div class="app-family-tabs">
+          <button type="button" class="app-family-tab is-active" data-family-tab="external">
+            Responsable / contacto
+          </button>
+
+          <button type="button" class="app-family-tab" data-family-tab="registered">
+            Familiar con cuenta
+          </button>
+        </div>
+
+        <div class="app-family-tab-panel is-active" id="family-tab-external">
+          <form method="post" action="#" class="app-family-form app-family-add-card">
+            {% csrf_token %}
+
+            <div class="app-family-form-head">
+              <p>Usalo para tutor, responsable legal o contacto de emergencia aunque no tenga cuenta.</p>
+            </div>
+
+            <div class="app-form-grid">
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_first_name">Nombre</label>
+                <input type="text" id="id_responsible_first_name" name="responsible_first_name" class="app-input">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_last_name">Apellido</label>
+                <input type="text" id="id_responsible_last_name" name="responsible_last_name" class="app-input">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_document_number">DNI</label>
+                <input type="text" id="id_responsible_document_number" name="responsible_document_number" class="app-input">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_phone">Celular</label>
+                <input type="text" id="id_responsible_phone" name="responsible_phone" class="app-input">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_email">Email <small>(opcional)</small></label>
+                <input type="email" id="id_responsible_email" name="responsible_email" class="app-input">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_responsible_relationship">Parentesco / vínculo</label>
+                <select id="id_responsible_relationship" name="responsible_relationship" class="app-input">
+                  <option value="">Seleccionar</option>
+                  <option value="mother">Madre</option>
+                  <option value="father">Padre</option>
+                  <option value="guardian">Tutor/a</option>
+                  <option value="grandmother">Abuela</option>
+                  <option value="grandfather">Abuelo</option>
+                  <option value="aunt_uncle">Tía/o</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="app-permission-grid app-permission-grid-compact">
+              <label class="app-permission-card">
+                <input type="checkbox" name="is_primary" checked>
+                <span>
+                  <strong>Responsable principal</strong>
+                  <small>Contacto prioritario para el centro de salud.</small>
+                </span>
+              </label>
+
+              <label class="app-permission-card">
+                <input type="checkbox" name="is_emergency_contact">
+                <span>
+                  <strong>Contacto de emergencia</strong>
+                  <small>Puede ser llamado si el paciente no responde.</small>
+                </span>
+              </label>
+            </div>
+
+            <div class="app-info-note">
+              <i class="bi bi-info-circle"></i>
+              <span>Este contacto no podrá gestionar turnos ni recibir notificaciones hasta tener cuenta vinculada.</span>
+            </div>
+
+            <div class="app-actions">
+              <button type="submit" class="app-btn app-btn-primary">
+                Guardar responsable
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="app-family-tab-panel" id="family-tab-registered">
+          <form method="post" action="#" class="app-family-form app-family-add-card">
+            {% csrf_token %}
+
+            <div class="app-family-form-head">
+              <p>Buscá por DNI a una persona ya registrada en el sistema.</p>
+            </div>
+
+            <div class="app-form-grid">
+              <div class="app-form-group app-col-6">
+                <label for="id_family_dni">DNI del familiar</label>
+                <input type="text" id="id_family_dni" name="family_dni" class="app-input" placeholder="Ej: 12345678">
+              </div>
+
+              <div class="app-form-group app-col-6">
+                <label for="id_relationship">Parentesco / vínculo</label>
+                <select id="id_relationship" name="relationship" class="app-input">
+                  <option value="">Seleccionar</option>
+                  <option value="mother">Madre</option>
+                  <option value="father">Padre</option>
+                  <option value="son">Hijo/a</option>
+                  <option value="guardian">Tutor/a</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="app-permission-grid">
+              <label class="app-permission-card">
+                <input type="checkbox" name="can_manage_appointments">
+                <span>
+                  <strong>Puede gestionar turnos</strong>
+                  <small>Permite solicitar turnos para este familiar.</small>
+                </span>
+              </label>
+
+              <label class="app-permission-card">
+                <input type="checkbox" name="receives_notifications" checked>
+                <span>
+                  <strong>Recibe notificaciones</strong>
+                  <small>Recibirá avisos relevantes.</small>
+                </span>
+              </label>
+            </div>
+
+            <div class="app-actions">
+              <button type="submit" class="app-btn app-btn-primary">
+                Vincular familiar
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const tabs = document.querySelectorAll("[data-family-tab]");
+  const panels = {
+    external: document.getElementById("family-tab-external"),
+    registered: document.getElementById("family-tab-registered"),
+  };
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      const target = tab.dataset.familyTab;
+
+      tabs.forEach(function (item) {
+        item.classList.remove("is-active");
+      });
+
+      Object.values(panels).forEach(function (panel) {
+        panel.classList.remove("is-active");
+      });
+
+      tab.classList.add("is-active");
+      panels[target].classList.add("is-active");
+    });
+  });
+});
+</script>
+
+{% endblock %}

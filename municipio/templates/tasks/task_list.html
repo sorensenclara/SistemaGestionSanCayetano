@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Tareas - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="task-list-page">
+
+    <div class="page-heading">
+        <div>
+            <p class="page-eyebrow">Gestión operativa</p>
+
+            <h1 class="page-title">
+                <i class="bi bi-card-checklist"></i>
+                Listado de Tareas
+            </h1>
+
+            <p class="page-subtitle">
+                Consulta, seguimiento y administración de tareas municipales.
+            </p>
+        </div>
+
+        {% if not user.is_operador %}
+        <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary">
+            <i class="bi bi-plus-circle"></i> Nueva Tarea
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="list-toolbar">
+        <div class="list-search">
+            <i class="bi bi-search"></i>
+            <input type="search"
+                   id="taskSearch"
+                   class="form-control"
+                   placeholder="Buscar tarea por nombre, responsable o estado...">
+        </div>
+
+        <div class="list-sort">
+            <label for="taskSort">Ordenar por</label>
+            <select id="taskSort" class="form-select">
+                <option value="date-asc">Fecha más próxima</option>
+                <option value="date-desc">Fecha más lejana</option>
+                <option value="name-asc">Nombre A-Z</option>
+                <option value="name-desc">Nombre Z-A</option>
+                <option value="status-asc">Estado</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="task-table-card">
+
+        <div class="table-responsive">
+            <table class="table task-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Estado</th>
+                        <th>Vencimiento</th>
+                        <th>Asignado a</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="taskTableBody">
+                    {% for task in tasks %}
+                    <tr class="task-row {% if task.is_overdue %}task-row-overdue{% endif %}"
+                        data-title="{{ task.title|lower }}"
+                        data-status="{{ task.get_status_display|lower }}"
+                        data-date="{{ task.due_date|date:'Y-m-d' }}"
+                        data-assigned="{% if task.assigned_to %}{{ task.assigned_to.get_full_name|default:task.assigned_to.username|lower }}{% else %}nadie{% endif %}">
+
+                        <td>
+                            <div class="task-title-cell">
+                                <strong>{{ task.title }}</strong>
+                                {% if task.is_overdue %}
+                                <span class="task-alert-text">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Vencida
+                                </span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="status-pill
+                                {% if task.status == 'REG' %}status-registered
+                                {% elif task.status == 'PEN' %}status-pending
+                                {% elif task.status == 'INP' %}status-progress
+                                {% elif task.status == 'COM' %}status-done
+                                {% endif %}">
+                                {{ task.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="date-cell">
+                                <i class="bi bi-calendar-event"></i>
+                                {{ task.due_date|date:"d M, Y" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="assigned-cell">
+                                <i class="bi bi-person"></i>
+                                {% if task.assigned_to %}
+                                    {{ task.assigned_to.get_full_name|default:task.assigned_to.username }}
+                                {% else %}
+                                    Nadie
+                                {% endif %}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+                            <div class="table-actions">
+                                <a href="{% url 'task_detail' task.id %}" class="action-btn action-view" title="Ver detalles">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="{% url 'task_update' task.id %}" class="action-btn action-edit" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                {% if not user.is_operador %}
+                                <a href="{% url 'task_delete' task.id %}" class="action-btn action-delete" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-table">
+                            <i class="bi bi-inbox"></i>
+                            <strong>No hay tareas registradas.</strong>
+                            <span>Cuando cargues una tarea, aparecerá en este listado.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="taskNoResults" class="empty-table d-none">
+            <i class="bi bi-search"></i>
+            <strong>No se encontraron tareas.</strong>
+            <span>Probá con otro término de búsqueda.</span>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('taskSearch');
+    const sortSelect = document.getElementById('taskSort');
+    const tbody = document.getElementById('taskTableBody');
+    const noResults = document.getElementById('taskNoResults');
+
+    if (!searchInput || !sortSelect || !tbody) return;
+
+    function getRows() {
+        return Array.from(tbody.querySelectorAll('.task-row'));
+    }
+
+    function filterRows() {
+        const term = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        getRows().forEach(row => {
+            const title = row.dataset.title || '';
+            const status = row.dataset.status || '';
+            const assigned = row.dataset.assigned || '';
+
+            const match =
+                title.includes(term) ||
+                status.includes(term) ||
+                assigned.includes(term);
+
+            row.style.display = match ? '' : 'none';
+
+            if (match) visibleCount++;
+        });
+
+        if (noResults) {
+            noResults.classList.toggle('d-none', visibleCount !== 0);
+        }
+    }
+
+    function sortRows() {
+        const sortValue = sortSelect.value;
+        const rows = getRows();
+
+        rows.sort((a, b) => {
+            const titleA = a.dataset.title || '';
+            const titleB = b.dataset.title || '';
+            const dateA = a.dataset.date || '';
+            const dateB = b.dataset.date || '';
+            const statusA = a.dataset.status || '';
+            const statusB = b.dataset.status || '';
+
+            if (sortValue === 'name-asc') return titleA.localeCompare(titleB);
+            if (sortValue === 'name-desc') return titleB.localeCompare(titleA);
+            if (sortValue === 'date-desc') return dateB.localeCompare(dateA);
+            if (sortValue === 'status-asc') return statusA.localeCompare(statusB);
+
+            return dateA.localeCompare(dateB);
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+        filterRows();
+    }
+
+    searchInput.addEventListener('input', filterRows);
+    sortSelect.addEventListener('change', sortRows);
+});
+</script>
+{% endblock %}

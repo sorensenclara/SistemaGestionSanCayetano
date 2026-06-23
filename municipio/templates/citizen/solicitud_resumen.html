@@ -1,0 +1,98 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Resumen de la solicitud{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-solicitud">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_solicitud_evidencia' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title solicitud">Resumen</p>
+            <h1>Revisá antes de enviar</h1>
+        </div>
+    </div>
+
+    <form method="post" class="platform-form-card">
+        {% csrf_token %}
+
+        <div class="platform-summary-list">
+
+            <div>
+                <strong>Servicio solicitado</strong>
+                <p>{{ solicitud.categoria_nombre }}</p>
+                <small>{{ solicitud.categoria_tipo }} / {{ solicitud.area_nombre }}</small>
+            </div>
+
+            <div>
+                <strong>Descripción</strong>
+                <p>{{ solicitud.descripcion }}</p>
+            </div>
+
+            <div>
+                <strong>Urgencia</strong>
+                <p>{{ solicitud.urgencia|title }}</p>
+            </div>
+
+            <div>
+                <strong>Ubicación</strong>
+                <p>
+                    {% if solicitud.direccion %}
+                        {{ solicitud.direccion }}
+                    {% else %}
+                        Lugar indicado en el mapa
+                    {% endif %}
+                </p>
+                {% if solicitud.referencia_ubicacion %}
+                    <small>{{ solicitud.referencia_ubicacion }}</small>
+                {% endif %}
+            </div>
+
+            <div>
+                <strong>Adjuntos</strong>
+
+                {% if solicitud.adjuntos %}
+                    <div class="platform-summary-attachments">
+                        {% for adjunto in solicitud.adjuntos %}
+                            {% if adjunto.tipo == "imagen" %}
+                                <img src="{{ adjunto.url }}" alt="{{ adjunto.nombre }}">
+                            {% else %}
+                                <div class="platform-file-preview">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    <span>{{ adjunto.nombre }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No agregaste fotografías ni documentos.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <strong>Datos de contacto</strong>
+                <p>{{ request.user.get_full_name|default:request.user }}</p>
+            </div>
+
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_solicitud_evidencia' %}" class="btn platform-btn platform-btn-outline-secondary">
+                Volver
+            </a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Enviar solicitud
+                <i class="bi bi-send"></i>
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

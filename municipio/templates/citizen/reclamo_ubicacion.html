@@ -1,0 +1,248 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Ubicación del reclamo - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-reclamo">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_reclamo_detalle' reclamo.categoria_id %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title reclamo">Ubicación</p>
+            <h1>¿Dónde ocurre el problema?</h1>
+        </div>
+    </div>
+
+    <div class="platform-selected-card">
+        <i class="bi bi-geo-alt"></i>
+        <div>
+            <strong>{{ reclamo.categoria_nombre }}</strong>
+            <span>{{ reclamo.categoria_tipo }} / {{ reclamo.area_nombre }}</span>
+        </div>
+    </div>
+
+    <form method="post" class="platform-form-card">
+        {% csrf_token %}
+        
+        <div class="platform-form-group">
+            <label for="direccion" class="platform-form-label">Buscar dirección</label>
+
+            <div class="platform-search-field">
+                <i class="bi bi-search"></i>
+
+            <input
+                type="text"
+                id="direccion"
+                name="direccion"
+                class="platform-input"
+                autocomplete="off"
+                placeholder="Ejemplo: Rivadavia 157"
+                value="{{ reclamo.direccion|default:'' }}"
+            >
+
+                <button type="button" id="searchAddressBtn" aria-label="Buscar dirección">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <div id="addressSuggestions" class="platform-search-suggestions"></div>
+
+            <div class="platform-form-help">
+                <span>Indicá calle y altura si es que la conocés.</span>
+            </div>
+        </div>
+
+        <div class="platform-form-group">
+            <button type="button" class="btn btn-outline-primary w-100" id="useLocationBtn">
+                <i class="bi bi-crosshair"></i>
+                Usar mi ubicación actual
+            </button>
+
+            <div class="platform-form-group">
+                <label class="platform-form-label">Mapa</label>
+
+                <div id="claimMap" style="height: 360px; border-radius: 18px; overflow: hidden; border: 1px solid var(--sc-border);"></div>
+
+                <div class="platform-form-help">
+                    <span>Podés mover el pin para ajustar la ubicación exacta.</span>
+                </div>
+            </div>
+
+            <input type="hidden" name="latitud" id="latitud" value="{{ reclamo.latitud|default:'' }}">
+            <input type="hidden" name="longitud" id="longitud" value="{{ reclamo.longitud|default:'' }}">
+        </div>
+
+        <div class="platform-form-group">
+            <label for="referencia_ubicacion" class="platform-form-label">Referencia adicional</label>
+            <textarea
+                id="referencia_ubicacion"
+                name="referencia_ubicacion"
+                class="platform-textarea"
+                placeholder="Ejemplo: Frente al jardín, cerca de la esquina, entre dos árboles..."
+            >{{ reclamo.referencia_ubicacion|default:'' }}</textarea>
+            <div class="platform-form-help">
+                <span>Esto ayuda si el GPS o la dirección no son exactos.</span>
+            </div>
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_reclamo_detalle' reclamo.categoria_id %}" class="btn platform-btn platform-btn-outline-primary">
+                Volver
+            </a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Siguiente
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const direccion = document.getElementById("direccion");
+    const button = document.getElementById("useLocationBtn");
+    const latitud = document.getElementById("latitud");
+    const longitud = document.getElementById("longitud");
+
+    if (!document.getElementById("claimMap")) return;
+
+    const defaultLat = latitud.value || -38.3469;
+    const defaultLng = longitud.value || -59.6096;
+
+    const map = L.map("claimMap").setView([defaultLat, defaultLng], 15);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    const marker = L.marker([defaultLat, defaultLng], {
+        draggable: true
+    }).addTo(map);
+
+    function setPosition(lat, lng) {
+        latitud.value = lat;
+        longitud.value = lng;
+        marker.setLatLng([lat, lng]);
+        map.setView([lat, lng], 17);
+    }
+
+    marker.on("dragend", function () {
+        const pos = marker.getLatLng();
+        latitud.value = pos.lat;
+        longitud.value = pos.lng;
+    });
+
+    button.addEventListener("click", function () {
+        if (!navigator.geolocation) {
+            alert("Tu navegador no permite obtener ubicación.");
+            return;
+        }
+
+        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Obteniendo ubicación...';
+
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                setPosition(position.coords.latitude, position.coords.longitude);
+                button.innerHTML = '<i class="bi bi-check-circle"></i> Ubicación tomada correctamente';
+            },
+            function () {
+                button.innerHTML = '<i class="bi bi-exclamation-circle"></i> No se pudo obtener la ubicación';
+            }
+        );
+    });
+
+    const searchBtn = document.getElementById("searchAddressBtn");
+const suggestionsBox = document.getElementById("addressSuggestions");
+let searchTimeout = null;
+
+async function buscarDireccionTexto(texto, mostrarSugerencias = false) {
+    if (!texto.trim()) return [];
+
+    const query = encodeURIComponent(
+        texto + ", San Cayetano, Buenos Aires, Argentina"
+    );
+
+    const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=5&addressdetails=1&q=${query}`
+    );
+
+    return await response.json();
+}
+
+function renderSuggestions(results) {
+    suggestionsBox.innerHTML = "";
+
+    if (!results.length) {
+        suggestionsBox.classList.remove("show");
+        return;
+    }
+
+    results.forEach(item => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "platform-search-suggestion";
+        btn.textContent = item.display_name;
+
+        btn.addEventListener("click", function () {
+            direccion.value = item.display_name;
+            setPosition(item.lat, item.lon);
+            suggestionsBox.classList.remove("show");
+        });
+
+        suggestionsBox.appendChild(btn);
+    });
+
+    suggestionsBox.classList.add("show");
+    }
+
+    async function buscarDireccion() {
+        const results = await buscarDireccionTexto(direccion.value);
+
+        if (results.length > 0) {
+            setPosition(results[0].lat, results[0].lon);
+            suggestionsBox.classList.remove("show");
+        } else {
+            alert("No pudimos encontrar esa dirección. Probá escribir calle, altura y ciudad.");
+        }
+    }
+
+    searchBtn.addEventListener("click", buscarDireccion);
+
+    direccion.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            buscarDireccion();
+        }
+    });
+
+    direccion.addEventListener("input", function () {
+        clearTimeout(searchTimeout);
+
+        if (direccion.value.trim().length < 3) {
+            suggestionsBox.classList.remove("show");
+            return;
+        }
+
+        searchTimeout = setTimeout(async function () {
+            const results = await buscarDireccionTexto(direccion.value, true);
+            renderSuggestions(results);
+        }, 500);
+    });
+});
+</script>
+{% endblock %}

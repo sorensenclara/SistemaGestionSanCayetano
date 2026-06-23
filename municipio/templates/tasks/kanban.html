@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}Tablero Kanban - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="kanban-page">
+
+    <div class="page-heading">
+        <div>
+            <p class="page-eyebrow">Gestión operativa</p>
+            <h1 class="page-title">
+                <i class="bi bi-kanban"></i>
+                Tablero Kanban
+            </h1>
+            <p class="page-subtitle">
+                Seguimiento visual de tareas según su estado operativo.
+            </p>
+        </div>
+
+        {% if not user.is_operador %}
+        <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary">
+            <i class="fa-solid fa-plus"></i> Nueva Tarea
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="kanban-toolbar">
+        <div class="kanban-search">
+            <i class="bi bi-search"></i>
+            <input type="search"
+                   id="kanbanSearch"
+                   class="form-control"
+                   placeholder="Buscar tarea por nombre...">
+        </div>
+
+        <div class="kanban-sort">
+            <label for="kanbanSort">Ordenar por</label>
+            <select id="kanbanSort" class="form-select">
+                <option value="date-asc">Fecha más próxima</option>
+                <option value="date-desc">Fecha más lejana</option>
+                <option value="name-asc">Nombre A-Z</option>
+                <option value="name-desc">Nombre Z-A</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="kanban-board-grid">
+
+        <div class="kanban-column">
+            <div class="kanban-column-header kanban-header-registered">
+                <span><i class="bi bi-inbox"></i> Registradas</span>
+                <strong>{{ tasks_registered.count }}</strong>
+            </div>
+
+            <div class="kanban-tasks" id="REG" data-status="REG">
+                {% for task in tasks_registered %}
+                <div class="kanban-task-wrapper"
+                     data-title="{{ task.title|lower }}"
+                     data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    {% include 'tasks/kanban_card.html' with task=task %}
+                </div>
+                {% empty %}
+                <div class="kanban-empty empty-msg">Sin tareas</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="kanban-column">
+            <div class="kanban-column-header kanban-header-pending">
+                <span><i class="bi bi-clock"></i> Pendientes</span>
+                <strong>{{ tasks_pending.count }}</strong>
+            </div>
+
+            <div class="kanban-tasks" id="PEN" data-status="PEN">
+                {% for task in tasks_pending %}
+                <div class="kanban-task-wrapper"
+                     data-title="{{ task.title|lower }}"
+                     data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    {% include 'tasks/kanban_card.html' with task=task %}
+                </div>
+                {% empty %}
+                <div class="kanban-empty empty-msg">Sin tareas</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="kanban-column">
+            <div class="kanban-column-header kanban-header-progress">
+                <span><i class="bi bi-play-circle"></i> En Ejecución</span>
+                <strong>{{ tasks_in_progress.count }}</strong>
+            </div>
+
+            <div class="kanban-tasks" id="INP" data-status="INP">
+                {% for task in tasks_in_progress %}
+                <div class="kanban-task-wrapper"
+                     data-title="{{ task.title|lower }}"
+                     data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    {% include 'tasks/kanban_card.html' with task=task %}
+                </div>
+                {% empty %}
+                <div class="kanban-empty empty-msg">Sin tareas</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="kanban-column">
+            <div class="kanban-column-header kanban-header-done">
+                <span><i class="bi bi-check-circle"></i> Finalizadas</span>
+                <strong>{{ tasks_completed.count }}</strong>
+            </div>
+
+            <div class="kanban-tasks" id="COM" data-status="COM">
+                {% for task in tasks_completed %}
+                <div class="kanban-task-wrapper"
+                     data-title="{{ task.title|lower }}"
+                     data-date="{{ task.due_date|date:'Y-m-d' }}">
+                    {% include 'tasks/kanban_card.html' with task=task %}
+                </div>
+                {% empty %}
+                <div class="kanban-empty empty-msg">Sin tareas</div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const columns = document.querySelectorAll('.kanban-tasks');
+    const searchInput = document.getElementById('kanbanSearch');
+    const sortSelect = document.getElementById('kanbanSort');
+
+    columns.forEach(col => {
+        new Sortable(col, {
+            group: 'kanban',
+            animation: 150,
+            ghostClass: 'kanban-ghost',
+            draggable: '.kanban-task-wrapper',
+
+            onEnd: function (evt) {
+                const itemEl = evt.item;
+                const toEl = evt.to;
+
+                const taskCard = itemEl.querySelector('.kanban-card');
+                const taskId = taskCard ? taskCard.dataset.id : null;
+
+                const newStatus = toEl.dataset.status;
+                const oldStatus = evt.from.dataset.status;
+
+                if (taskId && newStatus !== oldStatus) {
+                    fetch("{% url 'update_task_status' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            task_id: taskId,
+                            status: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            alert("Error: " + data.error);
+                            evt.from.insertBefore(itemEl, evt.from.children[evt.oldIndex]);
+                        } else {
+                            updateEmptyMessages();
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Error de conexión");
+                        evt.from.insertBefore(itemEl, evt.from.children[evt.oldIndex]);
+                    });
+                }
+            },
+        });
+    });
+
+    function filterKanban() {
+        const term = searchInput.value.toLowerCase().trim();
+
+        document.querySelectorAll('.kanban-task-wrapper').forEach(card => {
+            const title = card.dataset.title || '';
+            card.style.display = title.includes(term) ? '' : 'none';
+        });
+
+        updateEmptyMessages();
+    }
+
+    function sortKanban() {
+        const sortValue = sortSelect.value;
+
+        columns.forEach(column => {
+            const cards = Array.from(column.querySelectorAll('.kanban-task-wrapper'));
+
+            cards.sort((a, b) => {
+                const titleA = a.dataset.title || '';
+                const titleB = b.dataset.title || '';
+                const dateA = a.dataset.date || '';
+                const dateB = b.dataset.date || '';
+
+                if (sortValue === 'name-asc') {
+                    return titleA.localeCompare(titleB);
+                }
+
+                if (sortValue === 'name-desc') {
+                    return titleB.localeCompare(titleA);
+                }
+
+                if (sortValue === 'date-desc') {
+                    return dateB.localeCompare(dateA);
+                }
+
+                return dateA.localeCompare(dateB);
+            });
+
+            cards.forEach(card => column.appendChild(card));
+        });
+    }
+
+    function updateEmptyMessages() {
+        columns.forEach(column => {
+            const emptyMsg = column.querySelector('.empty-msg');
+            if (!emptyMsg) return;
+
+            const visibleCards = Array.from(column.querySelectorAll('.kanban-task-wrapper'))
+                .filter(card => card.style.display !== 'none');
+
+            emptyMsg.style.display = visibleCards.length ? 'none' : 'block';
+        });
+    }
+
+    searchInput.addEventListener('input', filterKanban);
+    sortSelect.addEventListener('change', sortKanban);
+});
+</script>
+{% endblock %}

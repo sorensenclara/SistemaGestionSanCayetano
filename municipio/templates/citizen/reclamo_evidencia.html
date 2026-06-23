@@ -1,0 +1,214 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Evidencia del reclamo - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-reclamo">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_reclamo_ubicacion' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title reclamo">Evidencia</p>
+            <h1>Sumá fotos o documentos</h1>
+        </div>
+    </div>
+
+    <div class="platform-selected-card">
+        <i class="bi bi-camera"></i>
+        <div>
+            <strong>{{ reclamo.categoria_nombre }}</strong>
+            <span>
+                {% if reclamo.direccion %}
+                    {{ reclamo.direccion }}
+                {% else %}
+                    Ubicación seleccionada en el mapa
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="platform-form-card">
+        {% csrf_token %}
+
+        <div class="platform-upload-grid">
+
+            <div class="platform-form-group">
+                <label class="platform-form-label">Fotografías</label>
+                <div class="platform-form-help">
+                    <span>Una foto clara ayuda a entender más rápido.</span>
+                </div>
+
+                <label for="foto" class="platform-upload-box platform-upload-box-compact" id="photoUploadBox">
+                    <i class="bi bi-image"></i>
+                    <strong>Subir fotografías</strong>
+                    <span>Podés seleccionar una o varias imágenes.</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="foto"
+                    name="fotos"
+                    accept="image/*"
+                    class="platform-file-input"
+                    multiple
+                >
+
+                <div id="photoPreview" class="platform-upload-preview"></div>
+            </div>
+
+            <div class="platform-form-group">
+                <label class="platform-form-label">Documentos PDF</label>
+                <div class="platform-form-help">
+                    <span>* Opcional. Adjuntá documentos si son necesarios.</span>
+                </div>
+
+                <label for="documento" class="platform-upload-box platform-upload-box-compact platform-upload-box-secondary" id="documentUploadBox">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <strong>Adjuntar PDF</strong>
+                    <span>Archivo PDF opcional.</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="documento"
+                    name="documentos"
+                    accept="application/pdf"
+                    class="platform-file-input"
+                    multiple
+                >
+
+                <div id="documentPreview" class="platform-upload-preview"></div>
+            </div>
+
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_reclamo_ubicacion' %}" class="btn platform-btn platform-btn-outline-primary">
+                Volver
+            </a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Continuar
+                <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const fotoInput = document.getElementById("foto");
+    const photoPreview = document.getElementById("photoPreview");
+    const photoUploadBox = document.getElementById("photoUploadBox");
+
+    const documentoInput = document.getElementById("documento");
+    const documentPreview = document.getElementById("documentPreview");
+    const documentUploadBox = document.getElementById("documentUploadBox");
+
+    let selectedPhotos = [];
+    let selectedDocs = [];
+
+    function updateInput(input, files) {
+        const dt = new DataTransfer();
+        files.forEach(file => dt.items.add(file));
+        input.files = dt.files;
+    }
+
+    function renderPhotos() {
+        photoPreview.innerHTML = "";
+
+        selectedPhotos.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const item = document.createElement("div");
+                item.className = "platform-thumb-card";
+                item.innerHTML = `
+                    <div class="platform-thumb-image-wrap">
+                        <img src="${e.target.result}" alt="Foto adjunta">
+                    </div>
+
+                    <button type="button" class="platform-thumb-remove" data-index="${index}">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                `;
+                photoPreview.appendChild(item);
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        photoUploadBox.style.display = selectedPhotos.length >= 3 ? "none" : "flex";
+        updateInput(fotoInput, selectedPhotos);
+    }
+
+    function renderDocs() {
+        documentPreview.innerHTML = "";
+
+        selectedDocs.forEach((file, index) => {
+            const item = document.createElement("div");
+            item.className = "platform-file-preview";
+            item.innerHTML = `
+                <i class="bi bi-file-earmark-pdf"></i>
+                <span>${file.name}</span>
+                <button type="button" class="remove-document" data-index="${index}">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            `;
+            documentPreview.appendChild(item);
+        });
+
+        documentUploadBox.style.display = selectedDocs.length >= 3 ? "none" : "flex";
+        updateInput(documentoInput, selectedDocs);
+    }
+
+    fotoInput.addEventListener("change", function () {
+        const files = Array.from(fotoInput.files);
+
+        files.forEach(file => {
+            if (selectedPhotos.length < 3) {
+                selectedPhotos.push(file);
+            }
+        });
+
+        renderPhotos();
+    });
+
+    photoPreview.addEventListener("click", function (event) {
+        const btn = event.target.closest(".platform-thumb-remove");
+        if (!btn) return;
+
+        selectedPhotos.splice(Number(btn.dataset.index), 1);
+        renderPhotos();
+    });
+
+    documentoInput.addEventListener("change", function () {
+        const files = Array.from(documentoInput.files);
+
+        files.forEach(file => {
+            if (selectedDocs.length < 3) {
+                selectedDocs.push(file);
+            }
+        });
+
+        renderDocs();
+    });
+
+    documentPreview.addEventListener("click", function (event) {
+        const btn = event.target.closest(".remove-document");
+        if (!btn) return;
+
+        selectedDocs.splice(Number(btn.dataset.index), 1);
+        renderDocs();
+    });
+});
+</script>
+{% endblock %}

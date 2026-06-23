@@ -1,0 +1,362 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Mapa Ciudadano - App Ciudadana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-page-wide mis-gestiones-page">
+
+    <div class="citizen-page-head">
+        <div>
+            <p class="flow-title tramite">Mapa ciudadano</p>
+            <h1>Gestiones georreferenciadas</h1>
+            <p class="page-subtitle">
+                Visualizá reclamos y solicitudes ubicadas en el mapa
+            </p>
+        </div>
+    </div>
+
+    <div id="mapaView" class="gestiones-section">
+
+        <div class="platform-section-head">
+            <h2>Mapa de gestiones</h2>
+
+            <div class="gestion-map-actions">
+                <button type="button" class="gestion-map-scope-btn" id="btnCity">
+                    <i class="bi bi-building"></i>
+                    Ciudad
+                </button>
+                <button type="button" class="gestion-map-scope-btn is-active" id="btnDistrict">
+                    <i class="bi bi-map"></i>
+                    Partido
+                </button>
+            </div>
+        </div>
+
+        <div class="gestion-map-layout">
+
+            <aside class="gestion-map-panel">
+                <div class="gestion-map-box">
+                    <h3><i class="bi bi-layers"></i> Filtros</h3>
+
+                    <label class="gestion-layer-check">
+                        <input type="checkbox" checked data-layer="reclamos">
+                        <span class="layer-dot pin-reclamo"></span>
+                        Reclamos
+                    </label>
+
+                    <label class="gestion-layer-check">
+                        <input type="checkbox" checked data-layer="solicitudes">
+                        <span class="layer-dot pin-solicitud"></span>
+                        Solicitudes
+                    </label>
+
+                    <div class="gestion-map-note">
+                        <strong>Importante</strong>
+                        <p>Los turnos no se muestran en el mapa.</p>
+                    </div>
+                </div>
+
+                <div class="gestion-map-box">
+                    <h3><i class="bi bi-funnel"></i> Estados</h3>
+
+                    <div class="gestion-map-status-list">
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="registrado">
+                            <span class="status-dot status-dot-iniciada"></span>
+                            Iniciadas
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="analisis">
+                            <span class="status-dot status-dot-analisis"></span>
+                            En análisis
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="programada">
+                            <span class="status-dot status-dot-programada"></span>
+                            Programadas
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="ejecucion">
+                            <span class="status-dot status-dot-ejecucion"></span>
+                            En ejecución
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="finalizada">
+                            <span class="status-dot status-dot-finalizada"></span>
+                            Finalizadas
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="rechazada">
+                            <span class="status-dot status-dot-rechazada"></span>
+                            Rechazadas
+                        </label>
+
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="reabierta">
+                            <span class="status-dot status-dot-reabierta"></span>
+                            Reabiertas
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="gestion-map-card mapa-ciudadano-card">
+                <div id="mapaCiudadanoMap"></div>
+            </div>
+
+            <aside class="gestion-map-detail" id="mapaCiudadanoDetail">
+                <div class="gestion-map-detail-empty">
+                    <i class="bi bi-geo-alt"></i>
+                    <strong>Seleccioná una gestión</strong>
+                    <span>Vas a ver el detalle del reclamo o solicitud.</span>
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let map;
+    let mapMarkers = [];
+
+    const cityCenter = [-38.3167, -59.6167];
+    const districtCenter = [-38.4167, -59.6667];
+
+    function normalize(value) {
+        return (value || "").toString().trim().toLowerCase();
+    }
+
+    function markerIcon(color) {
+        const bg = color === "green" ? "#097009" : "#1594c9";
+
+        return L.divIcon({
+            className: "",
+            html: `
+                <div style="
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50% 50% 50% 0;
+                    background: ${bg};
+                    transform: rotate(-45deg);
+                    box-shadow: 0 8px 18px rgba(0,0,0,.22);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 3px solid white;
+                ">
+                    <span style="
+                        width: 9px;
+                        height: 9px;
+                        border-radius: 50%;
+                        background: white;
+                        display: block;
+                    "></span>
+                </div>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+    }
+
+    function showMapDetail(item) {
+        const detail = document.getElementById("mapaCiudadanoDetail");
+
+        if (!detail) return;
+
+        detail.innerHTML = `
+            <div class="gestion-map-detail-content">
+                <span class="gestion-map-detail-type ${item.kindClass}">
+                    ${item.typeLabel}
+                </span>
+
+                <h3>${item.title}</h3>
+
+                <span class="gestion-status ${item.statusClass}">
+                    ${item.status}
+                </span>
+
+                <div class="gestion-map-detail-list">
+                    <div>
+                        <i class="bi bi-building"></i>
+                        <span>Área</span>
+                        <p>${item.area}</p>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Fecha</span>
+                        <p>${item.date}</p>
+                    </div>
+
+                    <div>
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Ubicación</span>
+                        <p>${item.address}</p>
+                    </div>
+                </div>
+
+                <a href="${item.detailUrl}" class="btn platform-btn platform-btn-primary w-100">
+                    <i class="bi bi-eye"></i>
+                    Ver detalle
+                </a>
+            </div>
+        `;
+    }
+
+    function fitMapToVisibleMarkers() {
+        if (!map || !mapMarkers.length) return;
+
+        const visibleMarkers = mapMarkers
+            .filter(item => map.hasLayer(item.marker))
+            .map(item => item.marker.getLatLng());
+
+        if (!visibleMarkers.length) return;
+
+        map.fitBounds(L.latLngBounds(visibleMarkers), {
+            padding: [40, 40],
+            maxZoom: 15
+        });
+    }
+
+    function refreshMapMarkers() {
+        if (!map) return;
+
+        const activeTypes = Array.from(document.querySelectorAll("[data-layer]:checked"))
+            .map(input => normalize(input.dataset.layer));
+
+        const activeStatuses = Array.from(document.querySelectorAll("[data-map-status]:checked"))
+            .map(input => normalize(input.dataset.mapStatus));
+
+        mapMarkers.forEach(item => {
+            const shouldShow =
+                activeTypes.includes(item.type) &&
+                activeStatuses.includes(item.status);
+
+            if (shouldShow) {
+                if (!map.hasLayer(item.marker)) item.marker.addTo(map);
+            } else {
+                if (map.hasLayer(item.marker)) map.removeLayer(item.marker);
+            }
+        });
+
+        fitMapToVisibleMarkers();
+    }
+
+    const mapContainer = document.getElementById("mapaCiudadanoMap");
+
+    if (!mapContainer || typeof L === "undefined") return;
+
+    map = L.map(mapContainer, {
+        zoomControl: false
+    }).setView(cityCenter, 13);
+
+    L.control.zoom({
+        position: "bottomright"
+    }).addTo(map);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    {% for gestion in gestiones %}
+        {% firstof gestion.tipo gestion.categoria.tipo as tipo_raw %}
+        {% with tipo=tipo_raw|lower estado=gestion.estado.codigo|lower %}
+            {% if gestion.latitud and gestion.longitud %}
+                {% if tipo == "reclamo" or tipo == "reclamos" or tipo == "solicitud" or tipo == "solicitudes" %}
+
+                    const marker{{ gestion.id }} = L.marker(
+                        [
+                            {{ gestion.latitud|stringformat:"f" }},
+                            {{ gestion.longitud|stringformat:"f" }}
+                        ],
+                        {
+                            icon: markerIcon("{% if tipo == 'reclamo' or tipo == 'reclamos' %}green{% else %}blue{% endif %}")
+                        }
+                    );
+
+                    marker{{ gestion.id }}.on("click", function () {
+                        showMapDetail({
+                            title: "{{ gestion.categoria.nombre|escapejs }}",
+                            typeLabel: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}Reclamo ciudadano{% else %}Solicitud ciudadana{% endif %}",
+                            kindClass: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}gestion-map-type-reclamo{% else %}gestion-map-type-solicitud{% endif %}",
+                            status: "{{ gestion.estado.nombre|escapejs }}",
+                            statusClass: "status-{{ estado }}",
+                            area: "{{ gestion.area_responsable.nombre|escapejs }}",
+                            date: "{{ gestion.creada|date:'d/m/Y H:i' }}",
+                            address: "{% if gestion.direccion %}{{ gestion.direccion|escapejs }}{% else %}Ubicación indicada en el mapa{% endif %}",
+                            detailUrl: "{% url 'citizen_gestion_detalle' gestion.id %}"
+                        });
+                    });
+
+                    const markerData{{ gestion.id }} = {
+                        marker: marker{{ gestion.id }},
+                        type: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}reclamos{% else %}solicitudes{% endif %}",
+                        status: "{{ estado }}"
+                    };
+
+                    mapMarkers.push(markerData{{ gestion.id }});
+                    marker{{ gestion.id }}.addTo(map);
+
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+    {% endfor %}
+
+    console.log("Gestiones con marcador:", mapMarkers.length);
+
+    document.querySelectorAll("[data-layer], [data-map-status]").forEach(input => {
+        input.addEventListener("change", refreshMapMarkers);
+    });
+
+    const btnCity = document.getElementById("btnCity");
+    const btnDistrict = document.getElementById("btnDistrict");
+
+    if (btnCity && btnDistrict) {
+        btnCity.addEventListener("click", function () {
+            btnCity.classList.add("is-active");
+            btnDistrict.classList.remove("is-active");
+            map.setView(cityCenter, 14);
+        });
+
+        btnDistrict.addEventListener("click", function () {
+            btnDistrict.classList.add("is-active");
+            btnCity.classList.remove("is-active");
+            map.setView(districtCenter, 10);
+        });
+    }
+
+    refreshMapMarkers();
+
+    setTimeout(() => {
+        map.invalidateSize();
+        refreshMapMarkers();
+        fitMapToVisibleMarkers();
+
+        if (mapMarkers.length === 0) {
+            map.setView(cityCenter, 14);
+        }
+    }, 600);
+});
+</script>
+{% endblock %}

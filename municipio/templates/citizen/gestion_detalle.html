@@ -1,0 +1,247 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Detalle de gestión - App Ciudadana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+
+{% with tipo=gestion.categoria.tipo|lower estado=gestion.estado.codigo|lower %}
+
+<section class="citizen-page platform-page-wide gestion-detail-page">
+
+    <a href="{% url 'citizen_mis_gestiones' %}" class="gestion-detail-back">
+        <i class="bi bi-arrow-left"></i>
+        Volver a Mis Gestiones
+    </a>
+
+    <div class="gestion-detail-header">
+        <div>
+            <p class="flow-title tramite">Detalle de gestión</p>
+            <h1>#{{ gestion.id }} · {{ gestion.categoria.nombre }}</h1>
+
+            <div class="gestion-detail-header-meta">
+                {% if tipo == "reclamo" or tipo == "reclamos" %}
+                    <span class="gestion-kind gestion-kind-reclamo">
+                        <i class="bi bi-exclamation-circle"></i>
+                        Reclamo
+                    </span>
+                {% elif tipo == "solicitud" or tipo == "solicitudes" %}
+                    <span class="gestion-kind gestion-kind-solicitud">
+                        <i class="bi bi-clipboard-check"></i>
+                        Solicitud
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="gestion-detail-layout gestion-detail-layout-history-side">
+
+        <main class="gestion-detail-main">
+
+            <article class="gestion-detail-status-card status-card-{{ estado }}">
+                <span>Estado actual</span>
+                <strong>{{ gestion.estado.nombre }}</strong>
+                <p>{{ gestion.estado.descripcion_ciudadano|default:"La gestión se encuentra registrada en el sistema municipal." }}</p>
+            </article>
+
+            <details class="gestion-detail-card gestion-detail-summary-card">
+                <summary>
+                    <span>
+                        Datos de la 
+                        {% if tipo == "reclamo" or tipo == "reclamos" %}reclamo{% elif tipo == "solicitud" or tipo == "solicitudes" %}solicitud{% else %}gestión{% endif %}
+                    </span>
+                    <i class="bi bi-chevron-down"></i>
+                </summary>
+
+                <div class="gestion-detail-data-grid">
+                    <div>
+                        <span>Tipo</span>
+                        <p>
+                            {% if tipo == "reclamo" or tipo == "reclamos" %}
+                                Reclamo
+                            {% elif tipo == "solicitud" or tipo == "solicitudes" %}
+                                Solicitud
+                            {% else %}
+                                {{ gestion.categoria.get_tipo_display|default:"Gestión" }}
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>Área responsable</span>
+                        <p>{{ gestion.area_responsable.nombre }}</p>
+                    </div>
+
+                    <div>
+                        <span>Ubicación</span>
+                        <p>
+                            {% if gestion.direccion %}
+                                {{ gestion.direccion }}
+                            {% else %}
+                                Ubicación indicada en el mapa
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span>Fecha de creación</span>
+                        <p>{{ gestion.creada|date:"d/m/Y H:i" }}</p>
+                    </div>
+
+                    <div class="gestion-detail-full">
+                        <span>Descripción enviada</span>
+                        <p>
+                            {% if gestion.descripcion %}
+                                {{ gestion.descripcion }}
+                            {% else %}
+                                No se cargó una descripción adicional.
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="gestion-detail-full">
+                        <span>Adjuntos del ciudadano</span>
+
+                        {% if adjuntos %}
+                            <div class="gestion-detail-attachments">
+                                {% for adjunto in adjuntos %}
+                                    <a href="{{ adjunto.archivo.url }}" target="_blank" class="gestion-attachment-card">
+                                        {% if adjunto.tipo == "imagen" %}
+                                            <img src="{{ adjunto.archivo.url }}" alt="Adjunto de la gestión">
+                                        {% else %}
+                                            <div class="gestion-attachment-file">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <span>{{ adjunto.nombre_original|default:adjunto.archivo.name }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>No se cargaron imágenes ni documentos.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </details>
+
+            <article class="gestion-detail-card gestion-detail-map-card">
+                <div class="gestion-detail-card-head">
+                    <h2>Ubicación</h2>
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+
+                {% if gestion.latitud and gestion.longitud %}
+                    <div id="gestionDetailMap"></div>
+                    <p class="gestion-detail-map-caption">
+                        {% if gestion.direccion %}
+                            {{ gestion.direccion }}
+                        {% else %}
+                            Ubicación indicada por el ciudadano.
+                        {% endif %}
+                    </p>
+                {% else %}
+                    <p class="gestion-detail-empty-text">
+                        Esta gestión no tiene ubicación georreferenciada.
+                    </p>
+                {% endif %}
+            </article>
+
+        </main>
+
+        <aside class="gestion-detail-history-side">
+
+            <article class="gestion-detail-card gestion-detail-history-card">
+                <div class="gestion-detail-card-head">
+                    <h2>Historial de seguimiento</h2>
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+                <div class="gestion-timeline">
+                    {% for evento in historial_demo %}
+                        <div class="gestion-timeline-item">
+                            <div class="gestion-timeline-marker"></div>
+
+                            <div class="gestion-timeline-content">
+                                <div class="gestion-timeline-top">
+                                    <strong>{{ evento.titulo }}</strong>
+                                    <span>{{ evento.fecha|date:"d/m/Y H:i" }}</span>
+                                </div>
+
+                                <p>{{ evento.descripcion }}</p>
+
+                                <div class="gestion-timeline-tags">
+                                    <span><i class="bi bi-person"></i>{{ evento.actor }}</span>
+                                    <span><i class="bi bi-flag"></i>{{ evento.estado }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="gestion-timeline-item is-demo">
+                        <div class="gestion-timeline-marker"></div>
+
+                        <div class="gestion-timeline-content">
+                            <div class="gestion-timeline-top">
+                                <strong>Visita del operador</strong>
+                                <span>Demo</span>
+                            </div>
+
+                            <p>
+                                En esta instancia se mostrarán fotos, comentarios y novedades cargadas desde el Centro de Operaciones.
+                            </p>
+
+                            <div class="gestion-timeline-demo-photo">
+                                <i class="bi bi-image"></i>
+                                Foto del operador
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </aside>
+
+    </div>
+
+    <a href="{% url 'citizen_mis_gestiones' %}" class="gestion-detail-bottom-back">
+    <i class="bi bi-arrow-left"></i>
+    Volver a Mis Gestiones
+    </a>
+
+</section>
+
+{% endwith %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+{% if gestion.latitud and gestion.longitud %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const lat = {{ gestion.latitud|stringformat:"f" }};
+    const lng = {{ gestion.longitud|stringformat:"f" }};
+
+    const map = L.map("gestionDetailMap", {
+        zoomControl: false
+    }).setView([lat, lng], 16);
+
+    L.control.zoom({ position: "bottomright" }).addTo(map);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(map);
+
+    L.marker([lat, lng]).addTo(map);
+
+    setTimeout(() => map.invalidateSize(), 300);
+});
+</script>
+{% endif %}
+{% endblock %}

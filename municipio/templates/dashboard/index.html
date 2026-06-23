@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block title %}Centro de Operaciones - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+    <div class="dashboard-hero dashboard-hero-compact">
+        <div>
+            <p class="dashboard-welcome">
+                Bienvenido, {{ user.get_full_name|default:user.username }}
+            </p>
+
+            <h1 class="dashboard-title">
+                Centro de Operaciones Municipal
+            </h1>
+
+            <div class="dashboard-update">
+                <i class="bi bi-clock"></i>
+                Última actualización: 03/06/2026 11:20
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-tools-card">
+
+        <div class="dashboard-current-date">
+            <i class="bi bi-calendar-event"></i>
+            <span>Miércoles, 3 de Junio de 2026</span>
+        </div>
+
+        <form class="dashboard-filters dashboard-filters-compact" method="get">
+            <input type="date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
+            <input type="date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                <i class="fa-solid fa-filter"></i> Filtrar
+            </button>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Limpiar
+            </a>
+        </form>
+
+    </div>
+
+    <div class="dashboard-section-title">
+        <i class="bi bi-speedometer2"></i>
+        <h2>Tareas operativas</h2>
+    </div>
+
+    <div class="kpi-grid kpi-grid-clean">
+
+        <a href="{% url 'task_list' %}" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-blue">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+            <span class="kpi-label">Totales</span>
+            <strong class="kpi-number">{{ stats.total }}</strong>
+            <small class="kpi-caption text-primary">Registradas</small>
+        </a>
+
+        <a href="{% url 'task_list' %}" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-yellow">
+                <i class="bi bi-clock"></i>
+            </div>
+            <span class="kpi-label">Pendientes</span>
+            <strong class="kpi-number">{{ stats.PEN }}</strong>
+            <small class="kpi-caption text-warning">Por iniciar</small>
+        </a>
+
+        <a href="{% url 'task_list' %}" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-cyan">
+                <i class="bi bi-play"></i>
+            </div>
+            <span class="kpi-label">Ejecución</span>
+            <strong class="kpi-number">{{ stats.INP }}</strong>
+            <small class="kpi-caption text-info">En curso</small>
+        </a>
+
+        <a href="{% url 'task_list' %}" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-green">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <span class="kpi-label">Finalizadas</span>
+            <strong class="kpi-number">{{ stats.COM }}</strong>
+            <small class="kpi-caption text-success">Resueltas</small>
+        </a>
+
+        <a href="{% url 'task_list' %}" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-red">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <span class="kpi-label">Vencidas</span>
+            <strong class="kpi-number">{{ stats.overdue }}</strong>
+            <small class="kpi-caption text-danger">Atención</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-purple">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <span class="kpi-label">Hs plan.</span>
+            <strong class="kpi-number">{{ stats.planned_hours|default:"0" }}</strong>
+            <small class="kpi-caption text-purple">Estimadas</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-teal">
+                <i class="bi bi-stopwatch"></i>
+            </div>
+            <span class="kpi-label">Hs acción</span>
+            <strong class="kpi-number">{{ stats.executed_hours|default:"0" }}</strong>
+            <small class="kpi-caption text-success">Registradas</small>
+        </a>
+
+    </div>
+
+    <div class="dashboard-panel">
+
+        <div class="chart-section">
+            <h3>
+                <i class="bi bi-bar-chart"></i>
+                Indicadores Operativos
+            </h3>
+
+            <p class="chart-subtitle">
+                Distribución actual de tareas registradas en el sistema.
+            </p>
+
+            <canvas id="tasksChart"></canvas>
+        </div>
+
+        <div class="activity-section">
+            <div class="activity-header">
+                <h3>
+                    <i class="bi bi-clock-history"></i>
+                    Próximos Vencimientos
+                </h3>
+
+                <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary">
+                    Ver todas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="activity-list">
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-warning"></span>
+                    <div>
+                        <p>Tarea pendiente: <strong>Revisión de luminarias</strong></p>
+                        <small>Vence próximamente</small>
+                    </div>
+                    <span class="activity-badge bg-soft-yellow">Servicios Urbanos</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-info"></span>
+                    <div>
+                        <p>Tarea en curso: <strong>Mantenimiento de espacios verdes</strong></p>
+                        <small>Seguimiento operativo</small>
+                    </div>
+                    <span class="activity-badge bg-soft-green">Espacios Verdes</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-danger"></span>
+                    <div>
+                        <p>Atención requerida: <strong>Tareas vencidas</strong></p>
+                        <small>{{ stats.overdue }} registros requieren revisión</small>
+                    </div>
+                    <span class="activity-badge bg-soft-red">Crítico</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-success"></span>
+                    <div>
+                        <p>Finalizadas: <strong>{{ stats.COM }} tareas completadas</strong></p>
+                        <small>Resultado operativo actual</small>
+                    </div>
+                    <span class="activity-badge bg-soft-green">Resuelto</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('tasksChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Pendientes', 'En Ejecución', 'Finalizadas', 'Vencidas'],
+            datasets: [{
+                data: [
+                    {{ stats.PEN }},
+                    {{ stats.INP }},
+                    {{ stats.COM }},
+                    {{ stats.overdue }}
+                ],
+                backgroundColor: [
+                    '#f6aa1c',
+                    '#19b9d2',
+                    '#1f9d55',
+                    '#dc3545'
+                ],
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#e5e7eb' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

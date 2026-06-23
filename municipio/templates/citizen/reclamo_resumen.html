@@ -1,0 +1,98 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Resumen del reclamo{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-step-page platform-flow-reclamo">
+
+    <div class="citizen-page-head">
+        <a href="{% url 'citizen_reclamo_evidencia' %}" class="citizen-back-link">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+
+        <div>
+            <p class="flow-title reclamo">Resumen</p>
+            <h1>Revisá antes de enviar</h1>
+        </div>
+    </div>
+
+    <form method="post" class="platform-form-card">
+        {% csrf_token %}
+
+        <div class="platform-summary-list">
+
+            <div>
+                <strong>Tipo de reclamo</strong>
+                <p>{{ reclamo.categoria_nombre }}</p>
+                <small>{{ reclamo.categoria_tipo }} / {{ reclamo.area_nombre }}</small>
+            </div>
+
+            <div>
+                <strong>Descripción</strong>
+                <p>{{ reclamo.descripcion }}</p>
+            </div>
+
+            <div>
+                <strong>Urgencia</strong>
+                <p>{{ reclamo.urgencia|title }}</p>
+            </div>
+
+            <div>
+                <strong>Ubicación</strong>
+                <p>
+                    {% if reclamo.direccion %}
+                        {{ reclamo.direccion }}
+                    {% else %}
+                        Ubicación marcada en el mapa
+                    {% endif %}
+                </p>
+                {% if reclamo.referencia_ubicacion %}
+                    <small>{{ reclamo.referencia_ubicacion }}</small>
+                {% endif %}
+            </div>
+
+            <div>
+                <strong>Adjuntos</strong>
+
+                {% if reclamo.adjuntos %}
+                    <div class="platform-summary-attachments">
+                        {% for adjunto in reclamo.adjuntos %}
+                            {% if adjunto.tipo == "imagen" %}
+                                <img src="{{ adjunto.url }}" alt="{{ adjunto.nombre }}">
+                            {% else %}
+                                <div class="platform-file-preview">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    <span>{{ adjunto.nombre }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No agregaste adjuntos.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <strong>Datos de contacto</strong>
+                <p>{{ request.user.get_full_name|default:request.user }}</p>
+            </div>
+
+        </div>
+
+        <div class="platform-form-actions">
+            <a href="{% url 'citizen_reclamo_evidencia' %}" class="btn platform-btn platform-btn-outline-primary">
+                Volver
+            </a>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                Enviar reclamo
+                <i class="bi bi-send"></i>
+            </button>
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

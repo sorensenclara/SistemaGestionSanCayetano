@@ -1,0 +1,319 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}Obtener turno - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-page-wide app-booking-page">
+
+  <div class="citizen-page-head">
+    <div>
+      <p class="flow-title tramite">Turnos de salud</p>
+      <h1>Obtener turno</h1>
+      <p class="page-subtitle">
+        Buscá por especialidad, profesional, fecha, horario o modalidad.
+      </p>
+    </div>
+
+    <a href="/ciudadano/mis-turnos/" class="platform-btn platform-btn-outline-primary">
+      <i class="bi bi-arrow-left"></i>
+      Mis turnos
+    </a>
+  </div>
+
+  <section class="platform-form-card app-filter-card">
+    <form method="get" action="#">
+
+      <div class="app-filter-grid">
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_specialty">Especialidad</label>
+          <select id="id_specialty" name="specialty" class="platform-input">
+            <option>Todas</option>
+            <option>Clínica Médica</option>
+            <option>Pediatría</option>
+            <option>Odontología</option>
+            <option>Psicología</option>
+            <option>Cardiología</option>
+          </select>
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_professional">Profesional</label>
+          <select id="id_professional" name="professional" class="platform-input">
+            <option>Todos</option>
+            <option>Dra. María Pérez</option>
+            <option>Dr. Carlos Ruiz</option>
+            <option>Dra. Laura Díaz</option>
+          </select>
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label">Modalidad</label>
+
+          <div class="turno-radio-row">
+            <label>
+              <input type="radio" name="mode" value="presencial" checked>
+              <span>Presencial</span>
+            </label>
+
+            <label>
+              <input type="radio" name="mode" value="virtual">
+              <span>Telemedicina</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_date">Fecha desde</label>
+          <input type="date" id="id_date" name="date" class="platform-input">
+        </div>
+
+        <div class="platform-form-group">
+          <label class="platform-form-label" for="id_slot_range">Horario</label>
+          <select id="id_slot_range" name="slot_range" class="platform-input">
+            <option>Todos</option>
+            <option>Mañana</option>
+            <option>Tarde</option>
+          </select>
+        </div>
+
+        <div class="turno-filter-actions">
+          <a href="{% url 'citizen_obtener_turno' %}" class="turno-clear-link">
+            Limpiar
+          </a>
+
+          <button type="submit" class="platform-btn platform-btn-primary">
+            Buscar
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </form>
+  </section>
+
+  <section class="turno-results-head">
+    <div>
+      <h2>Turnos disponibles</h2>
+    </div>
+
+    <p>Opciones ordenadas por día.</p>
+  </section>
+
+  <section class="turno-schedule-list">
+
+    <section class="turno-schedule-day">
+
+      <div class="turno-schedule-day-header">
+        <div class="turno-icon-box">
+          <i class="bi bi-calendar3"></i>
+        </div>
+
+        <h3>Martes 23 de junio</h3>
+        <span>1 turno disponible</span>
+      </div>
+
+      <article class="turno-schedule-card">
+
+        <div class="turno-schedule-row">
+
+          <div class="turno-professional">
+            <div class="turno-avatar">
+              <span>MP</span>
+            </div>
+
+            <div>
+              <h4>Dra. María Pérez</h4>
+              <p>Clínica Médica</p>
+
+              <div class="turno-tag-list">
+                <span>Presencial</span>
+                <span>Consultorio 3</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="turno-time-picker">
+            <span>Elegir horario</span>
+
+            <div class="turno-time-list">
+              <button type="button" class="turno-time-btn js-time-pill"
+                data-specialty="Clínica Médica"
+                data-professional="Dra. María Pérez"
+                data-date="23/06/2026"
+                data-time="09:30"
+                data-mode="Presencial"
+                data-location="Hospital Municipal · Consultorio 3">
+                09:30
+              </button>
+
+              <button type="button" class="turno-time-btn js-time-pill"
+                data-specialty="Clínica Médica"
+                data-professional="Dra. María Pérez"
+                data-date="23/06/2026"
+                data-time="10:00"
+                data-mode="Presencial"
+                data-location="Hospital Municipal · Consultorio 3">
+                10:00
+              </button>
+
+              <button type="button" class="turno-time-btn js-time-pill"
+                data-specialty="Clínica Médica"
+                data-professional="Dra. María Pérez"
+                data-date="23/06/2026"
+                data-time="10:30"
+                data-mode="Presencial"
+                data-location="Hospital Municipal · Consultorio 3">
+                10:30
+              </button>
+            </div>
+          </div>
+
+          <div class="turno-schedule-action">
+            <button type="button" class="platform-btn platform-btn-primary js-open-booking-modal" disabled>
+              Agendar
+            </button>
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </section>
+
+  <article class="turno-help-row">
+    <div class="turno-help-icon">
+      <i class="bi bi-whatsapp"></i>
+    </div>
+
+    <div>
+      <h3>¿Necesitás ayuda?</h3>
+      <p>Escribinos por WhatsApp y te acompañamos.</p>
+    </div>
+
+    <a href="wa.me/5492983354353" class="platform-btn platform-btn-outline-primary">
+      Escribinos
+    </a>
+  </article>
+
+</section>
+
+<div class="app-modal" id="bookingConfirmModal" aria-hidden="true">
+  <div class="app-modal-backdrop js-close-booking-modal"></div>
+
+  <div class="app-modal-dialog">
+    <button type="button" class="app-modal-close js-close-booking-modal">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <div class="app-modal-head">
+      <span class="app-modal-eyebrow">Confirmar reserva</span>
+      <h3>¿Confirmás este turno?</h3>
+      <p>Revisá los datos antes de continuar.</p>
+    </div>
+
+    <div class="app-modal-summary">
+      <div class="app-modal-row">
+        <strong>Especialidad</strong>
+        <span id="modalSpecialty">-</span>
+      </div>
+
+      <div class="app-modal-row">
+        <strong>Profesional</strong>
+        <span id="modalProfessional">-</span>
+      </div>
+
+      <div class="app-modal-row">
+        <strong>Fecha</strong>
+        <span id="modalDate">-</span>
+      </div>
+
+      <div class="app-modal-row">
+        <strong>Horario</strong>
+        <span id="modalTime">-</span>
+      </div>
+
+      <div class="app-modal-row">
+        <strong>Modalidad</strong>
+        <span id="modalMode">-</span>
+      </div>
+
+      <div class="app-modal-row">
+        <strong>Lugar</strong>
+        <span id="modalLocation">-</span>
+      </div>
+    </div>
+
+    <div class="app-modal-actions">
+      <button type="button" class="app-btn app-btn-outline js-close-booking-modal">
+        Cancelar
+      </button>
+
+      <a href="{% url 'citizen_confirmacion_turno' %}" class="app-btn app-btn-primary app-btn-fixed">
+        Confirmar turno
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const timeButtons = document.querySelectorAll(".js-time-pill");
+  const reserveButtons = document.querySelectorAll(".js-open-booking-modal");
+  const modal = document.getElementById("bookingConfirmModal");
+
+  let selectedSlot = null;
+
+  timeButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      timeButtons.forEach(function (btn) {
+        btn.classList.remove("is-selected");
+      });
+
+      reserveButtons.forEach(function (btn) {
+        btn.disabled = true;
+      });
+
+      this.classList.add("is-selected");
+      selectedSlot = this.dataset;
+
+      const row = this.closest(".turno-schedule-row");
+      const reserveBtn = row.querySelector(".js-open-booking-modal");
+
+      if (reserveBtn) {
+        reserveBtn.disabled = false;
+      }
+    });
+  });
+
+  reserveButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      if (!selectedSlot || !modal) return;
+
+      document.getElementById("modalSpecialty").innerText = selectedSlot.specialty || "-";
+      document.getElementById("modalProfessional").innerText = selectedSlot.professional || "-";
+      document.getElementById("modalDate").innerText = selectedSlot.date || "-";
+      document.getElementById("modalTime").innerText = selectedSlot.time || "-";
+      document.getElementById("modalMode").innerText = selectedSlot.mode || "-";
+      document.getElementById("modalLocation").innerText = selectedSlot.location || "-";
+
+      modal.classList.add("is-open");
+      document.body.classList.add("app-modal-open");
+    });
+  });
+
+  document.querySelectorAll(".js-close-booking-modal").forEach(function (button) {
+    button.addEventListener("click", function () {
+      modal.classList.remove("is-open");
+      document.body.classList.remove("app-modal-open");
+    });
+  });
+});
+</script>
+
+{% endblock %}

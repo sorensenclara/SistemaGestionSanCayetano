@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Artículos - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="article-list-page">
+
+    <div class="page-heading">
+        <div>
+            <p class="page-eyebrow">Recursos operativos</p>
+
+            <h1 class="page-title">
+                <i class="bi bi-box-seam"></i>
+                Gestión de Artículos
+            </h1>
+
+            <p class="page-subtitle">
+                Administración de materiales, insumos y recursos utilizados en las tareas municipales.
+            </p>
+        </div>
+
+        {% if not user.is_operador %}
+        <a href="{% url 'article_create' %}" class="btn platform-btn platform-btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Artículo
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="list-toolbar">
+        <div class="list-search">
+            <i class="bi bi-search"></i>
+            <input type="search"
+                   id="articleSearch"
+                   class="form-control"
+                   placeholder="Buscar artículo por nombre, descripción o unidad...">
+        </div>
+
+        <div class="list-sort">
+            <label for="articleSort">Ordenar por</label>
+            <select id="articleSort" class="form-select">
+                <option value="name-asc">Nombre A-Z</option>
+                <option value="name-desc">Nombre Z-A</option>
+                <option value="unit-asc">Unidad</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="task-table-card">
+
+        <div class="table-responsive">
+            <table class="table task-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Unidad</th>
+                        {% if not user.is_operador %}
+                        <th class="text-end">Acciones</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody id="articleTableBody">
+                    {% for article in articles %}
+                    <tr class="article-row"
+                        data-name="{{ article.name|lower }}"
+                        data-description="{{ article.description|default:''|lower }}"
+                        data-unit="{{ article.unit|lower }}">
+
+                        <td>
+                            <div class="article-name-cell">
+                                <span class="article-icon">
+                                    <i class="bi bi-box"></i>
+                                </span>
+                                <strong>{{ article.name }}</strong>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="article-description">
+                                {{ article.description|default:"Sin descripción" }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="unit-pill">
+                                <i class="bi bi-rulers"></i>
+                                {{ article.unit }}
+                            </span>
+                        </td>
+
+                        {% if not user.is_operador %}
+                        <td class="text-end">
+                            <div class="table-actions">
+                                <a href="{% url 'article_update' article.id %}" class="action-btn action-edit" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <a href="{% url 'article_delete' article.id %}" class="action-btn action-delete" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-table">
+                            <i class="bi bi-inbox"></i>
+                            <strong>No hay artículos registrados.</strong>
+                            <span>Cuando cargues un artículo, aparecerá en este listado.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="articleNoResults" class="empty-table d-none">
+            <i class="bi bi-search"></i>
+            <strong>No se encontraron artículos.</strong>
+            <span>Probá con otro término de búsqueda.</span>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('articleSearch');
+    const sortSelect = document.getElementById('articleSort');
+    const tbody = document.getElementById('articleTableBody');
+    const noResults = document.getElementById('articleNoResults');
+
+    if (!searchInput || !sortSelect || !tbody) return;
+
+    function getRows() {
+        return Array.from(tbody.querySelectorAll('.article-row'));
+    }
+
+    function filterRows() {
+        const term = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        getRows().forEach(row => {
+            const name = row.dataset.name || '';
+            const description = row.dataset.description || '';
+            const unit = row.dataset.unit || '';
+
+            const match =
+                name.includes(term) ||
+                description.includes(term) ||
+                unit.includes(term);
+
+            row.style.display = match ? '' : 'none';
+
+            if (match) visibleCount++;
+        });
+
+        if (noResults) {
+            noResults.classList.toggle('d-none', visibleCount !== 0);
+        }
+    }
+
+    function sortRows() {
+        const sortValue = sortSelect.value;
+        const rows = getRows();
+
+        rows.sort((a, b) => {
+            const nameA = a.dataset.name || '';
+            const nameB = b.dataset.name || '';
+            const unitA = a.dataset.unit || '';
+            const unitB = b.dataset.unit || '';
+
+            if (sortValue === 'name-desc') return nameB.localeCompare(nameA);
+            if (sortValue === 'unit-asc') return unitA.localeCompare(unitB);
+
+            return nameA.localeCompare(nameB);
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+        filterRows();
+    }
+
+    searchInput.addEventListener('input', filterRows);
+    sortSelect.addEventListener('change', sortRows);
+});
+</script>
+{% endblock %}

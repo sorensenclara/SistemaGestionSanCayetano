@@ -1,0 +1,45 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Turno confirmado - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<div class="app-page">
+
+  <section class="app-card app-confirm-card">
+
+    <div class="app-confirm-icon">
+      <i class="bi bi-check-lg"></i>
+    </div>
+
+    <h1>Turno confirmado</h1>
+
+    <p class="app-card-text app-confirm-text">
+      Tu turno fue registrado correctamente.
+    </p>
+
+    <div class="app-confirm-summary">
+      <strong>Clínica Médica</strong>
+      <span>Dra. María Pérez</span>
+      <span>23/06/2026 · 09:30 hs · Hospital Municipal · Consultorio 3</span>
+    </div>
+
+    <div class="app-actions app-actions-center">
+      <a href="/ciudadano/mis-turnos/" class="app-btn app-btn-primary">
+        Ver mis turnos
+      </a>
+
+      <a href="/ciudadano/obtener-turno/" class="app-btn app-btn-outline">
+        Obtener otro turno
+      </a>
+
+      <a href="/ciudadano/" class="app-btn app-btn-outline">
+        Inicio
+      </a>
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,496 @@
+```html
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Administrador - Centro de Operaciones{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+    <div class="dashboard-hero dashboard-hero-compact">
+        <div>
+            <p class="dashboard-welcome">
+                Bienvenido, {{ user.get_full_name|default:user.username }}
+            </p>
+
+            <h1 class="dashboard-title">
+                Dashboard Administrador
+            </h1>
+
+            <div class="dashboard-update">
+                <i class="bi bi-clock"></i>
+                Última actualización: 03/06/2026 11:20
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear tarea
+            </a>
+
+            <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-outline-primary">
+                <i class="bi bi-map"></i> Mapa operativo
+            </a>
+
+            <a href="#" class="btn platform-btn platform-btn-muted">
+                <i class="bi bi-file-earmark-bar-graph"></i> Generar informe
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-tools-card">
+
+        <div class="dashboard-current-date">
+            <i class="bi bi-calendar-event"></i>
+            <span>Miércoles, 3 de Junio de 2026</span>
+        </div>
+
+        <form class="dashboard-filters dashboard-filters-compact" method="get">
+            <input type="date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
+            <input type="date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
+
+            <select name="area" class="form-control">
+                <option value="">Todas las áreas</option>
+                <option value="servicios">Servicios Públicos</option>
+                <option value="obras">Obras Públicas</option>
+                <option value="catastro">Catastro</option>
+            </select>
+
+            <select name="tipo" class="form-control">
+                <option value="">Todas las gestiones</option>
+                <option value="reclamo">Reclamos</option>
+                <option value="solicitud">Solicitudes</option>
+                <option value="tarea">Tareas</option>
+            </select>
+
+            <button type="submit" class="btn platform-btn platform-btn-primary">
+                <i class="fa-solid fa-filter"></i> Filtrar
+            </button>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-rotate-left"></i> Limpiar
+            </a>
+        </form>
+
+    </div>
+
+    <div class="dashboard-section-title">
+        <i class="bi bi-speedometer2"></i>
+        <h2>Gestiones operativas</h2>
+    </div>
+
+    <div class="kpi-grid kpi-grid-clean">
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-blue">
+                <i class="bi bi-folder-check"></i>
+            </div>
+            <span class="kpi-label">Total</span>
+            <strong class="kpi-number">{{ stats.total|default:"0" }}</strong>
+            <small class="kpi-caption text-primary">Registradas</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-teal">
+                <i class="bi bi-play-circle"></i>
+            </div>
+            <span class="kpi-label">Iniciadas</span>
+            <strong class="kpi-number">{{ stats.iniciadas|default:"0" }}</strong>
+            <small class="kpi-caption text-success">Ingresadas</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-yellow">
+                <i class="bi bi-search"></i>
+            </div>
+            <span class="kpi-label">En análisis</span>
+            <strong class="kpi-number">{{ stats.analisis|default:"0" }}</strong>
+            <small class="kpi-caption text-warning">Revisión</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-purple">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <span class="kpi-label">Programadas</span>
+            <strong class="kpi-number">{{ stats.programadas|default:"0" }}</strong>
+            <small class="kpi-caption text-purple">Planificadas</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-cyan">
+                <i class="bi bi-tools"></i>
+            </div>
+            <span class="kpi-label">En ejecución</span>
+            <strong class="kpi-number">{{ stats.ejecucion|default:stats.INP|default:"0" }}</strong>
+            <small class="kpi-caption text-info">En curso</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-green">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <span class="kpi-label">Finalizadas</span>
+            <strong class="kpi-number">{{ stats.finalizadas|default:stats.COM|default:"0" }}</strong>
+            <small class="kpi-caption text-success">Resueltas</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-purple">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <span class="kpi-label">Reabiertas</span>
+            <strong class="kpi-number">{{ stats.reabiertas|default:"0" }}</strong>
+            <small class="kpi-caption text-purple">Revisión</small>
+        </a>
+
+        <a href="#" class="kpi-card kpi-card-clean">
+            <div class="kpi-icon kpi-red">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <span class="kpi-label">Críticas</span>
+            <strong class="kpi-number">{{ stats.criticas|default:stats.overdue|default:"0" }}</strong>
+            <small class="kpi-caption text-danger">Atención</small>
+        </a>
+
+    </div>
+
+    <div class="dashboard-panel mb-4">
+
+        <div class="chart-section">
+            <h3>
+                <i class="bi bi-bar-chart"></i>
+                Indicadores generales
+            </h3>
+
+            <p class="chart-subtitle">
+                Distribución de reclamos, solicitudes y tareas según estado.
+            </p>
+
+            <canvas id="adminStatusChart"></canvas>
+        </div>
+
+        <div class="activity-section">
+            <div class="activity-header">
+                <h3>
+                    <i class="bi bi-clock-history"></i>
+                    Alertas y vencimientos
+                </h3>
+
+                <a href="#" class="btn btn-sm btn-outline-secondary">
+                    Ver todas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="activity-list">
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-danger"></span>
+                    <div>
+                        <p>Casos críticos: <strong>{{ stats.criticas|default:"0" }} gestiones requieren atención</strong></p>
+                        <small>Prioridad operativa alta o crítica</small>
+                    </div>
+                    <span class="activity-badge bg-soft-red">Crítico</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-warning"></span>
+                    <div>
+                        <p>Gestiones en análisis: <strong>{{ stats.analisis|default:"0" }} pendientes de evaluación</strong></p>
+                        <small>Requieren definición de área, prioridad o tarea</small>
+                    </div>
+                    <span class="activity-badge bg-soft-yellow">Análisis</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-info"></span>
+                    <div>
+                        <p>Tareas en ejecución: <strong>{{ stats.ejecucion|default:stats.INP|default:"0" }} activas</strong></p>
+                        <small>Seguimiento operativo territorial</small>
+                    </div>
+                    <span class="activity-badge bg-soft-blue">En curso</span>
+                </div>
+
+                <div class="activity-item">
+                    <span class="activity-dot bg-success"></span>
+                    <div>
+                        <p>Finalizadas: <strong>{{ stats.finalizadas|default:stats.COM|default:"0" }} gestiones resueltas</strong></p>
+                        <small>Resultado operativo actual</small>
+                    </div>
+                    <span class="activity-badge bg-soft-green">Resuelto</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-lg-4">
+            <div class="platform-form-card h-100">
+                <div class="activity-header">
+                    <h3 class="platform-section-title mb-0">
+                        <i class="bi bi-megaphone"></i> Reclamos recientes
+                    </h3>
+                    <a href="#" class="btn btn-sm btn-outline-secondary">Ver todos</a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="activity-dot bg-warning"></span>
+                        <div>
+                            <p><strong>Alumbrado público</strong></p>
+                            <small>Servicios Públicos · En análisis</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <span class="activity-dot bg-info"></span>
+                        <div>
+                            <p><strong>Bache en calzada</strong></p>
+                            <small>Obras Públicas · En ejecución</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="platform-form-card h-100">
+                <div class="activity-header">
+                    <h3 class="platform-section-title mb-0">
+                        <i class="bi bi-inbox"></i> Solicitudes activas
+                    </h3>
+                    <a href="#" class="btn btn-sm btn-outline-secondary">Ver todas</a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="activity-dot bg-warning"></span>
+                        <div>
+                            <p><strong>Solicitud de poda</strong></p>
+                            <small>Espacios Verdes · Programada</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <span class="activity-dot bg-success"></span>
+                        <div>
+                            <p><strong>Certificado de altura</strong></p>
+                            <small>Catastro · Finalizada</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="platform-form-card h-100">
+                <div class="activity-header">
+                    <h3 class="platform-section-title mb-0">
+                        <i class="bi bi-card-checklist"></i> Tareas pendientes
+                    </h3>
+                    <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary">Ver todas</a>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="activity-dot bg-info"></span>
+                        <div>
+                            <p><strong>Inspección de luminarias</strong></p>
+                            <small>Asignada a operador · Programada</small>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <span class="activity-dot bg-danger"></span>
+                        <div>
+                            <p><strong>Reparación urgente</strong></p>
+                            <small>Obras Públicas · Prioridad crítica</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-section-title mb-0">
+                <i class="bi bi-building"></i> Operación por área
+            </h3>
+
+            <a href="#" class="btn btn-sm btn-outline-secondary">
+                Ver reporte completo
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th>Activas</th>
+                        <th>Críticas</th>
+                        <th>Vencidas</th>
+                        <th>Finalizadas</th>
+                        <th>Responsable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Servicios Públicos</strong></td>
+                        <td>24</td>
+                        <td><span class="activity-badge bg-soft-red">3</span></td>
+                        <td>5</td>
+                        <td>18</td>
+                        <td>Responsable de área</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Obras Públicas</strong></td>
+                        <td>16</td>
+                        <td><span class="activity-badge bg-soft-yellow">1</span></td>
+                        <td>2</td>
+                        <td>12</td>
+                        <td>Responsable de área</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Catastro</strong></td>
+                        <td>8</td>
+                        <td><span class="activity-badge bg-soft-green">0</span></td>
+                        <td>1</td>
+                        <td>9</td>
+                        <td>Responsable de área</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row g-3">
+
+        <div class="col-12 col-lg-6">
+            <div class="platform-form-card h-100">
+                <h3 class="platform-section-title">
+                    <i class="bi bi-map"></i> Mapa operativo
+                </h3>
+
+                <p class="text-muted mb-4">
+                    Visualización georreferenciada de reclamos, solicitudes y tareas en territorio.
+                </p>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="activity-badge bg-soft-yellow">Reclamos</span>
+                    <span class="activity-badge bg-soft-blue">Solicitudes</span>
+                    <span class="activity-badge bg-soft-green">Tareas</span>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary">
+                        <i class="bi bi-map"></i> Abrir mapa operativo
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="platform-form-card h-100">
+                <h3 class="platform-section-title">
+                    <i class="bi bi-gear"></i> Administración del sistema
+                </h3>
+
+                <div class="platform-area-grid">
+                    <a href="#" class="platform-category-card">
+                        <strong>Usuarios</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#" class="platform-category-card">
+                        <strong>Roles y permisos</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#" class="platform-category-card">
+                        <strong>Áreas</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#" class="platform-category-card">
+                        <strong>Categorías</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#" class="platform-category-card">
+                        <strong>Prioridades</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#" class="platform-category-card">
+                        <strong>App Ciudadana</strong>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const adminStatusCtx = document.getElementById('adminStatusChart').getContext('2d');
+
+    new Chart(adminStatusCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Iniciadas', 'En análisis', 'Programadas', 'En ejecución', 'Finalizadas', 'Reabiertas', 'Críticas'],
+            datasets: [{
+                data: [
+                    {{ stats.iniciadas|default:"0" }},
+                    {{ stats.analisis|default:"0" }},
+                    {{ stats.programadas|default:"0" }},
+                    {{ stats.ejecucion|default:stats.INP|default:"0" }},
+                    {{ stats.finalizadas|default:stats.COM|default:"0" }},
+                    {{ stats.reabiertas|default:"0" }},
+                    {{ stats.criticas|default:stats.overdue|default:"0" }}
+                ],
+                backgroundColor: [
+                    '#6b7280',
+                    '#f6aa1c',
+                    '#7e57c2',
+                    '#19b9d2',
+                    '#1f9d55',
+                    '#7e57c2',
+                    '#dc3545'
+                ],
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 },
+                    grid: { color: '#e5e7eb' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+```
