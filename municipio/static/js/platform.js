@@ -3,29 +3,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const overlay = document.getElementById("platformSidebarOverlay");
     const viewToggle = document.getElementById("platformViewToggle");
 
-    if (!sidebar) return;
-
     function closeMenu() {
-        sidebar.classList.remove("is-open");
+        if (sidebar) sidebar.classList.remove("is-open");
         if (overlay) overlay.classList.remove("is-open");
     }
 
     function toggleMenu() {
-        sidebar.classList.toggle("is-open");
+        if (sidebar) sidebar.classList.toggle("is-open");
         if (overlay) overlay.classList.toggle("is-open");
     }
 
-    document.querySelectorAll("#platformMenuBtn, .platform-sidebar-menu-btn").forEach(function (btn) {
-        btn.addEventListener("click", toggleMenu);
-    });
+    if (sidebar) {
+        document.querySelectorAll("#platformMenuBtn, .platform-sidebar-menu-btn").forEach(function (btn) {
+            btn.addEventListener("click", toggleMenu);
+        });
 
-    if (overlay) {
-        overlay.addEventListener("click", closeMenu);
+        if (overlay) {
+            overlay.addEventListener("click", closeMenu);
+        }
+
+        document.querySelectorAll(".platform-sidebar-link:not(#platformViewToggle)").forEach(function (link) {
+            link.addEventListener("click", closeMenu);
+        });
     }
-
-    document.querySelectorAll(".platform-sidebar-link:not(#platformViewToggle)").forEach(function (link) {
-        link.addEventListener("click", closeMenu);
-    });
 
     if (viewToggle && !window.location.search.includes("preview_mobile=1")) {
         viewToggle.addEventListener("click", function () {
@@ -52,4 +52,42 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+
+    /* =====================================================
+       TABS GENÉRICOS
+       Uso:
+       data-platform-tabs="nombre"
+       data-platform-tab="panel"
+       data-platform-panel="panel"
+    ===================================================== */
+
+    document.querySelectorAll("[data-platform-tabs]").forEach(function (tabsGroup) {
+        const groupName = tabsGroup.dataset.platformTabs;
+        const tabs = tabsGroup.querySelectorAll("[data-platform-tab]");
+        const panels = document.querySelectorAll('[data-platform-panel-group="' + groupName + '"]');
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener("click", function () {
+                const target = tab.dataset.platformTab;
+
+                tabs.forEach(function (item) {
+                    item.classList.remove("is-active");
+                });
+
+                panels.forEach(function (panel) {
+                    panel.classList.remove("is-active");
+                });
+
+                tab.classList.add("is-active");
+
+                const activePanel = document.querySelector(
+                    '[data-platform-panel-group="' + groupName + '"][data-platform-panel="' + target + '"]'
+                );
+
+                if (activePanel) {
+                    activePanel.classList.add("is-active");
+                }
+            });
+        });
+    });
 });

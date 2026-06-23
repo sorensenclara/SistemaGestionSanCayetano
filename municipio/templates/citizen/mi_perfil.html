@@ -15,8 +15,8 @@
     </div>
   </div>
 
-  <nav class="citizen-profile-nav" aria-label="Navegación de perfil">
-    <button type="button" class="citizen-profile-nav-btn is-active" data-profile-tab="datos">
+  <nav class="platform-tabs" data-platform-tabs="gestion" aria-label="Navegación de perfil">
+    <button type="button" class="platform-tab is-active" data-profile-tab="datos">
       <i class="bi bi-person"></i>
       <span>Datos</span>
     </button>
@@ -34,7 +34,7 @@
     </button>
   </nav>
 
-  <div class="citizen-profile-tab-panel is-active" id="profile-tab-datos">
+  <div class="platform-tab-panel is-active" id="profile-tab-datos">
 
     <form method="post" enctype="multipart/form-data" class="platform-form-card">
       {% csrf_token %}
@@ -444,31 +444,6 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  const profileTabs = document.querySelectorAll("[data-profile-tab]");
-  const profilePanels = document.querySelectorAll(".citizen-profile-tab-panel");
-
-  profileTabs.forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      const target = tab.dataset.profileTab;
-
-      profileTabs.forEach(function (item) {
-        item.classList.remove("is-active");
-      });
-
-      profilePanels.forEach(function (panel) {
-        panel.classList.remove("is-active");
-      });
-
-      tab.classList.add("is-active");
-      document.getElementById("profile-tab-" + target).classList.add("is-active");
-
-      window.scrollTo({
-        top: document.querySelector(".citizen-profile-page").offsetTop - 90,
-        behavior: "smooth"
-      });
-    });
-  });
-
   const familyTabs = document.querySelectorAll("[data-family-tab]");
 
   familyTabs.forEach(function (tab) {

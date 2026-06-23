@@ -35,8 +35,8 @@
         </div>
     </div>
 
-    <nav class="citizen-profile-nav" aria-label="Navegación de gestión">
-        <button type="button" class="citizen-profile-nav-btn is-active" data-profile-tab="informacion">
+    <nav class="platform-tabs" data-platform-tabs="gestion" aria-label="Navegación de gestión">
+        <button type="button" class="platform-tab is-active" data-platform-tab="informacion">
             <i class="bi bi-info-circle"></i>
             <span>Información</span>
         </button>
@@ -57,7 +57,7 @@
         </button>
     </nav>
 
-    <div class="citizen-profile-tab-panel is-active" id="profile-tab-informacion">
+    <div class="platform-tab-panel is-active" data-platform-panel-group="gestion" data-platform-panel="informacion">
 
         <section class="platform-form-card">
 
@@ -368,34 +368,5 @@
     </div>
 
 </section>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const tabs = document.querySelectorAll("[data-profile-tab]");
-    const panels = document.querySelectorAll(".citizen-profile-tab-panel");
-
-    tabs.forEach(function (tab) {
-        tab.addEventListener("click", function () {
-            const target = tab.dataset.profileTab;
-
-            tabs.forEach(function (item) {
-                item.classList.remove("is-active");
-            });
-
-            panels.forEach(function (panel) {
-                panel.classList.remove("is-active");
-            });
-
-            tab.classList.add("is-active");
-            document.getElementById("profile-tab-" + target).classList.add("is-active");
-
-            window.scrollTo({
-                top: document.querySelector(".operation-dashboard").offsetTop - 90,
-                behavior: "smooth"
-            });
-        });
-    });
-});
-</script>
 
 {% endblock %}

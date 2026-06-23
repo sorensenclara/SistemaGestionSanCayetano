@@ -23,8 +23,8 @@
 
     <div class="platform-form-card gestiones-filter-card">
         <div class="gestion-filter-row">
-            <div class="gestion-filter-tabs">
-                <button class="gestion-filter-tab is-active" type="button" data-turnos-tab="proximos">
+            <div class="gestion-filter-tabs" data-platform-tabs="turnos">
+                <button class="gestion-filter-tab is-active" type="button" data-platform-tab="proximos">
                     Próximos
                 </button>
 
@@ -51,7 +51,7 @@
     </div>
 
     <!-- PRÓXIMOS -->
-    <div class="turnos-tab-panel is-active" data-turnos-panel="proximos">
+    <div class="turnos-tab-panel platform-tab-panel is-active" data-platform-panel-group="turnos" data-platform-panel="proximos">
         <div class="gestiones-section">
             <div class="platform-section-head">
                 <h2>Próximos turnos</h2>
@@ -407,26 +407,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
-
-    document.querySelectorAll("[data-turnos-tab]").forEach(function (tab) {
-        tab.addEventListener("click", function () {
-            const target = this.dataset.turnosTab;
-            const panel = document.querySelector('[data-turnos-panel="' + target + '"]');
-
-            if (!panel) return;
-
-            document.querySelectorAll("[data-turnos-tab]").forEach(function (btn) {
-                btn.classList.remove("is-active");
-            });
-
-            document.querySelectorAll("[data-turnos-panel]").forEach(function (item) {
-                item.classList.remove("is-active");
-            });
-
-            this.classList.add("is-active");
-            panel.classList.add("is-active");
-        });
-    });
 });
 </script>
 
