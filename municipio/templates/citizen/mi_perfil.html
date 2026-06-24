@@ -15,26 +15,26 @@
     </div>
   </div>
 
-  <nav class="platform-tabs" data-platform-tabs="gestion" aria-label="Navegación de perfil">
-    <button type="button" class="platform-tab is-active" data-profile-tab="datos">
+  <nav class="platform-tabs" data-platform-tabs="perfil" aria-label="Navegación de perfil">
+    <button type="button" class="platform-tab is-active" data-platform-tab="datos">
       <i class="bi bi-person"></i>
       <span>Datos</span>
     </button>
-    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="inmuebles">
+    <button type="button" class="platform-tab" data-platform-tab="inmuebles">
       <i class="bi bi-house-door"></i>
       <span>Inmuebles</span>
     </button>
-    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="familia">
+    <button type="button" class="platform-tab" data-platform-tab="familia">
       <i class="bi bi-people"></i>
       <span>Familia</span>
     </button>
-    <button type="button" class="citizen-profile-nav-btn" data-profile-tab="avisos">
+    <button type="button" class="platform-tab" data-platform-tab="avisos">
       <i class="bi bi-bell"></i>
       <span>Avisos</span>
     </button>
   </nav>
 
-  <div class="platform-tab-panel is-active" id="profile-tab-datos">
+  <div class="platform-tab-panel is-active" data-platform-panel-group="perfil" data-platform-panel="datos">
 
     <form method="post" enctype="multipart/form-data" class="platform-form-card">
       {% csrf_token %}
@@ -153,7 +153,7 @@
   </div>
 
 
-  <div class="citizen-profile-tab-panel" id="profile-tab-inmuebles">
+  <div class="platform-tab-panel" data-platform-panel-group="perfil" data-platform-panel="inmuebles">
 
     <section class="platform-form-card">
       <div class="platform-section-head">
@@ -229,7 +229,7 @@
   </div>
 
 
-  <div class="citizen-profile-tab-panel" id="profile-tab-familia">
+  <div class="platform-tab-panel" data-platform-panel-group="perfil" data-platform-panel="familia">
 
     <section class="platform-form-card">
       <div class="platform-section-head">
@@ -395,7 +395,7 @@
   </div>
 
 
-  <div class="citizen-profile-tab-panel" id="profile-tab-avisos">
+  <div class="platform-tab-panel" data-platform-panel-group="perfil" data-platform-panel="avisos">
 
     <section class="platform-form-card">
       <div class="platform-section-head">
