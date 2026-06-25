@@ -1,0 +1,12 @@
+<a href="{{ url }}" class="citizen-quick-card {% if extra_class %}{{ extra_class }}{% endif %}">
+    {% if icon %}
+    <div class="citizen-quick-icon">
+        <i class="bi {{ icon }}"></i>
+    </div>
+    {% endif %}
+    <div>
+        <h3>{{ title }}</h3>
+        {% if text %}<p>{{ text }}</p>{% endif %}
+    </div>
+    <i class="bi bi-chevron-right"></i>
+</a>

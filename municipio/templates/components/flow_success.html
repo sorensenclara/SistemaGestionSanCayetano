@@ -1,0 +1,39 @@
+<div class="platform-form-card text-center">
+
+    <div class="mb-3">
+        <i class="bi {{ icon|default:'bi-check-circle' }}" style="font-size: 3rem; color: var(--sc-green);"></i>
+    </div>
+
+    {% if flow_label %}
+        <p class="platform-form-label">{{ flow_label }}</p>
+    {% endif %}
+
+    <h1>{{ title }}</h1>
+
+    {% if id_label %}
+        <p>{{ id_label }}</p>
+        <h2>#{{ id_value }}</h2>
+    {% endif %}
+
+    {% if help_text %}
+        <p class="platform-form-help">{{ help_text }}</p>
+    {% endif %}
+
+    {% if date_label %}
+        <p>{{ date_label }}: {{ date_value }}</p>
+    {% endif %}
+
+    {% if status_label %}
+        <p>{{ status_label }}: {{ status_value }}</p>
+    {% endif %}
+
+    <div class="platform-form-actions platform-form-actions-center">
+        {% if secondary_url %}
+            <a href="{{ secondary_url }}" class="btn platform-btn platform-btn-outline-primary">{{ secondary_label|default:"Volver al inicio" }}</a>
+        {% endif %}
+        {% if primary_url %}
+            <a href="{{ primary_url }}" class="btn platform-btn platform-btn-primary">{{ primary_label|default:"Ver seguimiento" }}</a>
+        {% endif %}
+    </div>
+
+</div>

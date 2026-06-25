@@ -265,27 +265,10 @@
 
         <div class="citizen-quick-grid">
 
-            <a href="{% url 'citizen_obtener_turno' %}" class="citizen-quick-card">
-                <div class="citizen-quick-icon">
-                    <i class="bi bi-calendar2-check"></i>
-                </div>
-                <div>
-                    <h3>Obtener turno</h3>
-                    <p>Buscá disponibilidad por área, servicio, día y horario.</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{% url 'citizen_mis_datos_turnero' %}" class="citizen-quick-card">
-                <div class="citizen-quick-icon">
-                    <i class="bi bi-person-vcard"></i>
-                </div>
-                <div>
-                    <h3>Mis datos</h3>
-                    <p>Verificá tu información antes de solicitar un turno.</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
+            {% url 'citizen_obtener_turno' as obtener_turno_url %}
+            {% url 'citizen_mis_datos_turnero' as mis_datos_url %}
+            {% include "components/card_list_item.html" with url=obtener_turno_url icon="bi-calendar2-check" title="Obtener turno" text="Buscá disponibilidad por área, servicio, día y horario." %}
+            {% include "components/card_list_item.html" with url=mis_datos_url icon="bi-person-vcard" title="Mis datos" text="Verificá tu información antes de solicitar un turno." %}
 
         </div>
     </div>

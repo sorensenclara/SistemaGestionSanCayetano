@@ -402,7 +402,8 @@ def reclamo_iniciado(request, gestion_id):
     )
 
     return render(request, "citizen/reclamo_iniciado.html", {
-        "gestion": gestion
+        "gestion": gestion,
+        "seguimiento_url": "/ciudadano/mis-gestiones/?tipo=reclamo",
     })
 
 
@@ -575,7 +576,8 @@ def solicitud_iniciada(request, gestion_id):
     )
 
     return render(request, "citizen/solicitud_iniciada.html", {
-        "gestion": gestion
+        "gestion": gestion,
+        "seguimiento_url": "/ciudadano/mis-gestiones/?tipo=solicitud",
     })
 
 

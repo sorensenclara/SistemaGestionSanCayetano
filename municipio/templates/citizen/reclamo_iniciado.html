@@ -6,31 +6,8 @@
 
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
-    <div class="platform-form-card text-center">
-        <div class="mb-3">
-            <i class="bi bi-check-circle" style="font-size: 3rem; color: var(--sc-green);"></i>
-        </div>
-
-        <p class="platform-form-label">Reclamo iniciado</p>
-
-        <h1>Tu reclamo fue enviado</h1>
-
-        <p>Número de expediente</p>
-        <h2>#{{ gestion.id }}</h2>
-
-        <p>Fecha: {{ gestion.creada|date:"d/m/Y H:i" }}</p>
-        <p>Estado inicial: {{ gestion.estado.nombre }}</p>
-
-        <div class="platform-form-actions platform-form-actions-center">
-            <a href="{% url 'citizen_home' %}" class="btn platform-btn platform-btn-outline-primary">
-                Volver al inicio
-            </a>
-
-            <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="btn platform-btn platform-btn-primary">
-                Ver seguimiento
-            </a>
-        </div>
-    </div>
+    {% url 'citizen_home' as home_url %}
+    {% include "components/flow_success.html" with icon="bi-check-circle" flow_label="Reclamo iniciado" title="Tu reclamo fue enviado" id_label="Número de expediente" id_value=gestion.id date_label="Fecha" date_value=gestion.creada|date:"d/m/Y H:i" status_label="Estado inicial" status_value=gestion.estado.nombre secondary_url=home_url secondary_label="Volver al inicio" primary_url=seguimiento_url primary_label="Ver seguimiento" %}
 
 </section>
 
