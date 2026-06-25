@@ -1,29 +1,16 @@
 /* =========================================================
    SAN CAYETANO - PLATAFORMA MUNICIPAL
 
-   ÍNDICE DE SECCIONES
-   ─────────────────────────────────────────────────────────
-   01. Design tokens / variables globales
-   02. Reset / base
-   03. Layout de plataforma (shell, header, sidebar, nav)
-   04. Componentes generales (botones, cards, forms, tablas)
-   05. Auth / login municipal y ciudadano
-   06. Mis Gestiones / panel admin de gestiones
+   Criterio de orden:
+   01. Variables globales
+   02. Base
+   03. Layout unificado de plataforma
+   04. Componentes generales
+   05. Auth / login
+   06. Centro de Operaciones
    07. App Ciudadana
-   08. Dashboard / Centro de Operaciones
-   09. Utilidades
-   10. Legacy activo (clases viejas todavía en uso)
-   11. Responsive general
-
-   REGLAS PARA DEVS:
-   ─────────────────────────────────────────────────────────
-   - Usar siempre variables --sc-* para colores, radios y sombras.
-   - Nunca usar background:#fff o background:white — usar var(--sc-white).
-   - Nuevos componentes van en sección 04 si son generales,
-     en 07 si son exclusivos de la App Ciudadana,
-     en 08 si son del Dashboard.
-   - No agregar estilos a la sección 10 (Legacy). Si algo
-     del legacy todavía se usa, migrarlo a su sección correcta.
+   08. Utilidades
+   09. Legacy pendiente de borrar progresivamente
 ========================================================= */
 
 /* =========================================================
@@ -630,18 +617,16 @@ img {
 
 .platform-btn-primary,
 .btn-primary{
-    background:var(--sc-green);
-    border-color:var(--sc-green);
+    background:var(--sc-green-dark);
+    border-color:var(--sc-green-dark);
     color:#fff;
 }
 
 .platform-btn-primary:hover,
 .btn-primary:hover{
-    background:var(--sc-green-dark);
-    border-color:var(--sc-green-dark);
+    background:var(--sc-green);
+    border-color:var(--sc-green);
     color:#fff;
-    box-shadow:0 6px 18px rgba(2,48,3,.28);
-    transform:translateY(-2px);
 }
 
 /* Outline principal */
@@ -649,7 +634,7 @@ img {
 .platform-btn-outline-primary,
 .btn-outline-primary{
     background:var(--sc-white);
-    border-color:var(--sc-green);
+    border-color:var(--sc-green-dark);
     color:var(--sc-green-dark);
 }
 
@@ -658,8 +643,7 @@ img {
     background:var(--sc-green-light);
     border-color:var(--sc-green-dark);
     color:var(--sc-green-dark);
-    box-shadow:0 6px 18px rgba(2,48,3,.18);
-    transform:translateY(-2px);
+    box-shadow:var(--sc-shadow-soft);
 }
 
 
@@ -676,8 +660,7 @@ a.platform-btn-outline-muted:hover{
     background:var(--sc-green-light);
     border-color:var(--sc-green-dark);
     color:var(--sc-green-dark);
-    box-shadow:0 6px 18px rgba(2,48,3,.18);
-    transform:translateY(-2px);
+    box-shadow:var(--sc-shadow-soft);
 }
 
 /* Evita azul Bootstrap/link en botones outline y neutros */
@@ -1822,7 +1805,7 @@ a.platform-btn-outline-muted:hover{
 */
 
 /* =========================================================
-   10. LEGACY ACTIVO / TEMPLATE-SPECIFIC
+   09. LEGACY ACTIVO / TEMPLATE-SPECIFIC
    ---------------------------------------------------------
    Desde acá quedan estilos que todavía pueden depender de
    templates actuales. No agregar parches nuevos acá.
@@ -1853,7 +1836,9 @@ body:not(.authenticated) main.container {
     margin: 0 !important;
 }
 
-body:not(.authenticated) 
+body:not(.authenticated) .municipal-header {
+    display: none;
+}
 
 .login-page-wrapper {
     min-height: calc(100vh - 240px);
@@ -1911,20 +1896,12 @@ body:not(.authenticated)
     margin-top: 26px;
     border: none;
     border-radius: 999px;
-    background: var(--sc-green);
+    background: var(--sc-green-dark);
     color: #fff;
     font-size: 1.05rem;
     font-weight: 900;
     letter-spacing: .3px;
     cursor: pointer;
-    transition: all .2s ease;
-}
-
-.login-btn:hover {
-    background: var(--sc-green-dark);
-    color: #fff;
-    box-shadow:0 6px 18px rgba(2,48,3,.28);
-    transform:translateY(-2px);
 }
 
 .login-landscape {
@@ -2160,7 +2137,7 @@ body:not(.authenticated)
     }
 }
 
-/* APP MODAL — modales de confirmación y cancelación */
+/* FIX MODALES TURNERO */
 .app-modal{
     position:fixed;
     inset:0;
@@ -2235,7 +2212,7 @@ body:not(.authenticated)
     gap:12px;
 }
 
-/* OBTENER TURNO — página de reserva de turnos */
+/* FIX OBTENER TURNO */
 .app-booking-page{
     max-width:1120px;
     margin:0 auto;
@@ -2484,17 +2461,15 @@ body:not(.authenticated)
 }
 
 .app-btn-primary{
-    background: var(--sc-green);
-    border-color: var(--sc-green);
+    background: var(--sc-green-dark);
+    border-color: var(--sc-green-dark);
     color: #fff;
 }
 
 .app-btn-primary:hover{
-    background: var(--sc-green-dark);
-    border-color: var(--sc-green-dark);
+    background: var(--sc-green);
+    border-color: var(--sc-green);
     color: #fff;
-    box-shadow:0 6px 18px rgba(2,48,3,.28);
-    transform:translateY(-2px);
 }
 
 .app-btn-outline{
@@ -2506,8 +2481,6 @@ body:not(.authenticated)
 .app-btn-outline:hover{
     background: var(--sc-green-light);
     color: var(--sc-green-dark);
-    box-shadow:0 6px 18px rgba(2,48,3,.18);
-    transform:translateY(-2px);
 }
 
 .app-btn-danger-soft{
@@ -3151,7 +3124,7 @@ body:not(.authenticated)
 
 
 /* =========================================================
-   08. DASHBOARD - CENTRO DE OPERACIONES
+   11. DASHBOARD - CENTRO DE OPERACIONES
    ========================================================= */
 
 .operation-dashboard {
@@ -3769,7 +3742,7 @@ body:not(.authenticated)
 }
 
 /* =========================================================
-   11. RESPONSIVE GENERAL
+   12. RESPONSIVE GENERAL
    ========================================================= */
 
 @media (max-width: 1399px) {
@@ -5022,7 +4995,7 @@ body:not(.authenticated)
 ========================================================= */
 
 /* ==========================================================
-   07.01 LAYOUT GENERAL
+   2. LAYOUT GENERAL
 ========================================================== */
 
 .citizen-app {
@@ -5053,7 +5026,7 @@ body:not(.authenticated)
 }
 
 /* ==========================================================
-   07.02 COMPONENTES REUTILIZABLES
+   7. COMPONENTES REUTILIZABLES
 ========================================================== */
 
 /* Encabezados */
@@ -5308,7 +5281,7 @@ body:not(.authenticated)
 
 
 /* ==========================================================
-   07.03 HOME
+   8. HOME
 ========================================================== */
 
 .citizen-home-hero {
@@ -5552,7 +5525,7 @@ body:not(.authenticated)
 
 
 /* ==========================================================
-   07.04 NUEVA GESTIÓN
+   9. NUEVA GESTIÓN
 ========================================================== */
 
 .citizen-new-types{
@@ -5686,7 +5659,7 @@ body:not(.authenticated)
 
 
 /* ==========================================================
-   07.05 RESPONSIVE
+   10. RESPONSIVE
 ========================================================== */
 
 /* MOBILE */
@@ -5866,11 +5839,11 @@ body:not(.authenticated)
 
 
 /* =========================================================
-   09. UTILIDADES
+   08. UTILIDADES
 ========================================================= */
 
 /* =========================================================
-   09. UTILIDADES
+   9. UTILIDADES
    ========================================================= */
 
 .text-sc-green {
@@ -7732,19 +7705,48 @@ body:not(.authenticated)
 }
 
 /* =========================================================
-   10. LEGACY - BORRAR PROGRESIVAMENTE
+   09. LEGACY - BORRAR PROGRESIVAMENTE
    Estos estilos quedan sólo para no romper templates viejos.
    A medida que todos los templates usen platform-*, se eliminan.
 ========================================================= */
 
 /* =========================================================
-   10.01 HEADER PRINCIPAL (legacy)
+   3. HEADER PRINCIPAL
    ========================================================= */
 
+.municipal-header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: var(--sc-white);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, .12);
+}
 
+.municipal-topbar {
+    min-height: 92px;
+    background:
+        radial-gradient(circle at 18% 20%, rgba(255,255,255,.08), transparent 25%),
+        linear-gradient(90deg, #043f1b 0%, #064f22 55%, #075b28 100%);
+    display: flex;
+    align-items: center;
+}
 
+.municipal-header-container {
+    width: 100%;
+    padding-left: 34px;
+    padding-right: 34px;
+}
 
+.municipal-topbar .municipal-header-container {
+    display: flex;
+    align-items: center;
+}
 
+.municipal-brand {
+    display: flex;
+    align-items: center;
+    min-width: 292px;
+}
 
 .municipal-logo {
     height: 60px;
@@ -7752,10 +7754,45 @@ body:not(.authenticated)
     display: block;
 }
 
+.municipal-divider {
+    width: 1px;
+    height: 58px;
+    background: var(--sc-border-dark);
+    margin: 0 30px;
+    flex-shrink: 0;
+}
 
+.municipal-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
+.municipal-title-main {
+    color: var(--sc-white);
+    font-size: 1.38rem;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: .01em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
 
+.municipal-title-sub {
+    color: rgba(255, 255, 255, .82);
+    font-size: .93rem;
+    font-weight: 500;
+    margin-top: 8px;
+    white-space: nowrap;
+}
 
+.municipal-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    color: var(--sc-white);
+}
 
 .header-action-group {
     min-height: 58px;
@@ -7786,7 +7823,32 @@ body:not(.authenticated)
     transform: translateY(-1px);
 }
 
+.notification-badge {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--sc-yellow);
+    color: var(--sc-white);
+    font-size: .72rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.user-dropdown-btn {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--sc-white);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
 
 .user-avatar {
     width: 52px;
@@ -7803,9 +7865,33 @@ body:not(.authenticated)
     flex-shrink: 0;
 }
 
+.user-info {
+    min-width: 145px;
+    text-align: left;
+}
 
+.user-name {
+    display: block;
+    font-size: .96rem;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+}
 
+.user-role {
+    display: block;
+    font-size: .82rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, .78);
+    margin-top: 4px;
+    white-space: nowrap;
+}
 
+.user-dropdown-icon {
+    margin-left: 6px;
+    font-size: .75rem;
+    color: rgba(255, 255, 255, .85);
+}
 
 .logout-btn {
     border: 0;
@@ -7827,64 +7913,466 @@ body:not(.authenticated)
     color: var(--sc-white);
 }
 
+.mobile-menu-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .12);
+    color: var(--sc-white);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    padding: 0;
+}
 
-
-/* ==========================================================
-   10.04 HEADER ciudadano (legacy)
-========================================================== */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ==========================================================
-   10.05 NAVEGACIÓN DESKTOP (legacy)
-========================================================== */
-
-
-
-
-
-
-
-/* ==========================================================
-   10.06 BOTTOM NAV (legacy)
-========================================================== */
-
-
-
-
-
-
-
-
-
-/* ==========================================================
-   10.07 DRAWER (legacy)
-========================================================== */
-
-
-
-
-
-
-
-
-
-
-
+.mobile-menu-btn:hover {
+    background: rgba(255, 255, 255, .20);
+    color: var(--sc-white);
+}
 
 /* =========================================================
-   11. RESPONSIVE GENERAL
+   4. NAVEGACIÓN PRINCIPAL
+   ========================================================= */
+
+.municipal-nav {
+    min-height: 66px;
+    background: var(--sc-white);
+    border-bottom: 1px solid var(--sc-border);
+    padding: 0;
+}
+
+.municipal-nav .municipal-header-container {
+    display: flex;
+    align-items: stretch;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.municipal-menu {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: stretch;
+}
+
+.municipal-menu .nav-item {
+    position: relative;
+}
+
+.municipal-menu .nav-link {
+    min-height: 66px;
+    height: 100%;
+    color: var(--sc-text) !important;
+    font-size: .94rem;
+    font-weight: 800;
+    padding: 0 22px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    border-right: 1px solid var(--sc-border);
+    position: relative;
+    white-space: nowrap;
+}
+
+.municipal-menu .nav-link i {
+    font-size: 1.35rem;
+    color: var(--sc-green);
+    font-weight: normal;
+}
+
+.municipal-menu .nav-link:hover {
+    color: var(--sc-green) !important;
+    background: #f6faf7;
+}
+
+.municipal-menu .nav-link.active {
+    color: var(--sc-green) !important;
+    background: #f8fbf9;
+}
+
+.municipal-menu .nav-link.active::after,
+.municipal-menu .nav-link:hover::after {
+    content: "";
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+    height: 4px;
+    background: var(--sc-green);
+    border-radius: 4px 4px 0 0;
+}
+
+.municipal-menu .nav-link-disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.municipal-menu .nav-link-disabled:hover {
+    color: var(--sc-text) !important;
+    background: transparent;
+}
+
+.municipal-menu .nav-link-disabled:hover::after {
+    display: none;
+}
+
+/* =========================================================
+   5. MENÚ MOBILE - USUARIO
+   ========================================================= */
+
+.mobile-user-info {
+    display: none;
+}
+
+.mobile-user-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobile-user-name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--sc-text);
+}
+
+.mobile-user-role {
+    font-size: .85rem;
+    font-weight: 500;
+    color: var(--sc-muted);
+}
+
+.mobile-logout-btn {
+    margin-top: 8px;
+    border: none;
+    background: var(--sc-green);
+    color: white;
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-weight: 700;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.mobile-logout-btn:hover {
+    background: var(--sc-green-dark);
+}
+
+/* ==========================================================
+   3. HEADER
+========================================================== */
+
+.citizen-header {
+    background:
+        radial-gradient(circle at 18% 20%, rgba(255,255,255,.08), transparent 25%),
+        linear-gradient(90deg, #043f1b 0%, #064f22 55%, #075b28 100%);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.citizen-header-inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.citizen-logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.citizen-logo {
+    display: block;
+    width: auto;
+}
+
+.citizen-title {
+    margin-left: 32px;
+    padding-left: 32px;
+    border-left: 1px solid rgba(255,255,255,.28);
+    margin-right: auto;
+}
+
+.citizen-title-main {
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.citizen-title-sub {
+    color: rgba(255,255,255,.82);
+    font-size: .9rem;
+    font-weight: 500;
+    margin-top: 7px;
+}
+
+.citizen-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.citizen-icon-btn {
+    border: 0;
+    background: rgba(255,255,255,.14);
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.citizen-icon-btn:hover {
+    background: rgba(255,255,255,.22);
+    color: #fff;
+}
+
+.citizen-icon-btn i {
+    line-height: 1;
+}
+
+.citizen-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--sc-yellow);
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==========================================================
+   4. NAVEGACIÓN DESKTOP
+========================================================== */
+
+.citizen-desktop-nav {
+    background:var(--sc-white);
+    border-bottom: 1px solid var(--sc-border);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .06);
+}
+
+.citizen-desktop-nav a {
+    min-height: 66px;
+    color: var(--sc-text);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: .94rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    border-right: 1px solid var(--sc-border);
+    position: relative;
+}
+
+.citizen-desktop-nav a i {
+    color: var(--sc-green-dark);
+    font-size: 1.35rem;
+}
+
+.citizen-desktop-nav a:hover,
+.citizen-desktop-nav a.active {
+    color: var(--sc-green-dark);
+    background: #f8fbf9;
+}
+
+.citizen-desktop-nav a.active::after,
+.citizen-desktop-nav a:hover::after {
+    content: "";
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 0;
+    height: 4px;
+    background: var(--sc-green-dark);
+    border-radius: 4px 4px 0 0;
+}
+
+
+/* ==========================================================
+   5. BOTTOM NAV MOBILE / TABLET
+========================================================== */
+
+.citizen-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:var(--sc-white);
+    border-top: 1px solid var(--sc-border);
+    z-index: 2000;
+    box-shadow: 0 -8px 24px rgba(15, 23, 42, .08);
+}
+
+.citizen-nav-item {
+    color: var(--sc-muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.citizen-nav-item:hover {
+    color: var(--sc-green-dark);
+}
+
+.citizen-nav-item i {
+    display: block;
+}
+
+.citizen-nav-add {
+    background: var(--sc-green-dark);
+    color: #fff !important;
+    border-radius: 50%;
+    box-shadow: 0 8px 24px rgba(6, 79, 34, .25);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.citizen-nav-icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.citizen-nav-badge {
+    position: absolute;
+    top: -9px;
+    right: -11px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--sc-yellow);
+    color: #fff;
+    font-size: .62rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ==========================================================
+   6. DRAWER HAMBURGUESA
+========================================================== */
+
+.citizen-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s ease;
+}
+
+.citizen-menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.citizen-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(360px, 88vw);
+    height: 100vh;
+    background:var(--sc-white);
+    z-index: 3100;
+    transform: translateX(100%);
+    transition: .25s ease;
+    box-shadow: -10px 0 30px rgba(0,0,0,.18);
+    display: flex;
+    flex-direction: column;
+}
+
+.citizen-drawer.open {
+    transform: translateX(0);
+}
+
+.citizen-drawer-header {
+    min-height: 82px;
+    padding: 0 22px;
+    background: var(--sc-green-dark);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.citizen-drawer-header strong {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.citizen-drawer-close {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: var(--sc-radius-sm);
+    background: rgba(255,255,255,.15);
+    color: #fff;
+}
+
+.citizen-drawer-nav {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.citizen-drawer-nav a,
+.citizen-drawer-nav button {
+    min-height: 52px;
+    border: 0;
+    border-radius: 14px;
+    background:var(--sc-white);
+    color: var(--sc-text);
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+    width: 100%;
+}
+
+.citizen-drawer-nav a:hover,
+.citizen-drawer-nav button:hover {
+    background: #f3f8f4;
+    color: var(--sc-green-dark);
+}
+
+.citizen-drawer-nav i {
+    font-size: 1.25rem;
+    color: var(--sc-green-dark);
+}
+
+/* =========================================================
+   12. RESPONSIVE GENERAL
    ========================================================= */
 
 @media (max-width: 1399px) {
@@ -7951,7 +8439,9 @@ body:not(.authenticated)
         font-size: .9rem;
     }
 
-
+    .mobile-menu-btn {
+        display: flex;
+    }
 
     .municipal-nav {
         min-height: auto;
@@ -8209,6 +8699,14 @@ body:not(.authenticated)
     margin-bottom: 38px;
 }
 
+.login-municipal-seal {
+    width: 165px;
+    max-width: 70%;
+    height: auto;
+    margin: 0 auto 20px;
+    display: block;
+    opacity: .9;
+}
 
 .login-card h1 {
     margin: 0 0 8px;
@@ -8250,7 +8748,9 @@ body:not(.authenticated)
     box-shadow: 0 0 0 3px rgba(9,112,9,.12);
 }
 
-
+.login-btn:hover {
+    background: var(--sc-green);
+}
 
 /* MOBILE */
 
@@ -8288,6 +8788,7 @@ body:not(.authenticated)
 
     .login-btn {
         min-height: 54px;
+        border-radius: 32px;
     }
 }
 
@@ -8380,7 +8881,7 @@ body:not(.authenticated)
 }
 
 /* ==========================================================
-   07.05 RESPONSIVE
+   10. RESPONSIVE
 ========================================================== */
 
 /* MOBILE */
@@ -8424,9 +8925,17 @@ body:not(.authenticated)
         align-items: center;
     }
 
+    .citizen-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        font-size: .72rem;
+    }
 
-
-
+    .citizen-nav-item i {
+        font-size: 1.25rem;
+    }
 
     .citizen-nav-add {
         width: 58px;
@@ -8559,9 +9068,17 @@ body:not(.authenticated)
         align-items: center;
     }
 
+    .citizen-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        font-size: .8rem;
+    }
 
-
-
+    .citizen-nav-item i {
+        font-size: 1.35rem;
+    }
 
     .citizen-nav-add {
         width: 64px;
@@ -8687,7 +9204,7 @@ body:not(.authenticated)
     }
 }
 
-/* LOGO RESPONSIVO — visibilidad según breakpoint */
+/* FIX layout plataforma */
 
 
 .platform-header-logo-full {
