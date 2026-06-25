@@ -1,11 +1,30 @@
-{% if back_url %} {% if back_label %}{{ back_label }}{% endif %} {% endif %}
-{% if flow_label %}
-{{ flow_label }}
+<div class="citizen-page-head">
 
-{% endif %}
-{{ title }}
-{% if subtitle %}
-{{ subtitle }}
+    {% if back_url %}
+        <a href="{{ back_url }}" class="citizen-back-link" aria-label="Volver">
+            <i class="bi bi-arrow-left"></i>
+            {% if back_label %}<span>{{ back_label }}</span>{% endif %}
+        </a>
+    {% endif %}
 
-{% endif %}
-{% if action_url %} {% if action_icon %}{% endif %} {{ action_label }} {% endif %}
+    <div>
+        {% if flow_label %}
+            <p class="flow-title {% if flow_type %}{{ flow_type }}{% endif %}">{{ flow_label }}</p>
+        {% endif %}
+
+        <h1>{{ title }}</h1>
+
+        {% if subtitle %}
+            <p class="page-subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+
+    {% if action_url %}
+        <a href="{{ action_url }}"
+           class="platform-btn {% if action_class %}{{ action_class }}{% else %}platform-btn-primary{% endif %}">
+            {% if action_icon %}<i class="bi {{ action_icon }}"></i>{% endif %}
+            {{ action_label }}
+        </a>
+    {% endif %}
+
+</div>
