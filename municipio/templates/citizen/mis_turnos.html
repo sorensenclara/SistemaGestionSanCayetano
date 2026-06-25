@@ -7,16 +7,7 @@
 <section class="citizen-page platform-page-wide mis-turnos-page">
 
     {% url 'citizen_obtener_turno' as obtener_turno_url %}
-    {% include 'citizen/components/page_head.html' with
-        flow_type="tramite"
-        flow_label="Mis Turnos"
-        title="Turnos Hospital Municipal"
-        subtitle="Consultá u obtené nuevos turnos desde la app."
-        action_url=obtener_turno_url
-        action_label="Obtener turno"
-        action_icon="bi-calendar-plus"
-        action_class="platform-btn-primary"
-    %}
+    {% include 'citizen/components/page_head.html' with flow_type="tramite" flow_label="Mis Turnos" title="Turnos Hospital Municipal" subtitle="Consultá u obtené nuevos turnos desde la app." action_url=obtener_turno_url action_label="Obtener turno" action_icon="bi-calendar-plus" action_class="platform-btn-primary" %}
 
     <div class="platform-form-card gestiones-filter-card">
         <div class="gestion-filter-row">

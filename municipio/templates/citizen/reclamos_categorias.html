@@ -7,12 +7,7 @@
 <section class="citizen-page platform-step-page-wide platform-flow-reclamo">
 
     {% url 'citizen_nueva_gestion' as nueva_gestion_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=nueva_gestion_url
-        flow_type="reclamo"
-        flow_label="Reclamos"
-        title="¿Qué problema querés informar?"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=nueva_gestion_url flow_type="reclamo" flow_label="Reclamos" title="¿Qué problema querés informar?" %}
 
     <div class="platform-form-card">
 

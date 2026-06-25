@@ -7,12 +7,7 @@
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
     {% url 'citizen_reclamo_evidencia' as back_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=back_url
-        flow_type="reclamo"
-        flow_label="Resumen"
-        title="Revisá antes de enviar"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=back_url flow_type="reclamo" flow_label="Resumen" title="Revisá antes de enviar" %}
 
     <form method="post" class="platform-form-card">
         {% csrf_token %}

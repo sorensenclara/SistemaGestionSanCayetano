@@ -8,12 +8,7 @@
 <section class="citizen-page platform-step-page platform-flow-solicitud">
 
     {% url 'citizen_solicitudes_categorias' as back_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=back_url
-        flow_type="solicitud"
-        flow_label="Detalle de la solicitud"
-        title="Contanos qué necesitás"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=back_url flow_type="solicitud" flow_label="Detalle de la solicitud" title="Contanos qué necesitás" %}
 
     <div class="platform-selected-card">
         <i class="bi bi-check-circle"></i>

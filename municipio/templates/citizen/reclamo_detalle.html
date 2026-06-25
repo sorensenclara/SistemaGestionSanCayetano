@@ -8,12 +8,7 @@
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
     {% url 'citizen_reclamo_tipo' as back_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=back_url
-        flow_type="reclamo"
-        flow_label="Detalle del reclamo"
-        title="Contanos qué está pasando"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=back_url flow_type="reclamo" flow_label="Detalle del reclamo" title="Contanos qué está pasando" %}
 
     <div class="platform-selected-card">
         <i class="bi bi-check-circle"></i>

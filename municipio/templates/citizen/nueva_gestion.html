@@ -8,11 +8,7 @@
 <section class="citizen-page citizen-new-page">
 
     {% url 'citizen_home' as home_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=home_url
-        flow_label="Nueva gestión"
-        title="¿Qué necesitás hacer?"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=home_url flow_label="Nueva gestión" title="¿Qué necesitás hacer?" %}
 
     <div class="citizen-search-box">
         <i class="bi bi-search"></i>

@@ -7,12 +7,7 @@
 <section class="citizen-page platform-step-page platform-flow-solicitud">
 
     {% url 'citizen_solicitud_evidencia' as back_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=back_url
-        flow_type="solicitud"
-        flow_label="Resumen"
-        title="Revisá antes de enviar"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=back_url flow_type="solicitud" flow_label="Resumen" title="Revisá antes de enviar" %}
 
     <form method="post" class="platform-form-card">
         {% csrf_token %}

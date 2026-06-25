@@ -7,12 +7,7 @@
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
     {% url 'citizen_reclamo_ubicacion' as back_url %}
-    {% include 'citizen/components/page_head.html' with
-        back_url=back_url
-        flow_type="reclamo"
-        flow_label="Evidencia"
-        title="Sumá fotos o documentos"
-    %}
+    {% include 'citizen/components/page_head.html' with back_url=back_url flow_type="reclamo" flow_label="Evidencia" title="Sumá fotos o documentos" %}
 
     <div class="platform-selected-card">
         <i class="bi bi-camera"></i>
