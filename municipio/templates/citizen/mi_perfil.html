@@ -178,11 +178,7 @@
             </div>
           </article>
         {% empty %}
-          <div class="platform-empty-state">
-            <i class="bi bi-house-add"></i>
-            <strong>No tenés inmuebles vinculados</strong>
-            <p>Podés asociar un inmueble con el PIN municipal.</p>
-          </div>
+          {% include 'components/empty_state.html' with icon="bi-house-add" title="No tenés inmuebles vinculados" text_p="Podés asociar un inmueble con el PIN municipal." %}
         {% endfor %}
       </div>
 
@@ -254,11 +250,7 @@
             </div>
           </article>
         {% empty %}
-          <div class="platform-empty-state">
-            <i class="bi bi-people"></i>
-            <strong>No tenés familiares vinculados</strong>
-            <p>Podés agregar familiares o contactos responsables.</p>
-          </div>
+          {% include 'components/empty_state.html' with icon="bi-people" title="No tenés familiares vinculados" text_p="Podés agregar familiares o contactos responsables." %}
         {% endfor %}
       </div>
 

@@ -292,72 +292,26 @@
 
 </section>
 
-<div class="app-modal" id="cancelAppointmentModal">
-
+<div class="app-modal" id="cancelAppointmentModal" aria-hidden="true">
     <div class="app-modal-backdrop js-close-cancel-modal"></div>
-
     <div class="app-modal-dialog">
-
-        <button class="app-modal-close js-close-cancel-modal">
-            <i class="bi bi-x-lg"></i>
-        </button>
-
+        <button type="button" class="app-modal-close js-close-cancel-modal"><i class="bi bi-x-lg"></i></button>
         <div class="app-modal-head">
-            <span class="app-modal-eyebrow">
-                Cancelar turno
-            </span>
-
-            <h3>
-                ¿Querés cancelar este turno?
-            </h3>
-
-            <p>
-                El turno quedará liberado para que otra persona pueda reservarlo.
-            </p>
+            <span class="app-modal-eyebrow">Cancelar turno</span>
+            <h3>¿Querés cancelar este turno?</h3>
+            <p>El turno quedará liberado para que otra persona pueda reservarlo.</p>
         </div>
-
         <div class="app-modal-summary">
-
-            <div class="app-modal-row">
-                <strong>Especialidad</strong>
-                <span id="cancelModalSpecialty"></span>
-            </div>
-
-            <div class="app-modal-row">
-                <strong>Profesional</strong>
-                <span id="cancelModalProfessional"></span>
-            </div>
-
-            <div class="app-modal-row">
-                <strong>Fecha</strong>
-                <span id="cancelModalDate"></span>
-            </div>
-
-            <div class="app-modal-row">
-                <strong>Horario</strong>
-                <span id="cancelModalTime"></span>
-            </div>
-
+            <div class="app-modal-row"><strong>Especialidad</strong><span id="cancelModalSpecialty"></span></div>
+            <div class="app-modal-row"><strong>Profesional</strong><span id="cancelModalProfessional"></span></div>
+            <div class="app-modal-row"><strong>Fecha</strong><span id="cancelModalDate"></span></div>
+            <div class="app-modal-row"><strong>Horario</strong><span id="cancelModalTime"></span></div>
         </div>
-
         <div class="app-modal-actions">
-
-            <button
-                type="button"
-                class="app-btn app-btn-outline js-close-cancel-modal">
-                No, volver
-            </button>
-
-            <button
-                type="button"
-                class="app-btn app-btn-danger-soft js-confirm-cancel-modal">
-                Sí, cancelar turno
-            </button>
-
+            <button type="button" class="app-btn app-btn-outline js-close-cancel-modal">No, volver</button>
+            <button type="button" class="app-btn app-btn-danger-soft js-confirm-cancel-modal">Sí, cancelar turno</button>
         </div>
-
     </div>
-
 </div>
 
 <script>

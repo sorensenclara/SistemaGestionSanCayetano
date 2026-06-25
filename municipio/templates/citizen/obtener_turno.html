@@ -192,61 +192,27 @@
 </section>
 
 <div class="app-modal" id="bookingConfirmModal" aria-hidden="true">
-  <div class="app-modal-backdrop js-close-booking-modal"></div>
-
-  <div class="app-modal-dialog">
-    <button type="button" class="app-modal-close js-close-booking-modal">
-      <i class="bi bi-x-lg"></i>
-    </button>
-
-    <div class="app-modal-head">
-      <span class="app-modal-eyebrow">Confirmar reserva</span>
-      <h3>¿Confirmás este turno?</h3>
-      <p>Revisá los datos antes de continuar.</p>
+    <div class="app-modal-backdrop js-close-booking-modal"></div>
+    <div class="app-modal-dialog">
+        <button type="button" class="app-modal-close js-close-booking-modal"><i class="bi bi-x-lg"></i></button>
+        <div class="app-modal-head">
+            <span class="app-modal-eyebrow">Confirmar reserva</span>
+            <h3>¿Confirmás este turno?</h3>
+            <p>Revisá los datos antes de continuar.</p>
+        </div>
+        <div class="app-modal-summary">
+            <div class="app-modal-row"><strong>Especialidad</strong><span id="modalSpecialty">-</span></div>
+            <div class="app-modal-row"><strong>Profesional</strong><span id="modalProfessional">-</span></div>
+            <div class="app-modal-row"><strong>Fecha</strong><span id="modalDate">-</span></div>
+            <div class="app-modal-row"><strong>Horario</strong><span id="modalTime">-</span></div>
+            <div class="app-modal-row"><strong>Modalidad</strong><span id="modalMode">-</span></div>
+            <div class="app-modal-row"><strong>Lugar</strong><span id="modalLocation">-</span></div>
+        </div>
+        <div class="app-modal-actions">
+            <button type="button" class="app-btn app-btn-outline js-close-booking-modal">Cancelar</button>
+            <a href="{% url 'citizen_confirmacion_turno' %}" class="app-btn app-btn-primary app-btn-fixed">Confirmar turno</a>
+        </div>
     </div>
-
-    <div class="app-modal-summary">
-      <div class="app-modal-row">
-        <strong>Especialidad</strong>
-        <span id="modalSpecialty">-</span>
-      </div>
-
-      <div class="app-modal-row">
-        <strong>Profesional</strong>
-        <span id="modalProfessional">-</span>
-      </div>
-
-      <div class="app-modal-row">
-        <strong>Fecha</strong>
-        <span id="modalDate">-</span>
-      </div>
-
-      <div class="app-modal-row">
-        <strong>Horario</strong>
-        <span id="modalTime">-</span>
-      </div>
-
-      <div class="app-modal-row">
-        <strong>Modalidad</strong>
-        <span id="modalMode">-</span>
-      </div>
-
-      <div class="app-modal-row">
-        <strong>Lugar</strong>
-        <span id="modalLocation">-</span>
-      </div>
-    </div>
-
-    <div class="app-modal-actions">
-      <button type="button" class="app-btn app-btn-outline js-close-booking-modal">
-        Cancelar
-      </button>
-
-      <a href="{% url 'citizen_confirmacion_turno' %}" class="app-btn app-btn-primary app-btn-fixed">
-        Confirmar turno
-      </a>
-    </div>
-  </div>
 </div>
 
 <script>

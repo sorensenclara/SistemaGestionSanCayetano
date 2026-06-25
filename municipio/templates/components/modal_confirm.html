@@ -1,0 +1,46 @@
+<div class="app-modal {% if modal_class %}{{ modal_class }}{% endif %}" id="{{ modal_id }}" aria-hidden="true">
+
+    <div class="app-modal-backdrop {{ close_class }}"></div>
+
+    <div class="app-modal-dialog">
+
+        <button type="button" class="app-modal-close {{ close_class }}">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div class="app-modal-head">
+            {% if eyebrow %}<span class="app-modal-eyebrow">{{ eyebrow }}</span>{% endif %}
+            <h3>{{ heading }}</h3>
+            {% if description %}<p>{{ description }}</p>{% endif %}
+        </div>
+
+        {% if rows %}
+        <div class="app-modal-summary">
+            {% for row in rows %}
+            <div class="app-modal-row">
+                <strong>{{ row.label }}</strong>
+                <span id="{{ row.span_id }}">{{ row.default|default:'' }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="app-modal-actions">
+            <button type="button" class="app-btn app-btn-outline {{ close_class }}">
+                {{ cancel_label|default:"Cancelar" }}
+            </button>
+
+            {% if confirm_url %}
+            <a href="{{ confirm_url }}" class="app-btn {{ confirm_class|default:'app-btn-primary' }} app-btn-fixed">
+                {{ confirm_label|default:"Confirmar" }}
+            </a>
+            {% else %}
+            <button type="button" class="app-btn {{ confirm_class|default:'app-btn-primary' }} {{ js_confirm_class }}">
+                {{ confirm_label|default:"Confirmar" }}
+            </button>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
