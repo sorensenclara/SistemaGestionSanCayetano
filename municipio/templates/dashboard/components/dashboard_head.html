@@ -1,0 +1,46 @@
+<div class="dashboard-hero dashboard-hero-compact">
+    <div>
+        <p class="dashboard-welcome">{{ eyebrow|default:"Centro de Operaciones" }}</p>
+        <h1 class="dashboard-title">{{ title }}</h1>
+        <div class="dashboard-update">
+            <i class="bi bi-clock"></i>
+            {{ update_text|default:"Última actualización: hoy" }}
+        </div>
+    </div>
+    {% if actions %}
+    <div class="dashboard-hero-actions">{{ actions }}</div>
+    {% endif %}
+</div>
+
+<div class="dashboard-tools-card">
+    <div class="dashboard-current-date">
+        <i class="bi bi-calendar-event"></i>
+        <span>{{ current_date|default:"" }}</span>
+    </div>
+    <form class="dashboard-filters dashboard-filters-compact" method="get">
+        <input type="date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
+        <input type="date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
+        {% if show_area_filter %}
+        <select name="area" class="form-control">
+            <option value="">Todas las áreas</option>
+            {% for area in areas %}
+            <option value="{{ area.id }}" {% if request.GET.area == area.id|stringformat:"s" %}selected{% endif %}>{{ area.nombre }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        {% if show_tipo_filter %}
+        <select name="tipo" class="form-control">
+            <option value="">Todas las gestiones</option>
+            <option value="reclamo" {% if request.GET.tipo == "reclamo" %}selected{% endif %}>Reclamos</option>
+            <option value="solicitud" {% if request.GET.tipo == "solicitud" %}selected{% endif %}>Solicitudes</option>
+            <option value="tarea" {% if request.GET.tipo == "tarea" %}selected{% endif %}>Tareas</option>
+        </select>
+        {% endif %}
+        <button type="submit" class="btn platform-btn platform-btn-primary">
+            <i class="fa-solid fa-filter"></i> Filtrar
+        </button>
+        <a href="{{ clear_url }}" class="platform-btn platform-btn-outline-muted">
+            <i class="fa-solid fa-rotate-left"></i> Limpiar
+        </a>
+    </form>
+</div>

@@ -6,74 +6,8 @@
 
 <section class="operation-dashboard">
 
-    <div class="dashboard-hero dashboard-hero-compact">
-        <div>
-            <p class="dashboard-welcome">
-                Dashboard Administrador
-            </p>
-
-            <h1 class="dashboard-title">
-                Bienvenido, {{ user.get_full_name|default:user.username }}
-            </h1>
-
-            <div class="dashboard-update">
-                <i class="bi bi-clock"></i>
-                Última actualización: 03/06/2026 11:20
-            </div>
-        </div>
-
-        <div class="dashboard-hero-actions">
-            <a href="{% url 'task_create' %}" class="platform-btn platform-btn-primary">
-                <i class="bi bi-plus-circle"></i> Crear tarea
-            </a>
-
-            <a href="{% url 'mapa_operativo' %}" class="platform-btn platform-btn-outline-primary">
-                <i class="bi bi-map"></i> Mapa operativo
-            </a>
-
-            <a href="#" class="platform-btn platform-btn-outline-primary">
-                <i class="bi bi-file-earmark-bar-graph"></i> Generar informe
-            </a>
-        </div>
-    </div>
-
-    <div class="dashboard-tools-card">
-
-        <div class="dashboard-current-date">
-            <i class="bi bi-calendar-event"></i>
-            <span>Miércoles, 3 de Junio de 2026</span>
-        </div>
-
-        <form class="dashboard-filters dashboard-filters-compact" method="get">
-            <input type="date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
-            <input type="date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
-
-            <select name="area" class="form-control">
-                <option value="">Todas las áreas</option>
-                <option value="servicios">Servicios Públicos</option>
-                <option value="obras">Obras Públicas</option>
-                <option value="catastro">Catastro</option>
-            </select>
-
-            <select name="tipo" class="form-control">
-                <option value="">Todas las gestiones</option>
-                <option value="reclamo">Reclamos</option>
-                <option value="solicitud">Solicitudes</option>
-                <option value="tarea">Tareas</option>
-            </select>
-
-            <button type="submit" class="btn platform-btn platform-btn-primary">
-                <i class="fa-solid fa-filter"></i> Filtrar
-            </button>
-
-            <a href="{% url 'dashboard' %}"
-            class="platform-btn platform-btn-outline-muted">
-                <i class="fa-solid fa-rotate-left"></i>
-                Limpiar
-            </a>
-        </form>
-
-    </div>
+    {% url 'dashboard' as dashboard_url %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Dashboard Administrador" title=user.get_full_name|default:user.username update_text="Última actualización: 03/06/2026 11:20" current_date="Miércoles, 3 de Junio de 2026" show_area_filter=True show_tipo_filter=True clear_url=dashboard_url %}
 
     <div class="dashboard-section-title">
         <i class="bi bi-speedometer2"></i>
