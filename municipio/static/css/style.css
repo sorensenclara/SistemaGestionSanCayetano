@@ -8744,8 +8744,6 @@ body:not(.authenticated) .municipal-header {
     box-shadow: 0 0 0 3px rgba(9,112,9,.12);
 }
 
-
-
 .login-btn:hover {
     background: var(--sc-green);
 }
