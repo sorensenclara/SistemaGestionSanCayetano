@@ -271,49 +271,30 @@ document.addEventListener("DOMContentLoaded", function () {
         attribution: "&copy; OpenStreetMap"
     }).addTo(map);
 
-    {% for gestion in gestiones %}
-        {% firstof gestion.tipo gestion.categoria.tipo as tipo_raw %}
-        {% with tipo=tipo_raw|lower estado=gestion.estado.codigo|lower %}
-            {% if gestion.latitud and gestion.longitud %}
-                {% if tipo == "reclamo" or tipo == "reclamos" or tipo == "solicitud" or tipo == "solicitudes" %}
+    const gestiones = {{ gestiones_map_json|safe }};
 
-                    const marker{{ gestion.id }} = L.marker(
-                        [
-                            {{ gestion.latitud|stringformat:"f" }},
-                            {{ gestion.longitud|stringformat:"f" }}
-                        ],
-                        {
-                            icon: markerIcon("{% if tipo == 'reclamo' or tipo == 'reclamos' %}green{% else %}blue{% endif %}")
-                        }
-                    );
+    gestiones.forEach(function (g) {
+        const marker = L.marker([g.lat, g.lng], {
+            icon: markerIcon(g.tipo === "reclamos" ? "green" : "blue")
+        });
 
-                    marker{{ gestion.id }}.on("click", function () {
-                        showMapDetail({
-                            title: "{{ gestion.categoria.nombre|escapejs }}",
-                            typeLabel: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}Reclamo ciudadano{% else %}Solicitud ciudadana{% endif %}",
-                            kindClass: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}gestion-map-type-reclamo{% else %}gestion-map-type-solicitud{% endif %}",
-                            status: "{{ gestion.estado.nombre|escapejs }}",
-                            statusClass: "status-{{ estado }}",
-                            area: "{{ gestion.area_responsable.nombre|escapejs }}",
-                            date: "{{ gestion.creada|date:'d/m/Y H:i' }}",
-                            address: "{% if gestion.direccion %}{{ gestion.direccion|escapejs }}{% else %}Ubicación indicada en el mapa{% endif %}",
-                            detailUrl: "{% url 'citizen_gestion_detalle' gestion.id %}"
-                        });
-                    });
+        marker.on("click", function () {
+            showMapDetail({
+                title: g.title,
+                typeLabel: g.typeLabel,
+                kindClass: g.kindClass,
+                status: g.status,
+                statusClass: g.statusClass,
+                area: g.area,
+                date: g.date,
+                address: g.address,
+                detailUrl: g.detailUrl
+            });
+        });
 
-                    const markerData{{ gestion.id }} = {
-                        marker: marker{{ gestion.id }},
-                        type: "{% if tipo == 'reclamo' or tipo == 'reclamos' %}reclamos{% else %}solicitudes{% endif %}",
-                        status: "{{ estado }}"
-                    };
-
-                    mapMarkers.push(markerData{{ gestion.id }});
-                    marker{{ gestion.id }}.addTo(map);
-
-                {% endif %}
-            {% endif %}
-        {% endwith %}
-    {% endfor %}
+        mapMarkers.push({ marker: marker, type: g.tipo, status: g.estado });
+        marker.addTo(map);
+    });
 
     console.log("Gestiones con marcador:", mapMarkers.length);
 

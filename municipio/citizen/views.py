@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.files.storage import default_storage
@@ -63,8 +64,33 @@ def mis_gestiones(request):
         "estado"
     ).order_by("-creada")
 
+    gestiones_map = []
+    for g in gestiones:
+        if not g.latitud or not g.longitud:
+            continue
+        tipo = (g.tipo if hasattr(g, "tipo") else g.categoria.tipo or "").lower()
+        if tipo not in ("reclamo", "reclamos", "solicitud", "solicitudes"):
+            continue
+        gestiones_map.append({
+            "id": g.id,
+            "lat": float(g.latitud),
+            "lng": float(g.longitud),
+            "tipo": "reclamos" if tipo in ("reclamo", "reclamos") else "solicitudes",
+            "estado": g.estado.codigo.lower(),
+            "title": g.categoria.nombre,
+            "typeLabel": "Reclamo ciudadano" if tipo in ("reclamo", "reclamos") else "Solicitud ciudadana",
+            "kindClass": "gestion-map-type-reclamo" if tipo in ("reclamo", "reclamos") else "gestion-map-type-solicitud",
+            "status": g.estado.nombre,
+            "statusClass": f"status-{g.estado.codigo.lower()}",
+            "area": g.area_responsable.nombre,
+            "date": g.creada.strftime("%d/%m/%Y %H:%M"),
+            "address": g.direccion if g.direccion else "Ubicación indicada en el mapa",
+            "detailUrl": f"/ciudadano/gestiones/{g.id}/",
+        })
+
     return render(request, "citizen/mis_gestiones.html", {
-        "gestiones": gestiones
+        "gestiones": gestiones,
+        "gestiones_map_json": json.dumps(gestiones_map, ensure_ascii=False),
     })
 
 
@@ -118,8 +144,33 @@ def mapa_ciudadano(request):
         "estado"
     ).order_by("-creada")
 
+    gestiones_map = []
+    for g in gestiones:
+        if not g.latitud or not g.longitud:
+            continue
+        tipo = (g.tipo if hasattr(g, "tipo") else g.categoria.tipo or "").lower()
+        if tipo not in ("reclamo", "reclamos", "solicitud", "solicitudes"):
+            continue
+        gestiones_map.append({
+            "id": g.id,
+            "lat": float(g.latitud),
+            "lng": float(g.longitud),
+            "tipo": "reclamos" if tipo in ("reclamo", "reclamos") else "solicitudes",
+            "estado": g.estado.codigo.lower(),
+            "title": g.categoria.nombre,
+            "typeLabel": "Reclamo ciudadano" if tipo in ("reclamo", "reclamos") else "Solicitud ciudadana",
+            "kindClass": "gestion-map-type-reclamo" if tipo in ("reclamo", "reclamos") else "gestion-map-type-solicitud",
+            "status": g.estado.nombre,
+            "statusClass": f"status-{g.estado.codigo.lower()}",
+            "area": g.area_responsable.nombre,
+            "date": g.creada.strftime("%d/%m/%Y %H:%M"),
+            "address": g.direccion if g.direccion else "Ubicación indicada en el mapa",
+            "detailUrl": f"/ciudadano/gestiones/{g.id}/",
+        })
+
     return render(request, "citizen/mapa_ciudadano.html", {
-        "gestiones": gestiones
+        "gestiones": gestiones,
+        "gestiones_map_json": json.dumps(gestiones_map, ensure_ascii=False),
     })
 
 
