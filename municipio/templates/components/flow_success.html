@@ -27,12 +27,12 @@
         <p>{{ status_label }}: {{ status_value }}</p>
     {% endif %}
 
-    <div class="platform-form-actions platform-form-actions-center">
+    <div style="margin-top:34px; display:flex; justify-content:space-between; gap:14px;">
         {% if secondary_url %}
             <a href="{{ secondary_url }}" class="btn platform-btn platform-btn-outline-primary">{{ secondary_label|default:"Volver al inicio" }}</a>
         {% endif %}
         {% if primary_url %}
-            <a href="{{ primary_url }}" class="btn platform-btn platform-btn-primary">{{ primary_label|default:"Ver seguimiento" }}</a>
+            <a href="{{ primary_url }}" class="btn platform-btn platform-btn-primary" style="color:#fff !important;">{{ primary_label|default:"Ver seguimiento" }}</a>
         {% endif %}
     </div>
 
