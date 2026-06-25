@@ -167,11 +167,7 @@
                             {% endfor %}
                         </div>
                     {% else %}
-                        <div class="platform-empty-state">
-                            <i class="bi bi-paperclip"></i>
-                            <strong>Sin adjuntos</strong>
-                            <span>El ciudadano no cargó imágenes ni documentación.</span>
-                        </div>
+                        {% include 'components/empty_state.html' with icon="bi-paperclip" title="Sin adjuntos" text="El ciudadano no cargó imágenes ni documentación." %}
                     {% endif %}
                 </div>
 
@@ -280,11 +276,7 @@
                         </a>
                     </div>
 
-                    <div class="platform-empty-state">
-                        <i class="bi bi-card-checklist"></i>
-                        <strong>Sin tareas asociadas</strong>
-                        <span>Las tareas creadas desde esta gestión aparecerán aquí.</span>
-                    </div>
+                    {% include 'components/empty_state.html' with icon="bi-card-checklist" title="Sin tareas asociadas" text="Las tareas creadas desde esta gestión aparecerán aquí." %}
                 </section>
             </div>
 

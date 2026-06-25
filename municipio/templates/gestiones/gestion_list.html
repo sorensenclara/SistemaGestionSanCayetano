@@ -246,19 +246,7 @@
 
         {% else %}
 
-        <div class="platform-empty-state">
-            <i class="bi bi-inbox"></i>
-
-            <strong>
-                No hay gestiones registradas
-            </strong>
-
-            <span>
-                Cuando un ciudadano cree un reclamo o solicitud,
-                aparecerá en esta bandeja.
-            </span>
-
-        </div>
+        {% include 'components/empty_state.html' with icon="bi-inbox" title="No hay gestiones registradas" text="Cuando un ciudadano cree un reclamo o solicitud, aparecerá en esta bandeja." %}
 
         {% endif %}
 
