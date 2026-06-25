@@ -1,10 +1,42 @@
-asgiref==3.11.1
-crispy-bootstrap5==2026.3
-dj-database-url==3.1.2
-Django==6.0.6
-django-crispy-forms==2.6
-gunicorn==26.0.0
-packaging==26.2
-psycopg2-binary==2.9.12
-sqlparse==0.5.5
-whitenoise==6.12.0
+Mi roadmap sería
+Fase 1
+
+✅ page_head
+
+✅ tabs
+
+✅ filter_bar
+
+✅ activity_item
+
+✅ kpi_card
+
+✅ empty_state
+
+Fase 2
+
+Refactorizar:
+
+dashboard_admin
+dashboard index
+gestion_detail
+mis_turnos
+mis_gestiones
+
+Fase 3
+
+Crear:
+
+components/
+    card_list_item.html
+    modal_confirm.html
+    flow_success.html
+Fase 4
+
+Extraer JS:
+
+static/js/
+    platform.js      ✅
+    leaflet-utils.js ✅
+    modal.js
+    map.js

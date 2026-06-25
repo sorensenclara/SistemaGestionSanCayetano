@@ -1,0 +1,27 @@
+{% if href %}
+<a href="{{ href }}" class="kpi-card kpi-card-clean {% if extra_class %}{{ extra_class }}{% endif %}">
+{% else %}
+<article class="kpi-card kpi-card-clean {% if extra_class %}{{ extra_class }}{% endif %}">
+{% endif %}
+
+    <div class="kpi-icon {% if icon_class %}{{ icon_class }}{% endif %}">
+        <i class="bi {{ icon }}"></i>
+    </div>
+
+    <span class="kpi-label">{{ label }}</span>
+
+    <strong class="kpi-number">
+        {{ value|default:"0" }}
+    </strong>
+
+    {% if help_text %}
+        <small class="kpi-caption {% if caption_class %}{{ caption_class }}{% endif %}">
+            {{ help_text }}
+        </small>
+    {% endif %}
+
+{% if href %}
+</a>
+{% else %}
+</article>
+{% endif %}

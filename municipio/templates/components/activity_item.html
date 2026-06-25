@@ -1,0 +1,19 @@
+<div class="activity-item">
+    <span class="activity-dot {{ dot_class|default:'bg-success' }}"></span>
+
+    <div>
+        <p>
+            <strong>{{ title }}</strong>
+        </p>
+
+        {% if text %}
+            <small>{{ text }}</small>
+        {% endif %}
+    </div>
+
+    {% if badge %}
+        <span class="activity-badge {{ badge_class|default:'bg-soft-green' }}">
+            {{ badge }}
+        </span>
+    {% endif %}
+</div>

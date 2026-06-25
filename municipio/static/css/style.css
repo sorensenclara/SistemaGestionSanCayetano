@@ -1,6 +1,5 @@
 /* =========================================================
    SAN CAYETANO - PLATAFORMA MUNICIPAL
-   style.css
 
    Criterio de orden:
    01. Variables globales
@@ -72,7 +71,7 @@
     --shadow-soft: var(--sc-shadow-soft);
     --shadow-card: var(--sc-shadow-card);
 
-    /* Aliases temporales App Ciudadana: migrar progresivamente a --sc-* */
+    /* Aliases temporales App Ciudadana: ELIMINAR y migrar progresivamente a --sc-* */
     --citizen-primary: var(--sc-green-dark);
     --citizen-primary-dark: var(--sc-green-superblack);
     --citizen-primary-soft: var(--sc-green-soft);
@@ -623,10 +622,11 @@ img {
 
 /* 04.01 BOTONES */
 
+.btn,
 .platform-btn{
     min-height:52px;
-    border-radius:32px;
-    font-weight:700;
+    border-radius:var(--sc-radius-pill);
+    font-weight:800;
     padding:.75rem 1.5rem;
     display:inline-flex;
     align-items:center;
@@ -634,84 +634,102 @@ img {
     gap:.5rem;
     transition:all .2s ease;
     text-decoration:none;
+    line-height:1;
+    border:1px solid transparent;
+    box-shadow:none;
 }
 
-.platform-btn-primary{
+.btn:hover,
+.platform-btn:hover{
+    text-decoration:none;
+}
+
+.platform-btn i,
+.btn i{
+    color:inherit;
+}
+
+/* Primario */
+
+.platform-btn-primary,
+.btn-primary{
     background:var(--sc-green-dark);
-    border:1px solid var(--sc-green-dark);
+    border-color:var(--sc-green-dark);
     color:#fff;
 }
 
-.platform-btn-primary:hover{
+.platform-btn-primary:hover,
+.btn-primary:hover{
     background:var(--sc-green);
     border-color:var(--sc-green);
     color:#fff;
 }
 
-.platform-btn-outline-primary{
-    background:transparent;
-    border:1px solid var(--sc-green-dark);
+/* Outline principal */
+
+.platform-btn-outline-primary,
+.btn-outline-primary{
+    background:#fff;
+    border-color:var(--sc-green-dark);
     color:var(--sc-green-dark);
 }
 
-.platform-btn-outline-primary:hover{
+.platform-btn-outline-primary:hover,
+.btn-outline-primary:hover{
     background:var(--sc-green-light);
+    border-color:var(--sc-green-dark);
     color:var(--sc-green-dark);
+    box-shadow:var(--sc-shadow-soft);
 }
 
-.platform-btn-outline-secondary{
-    background:transparent;
-    border:1px solid var(--sc-blue);
-    color:var(--sc-blue);
-}
 
-.platform-btn-muted{
+/* Botón chico neutro */
+.platform-btn-outline-muted,
+a.platform-btn-outline-muted{
     background:#fff;
     border:1px solid var(--sc-border);
-    color:var(--sc-text);
-}
-
-.platform-btn-muted:hover{
-    background:var(--sc-bg);
-}
-
-.platform-btn-block{
-    width:100%;
-}
-
-.platform-btn-sm{
-    min-height:40px;
-    padding:.5rem 1rem;
-    border-radius:24px;
-    font-size:.9rem;
-}
-
-/* Compatibilidad Bootstrap */
-
-.btn-primary{
-    background-color:var(--sc-green-dark);
-    border-color:var(--sc-green);
-    font-weight:700;
-    border-radius:32px;
-}
-
-.btn-primary:hover{
-    background-color:var(--sc-green-soft);
-    border-color:var(--sc-green-dark);
-}
-
-.btn-outline-primary{
     color:var(--sc-green-dark);
-    border-color:var(--sc-green-dark);
-    font-weight:700;
-    border-radius:32px;
 }
 
-.btn-outline-primary:hover{
-    background-color:var(--sc-green-soft);
-    border-color:var(--sc-green-soft);
-    color:var(--sc-white);
+.platform-btn-outline-muted:hover,
+a.platform-btn-outline-muted:hover{
+    background:var(--sc-green-light);
+    border-color:var(--sc-green-dark);
+    color:var(--sc-green-dark);
+    box-shadow:var(--sc-shadow-soft);
 }
+
+/* Evita azul Bootstrap/link */
+.activity-header a.platform-btn,
+.platform-form-card a.platform-btn{
+    color:var(--sc-green-dark);
+}
+
+.activity-header a.platform-btn:hover,
+.platform-form-card a.platform-btn:hover{
+    color:var(--sc-green-dark);
+}
+
+
+.platform-link-action{
+    min-height:52px;
+    padding:.75rem 1rem;
+    border:0;
+    background:transparent;
+    color:var(--sc-green-dark);
+    font-weight:900;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5rem;
+    text-decoration:none;
+}
+
+.platform-link-action:hover{
+    color:var(--sc-green);
+    text-decoration:none;
+}
+
 
 /* 04.02 CARDS */
 
@@ -1684,6 +1702,165 @@ img {
 }
 
 /* =========================================================
+   04.14 FLUJOS / STEP PAGES
+========================================================= */
+
+.platform-step-page,
+.platform-step-page-wide{
+    width:100%;
+    max-width:1120px;
+    margin:0 auto;
+    padding:34px 20px 90px;
+}
+
+.platform-step-page{
+    max-width:960px;
+}
+
+.platform-step-head{
+    width:100%;
+    margin:0 0 26px;
+    display:grid;
+    grid-template-columns:44px minmax(0, 1fr);
+    align-items:start;
+    gap:18px;
+}
+
+.platform-step-title{
+    text-align:left;
+}
+
+.platform-step-title h1{
+    margin:4px 0 0;
+    color:var(--sc-text);
+    font-size:2rem;
+    font-weight:900;
+    line-height:1.15;
+}
+
+.platform-step-page > .platform-form-card,
+.platform-step-page-wide > .platform-form-card{
+    width:100%;
+}
+
+.platform-step-page > .platform-form-card{
+    max-width:860px;
+    margin:0 auto;
+}
+
+.platform-step-page-wide > .platform-form-card{
+    max-width:1120px;
+    margin:0 auto;
+}
+
+.platform-back-btn{
+    width:44px;
+    height:44px;
+    border:1px solid var(--sc-border);
+    border-radius:14px;
+    background:#fff;
+    color:var(--sc-green-dark);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.05rem;
+    box-shadow:var(--sc-shadow-soft);
+}
+
+.platform-back-inline{
+    min-height:42px;
+    margin:0 0 22px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:var(--sc-green-dark);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight:900;
+}
+
+.platform-back-inline:hover,
+.platform-back-btn:hover{
+    color:var(--sc-green);
+}
+
+.platform-categories-step .platform-section-title{
+    margin-bottom:18px;
+}
+
+@media(max-width:768px){
+    .platform-step-page,
+    .platform-step-page-wide{
+        padding:26px 16px 90px;
+    }
+
+    .platform-step-title h1{
+        font-size:1.55rem;
+    }
+}
+
+/* =========================================================
+   TÍTULOS DE SECCIÓN
+========================================================= */
+
+.platform-section-title{
+    margin:0;
+    color:var(--sc-text);
+    font-size:2rem;
+    font-weight:900;
+    line-height:1.1;
+}
+
+.platform-section-subtitle{
+    margin-top:.5rem;
+    color:var(--sc-muted);
+    font-size:1rem;
+}
+
+.platform-card-title{
+    margin:0;
+    color:var(--sc-text);
+    font-size:1.35rem;
+    font-weight:900;
+}
+
+@media(max-width:768px){
+
+    .platform-section-title{
+        font-size:1.55rem;
+    }
+
+}
+
+
+
+/* NOTA DE LIMPIEZA:
+   Se eliminó el bloque duplicado "TABLAS GENERALES" porque
+   repetía .platform-table, .platform-table-actions,
+   .platform-icon-action y responsive mobile ya definidos
+   en 04.07 TABLAS.
+*/
+
+/* =========================================================
+   09. LEGACY ACTIVO / TEMPLATE-SPECIFIC
+   ---------------------------------------------------------
+   Desde acá quedan estilos que todavía pueden depender de
+   templates actuales. No agregar parches nuevos acá.
+
+   Revisar por template y migrar progresivamente a:
+   - .platform-btn
+   - .platform-card / .platform-form-card
+   - .platform-tabs / .platform-tab
+   - .platform-table
+   - .activity-badge
+   - .platform-input / .platform-form-group
+
+   Cuando un template ya use componentes genéricos, borrar
+   su bloque legacy correspondiente.
+========================================================= */
+
+/* =========================================================
    10. LOGIN MUNICIPAL
    ========================================================= */
 
@@ -1802,147 +1979,6 @@ body:not(.authenticated) .municipal-header {
     font-size: .9rem;
     text-align: center;
 }
-/* =========================================================
-   TABLAS GENERALES
-========================================================= */
-
-.platform-table-wrap{
-    width:100%;
-}
-
-.platform-table{
-    width:100%;
-}
-
-.platform-table th{
-    padding:1rem;
-    font-size:.9rem;
-    font-weight:800;
-    border-bottom:1px solid var(--sc-border);
-}
-
-.platform-table td{
-    padding:1rem;
-    vertical-align:middle;
-}
-
-/* Filas */
-
-.platform-table tbody tr:nth-child(odd){
-    background:#ffffff;
-}
-
-.platform-table tbody tr:nth-child(even){
-    background:#f5f7f8;
-}
-
-.platform-table tbody tr:hover{
-    background:var(--sc-green-light);
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width:768px){
-
-    .platform-table thead{
-        display:none;
-    }
-
-    .platform-table,
-    .platform-table tbody,
-    .platform-table tr,
-    .platform-table td{
-        display:block;
-        width:100%;
-    }
-
-    .platform-table tr{
-        padding:1rem;
-        margin-bottom:1rem;
-        border-radius:20px;
-        background:#fff;
-        border:1px solid var(--sc-border);
-        box-shadow:var(--sc-shadow-soft);
-        border-bottom:6px solid #dde4df;
-    }
-
-    .platform-table tbody tr:nth-child(even){
-        background:#f8faf9;
-    }
-
-    .platform-table td{
-        display:flex;
-        justify-content:space-between;
-        gap:1rem;
-        padding:.75rem 0;
-        border:none;
-    }
-
-    .platform-table td::before{
-        content:attr(data-label);
-        font-weight:800;
-        color:var(--sc-muted);
-        min-width:110px;
-    }
-
-}
-
-.platform-table-actions{
-    display:flex;
-    justify-content:flex-end;
-    align-items:center;
-    gap:.45rem;
-}
-
-.platform-icon-action{
-    width:38px;
-    height:38px;
-    border:1px solid var(--sc-border);
-    border-radius:50%;
-    background:#fff;
-    color:var(--sc-green-dark);
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    font-size:1.05rem;
-}
-
-.platform-icon-action:hover{
-    background:var(--sc-green-light);
-    border-color:var(--sc-green-dark);
-    color:var(--sc-green-dark);
-}
-
-.platform-actions-menu{
-    border:1px solid var(--sc-border);
-    border-radius:14px;
-    padding:.45rem;
-    box-shadow:var(--sc-shadow-card);
-}
-
-.platform-actions-menu .dropdown-item{
-    border-radius:10px;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    gap:.6rem;
-    padding:.65rem .75rem;
-}
-
-.platform-actions-menu .dropdown-item i{
-    color:var(--sc-green-dark);
-}
-
-@media (max-width:768px){
-    .platform-table-actions{
-        justify-content:flex-start;
-    }
-}
-
-
 /* =========================================================
    ACCESOS RÁPIDOS / ACTION CARDS
 ========================================================= */
@@ -3242,6 +3278,107 @@ body:not(.authenticated) .municipal-header {
     border-radius: 10px;
 }
 
+.dashboard-hero-compact{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+}
+
+.dashboard-hero-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:12px;
+    flex-wrap:wrap;
+    padding-top:8px;
+}
+
+@media(max-width:991px){
+    .dashboard-hero-compact{
+        display:block;
+    }
+
+    .dashboard-hero-actions{
+        margin-top:18px;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .dashboard-hero-actions .platform-btn{
+        width:100%;
+        min-height:48px;
+        padding:.7rem 1rem;
+        font-size:.9rem;
+    }
+
+    .dashboard-hero-actions .platform-btn:nth-child(3){
+        grid-column:1 / -1;
+    }
+}
+
+@media(max-width:768px){
+
+    .dashboard-hero-compact .d-flex{
+        display:grid !important;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        width:100%;
+    }
+
+    .dashboard-hero-compact .platform-btn{
+        width:100%;
+        min-height:48px;
+        padding:.7rem 1rem;
+        font-size:.9rem;
+    }
+
+    .dashboard-hero-compact .platform-btn:nth-child(3){
+        grid-column:1 / -1;
+    }
+
+    .dashboard-filters-compact{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .dashboard-filters-compact .form-control,
+    .dashboard-filters-compact .platform-btn,
+    .dashboard-filters-compact .btn{
+        width:100%;
+        min-height:48px;
+    }
+
+    .dashboard-filters-compact button[type="submit"],
+    .dashboard-filters-compact a{
+        grid-column:auto;
+    }
+}
+
+.dashboard-filters{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr)) auto auto;
+    gap:1rem;
+    align-items:center;
+}
+
+.dashboard-current-date{
+    margin-bottom:1rem;
+}
+
+@media (max-width:991px){
+
+    .dashboard-filters{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-filters .platform-btn{
+        width:100%;
+    }
+}
+
 /* KPIs */
 
 .kpi-grid {
@@ -3506,6 +3643,205 @@ body:not(.authenticated) .municipal-header {
 .bg-soft-red {
     background: #fde1e4;
     color: #c91f32;
+}
+
+/* =========================================================
+   DASHBOARD ADMIN - LOOK FINAL
+========================================================= */
+
+.operation-dashboard{
+    max-width: 1360px;
+    margin: 0 auto;
+}
+
+.dashboard-hero-compact{
+    display:flex !important;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:24px;
+    margin-bottom:18px;
+}
+
+.dashboard-welcome{
+    margin:0 0 6px;
+    color:var(--sc-green);
+    font-size:.82rem;
+    font-weight:900;
+    text-transform:uppercase;
+}
+
+.dashboard-title{
+    margin:0 0 10px;
+    font-size:2rem;
+    font-weight:900;
+    color:var(--sc-text);
+}
+
+.dashboard-update{
+    color:var(--sc-muted);
+    font-size:.9rem;
+    font-weight:500;
+}
+
+.dashboard-hero-actions{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+}
+
+.dashboard-tools-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:14px 16px;
+    margin-bottom:24px;
+    background:#fff;
+    border:1px solid var(--sc-border);
+    border-radius:16px;
+    box-shadow:var(--sc-shadow-soft);
+}
+
+.dashboard-current-date{
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    white-space:nowrap;
+    font-weight:900;
+    color:var(--sc-text);
+}
+
+.dashboard-current-date i{
+    color:var(--sc-green);
+}
+
+.dashboard-filters-compact{
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+.dashboard-filters-compact .form-control{
+    width:170px;
+    max-width:170px;
+    min-height:48px;
+    border-radius:12px;
+    border:1px solid var(--sc-border);
+}
+
+.dashboard-filters-compact .platform-btn,
+.dashboard-filters-compact .btn{
+    min-height:48px;
+    padding:.75rem 1.25rem;
+}
+
+.dashboard-section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0 14px;
+}
+
+.dashboard-section-title h2{
+    margin:0;
+    font-size:1.35rem;
+    font-weight:900;
+}
+
+.kpi-grid-clean{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0, 1fr));
+    gap:14px;
+    margin-bottom:26px;
+}
+
+.kpi-card-clean{
+    min-height:142px;
+    border-radius:14px;
+    box-shadow:var(--sc-shadow-soft);
+}
+
+.dashboard-panel{
+    border-radius:16px;
+    padding:26px;
+    margin-bottom:30px;
+    box-shadow:var(--sc-shadow-soft);
+}
+
+.platform-tabs[data-platform-tabs="dashboard-admin"]{
+    position:relative;
+    top:auto;
+    margin:0 0 28px;
+    padding:0;
+    background:transparent;
+    backdrop-filter:none;
+    gap:12px;
+}
+
+.platform-tabs[data-platform-tabs="dashboard-admin"] .platform-tab{
+    min-height:50px;
+    border-radius:999px;
+    box-shadow:none;
+}
+
+.platform-form-card{
+    border-radius:22px;
+    box-shadow:var(--sc-shadow-soft);
+}
+
+.platform-card-title{
+    font-size:1.35rem;
+    font-weight:900;
+}
+
+@media(max-width:1199px){
+    .kpi-grid-clean{
+        grid-template-columns:repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media(max-width:991px){
+    .dashboard-hero-compact,
+    .dashboard-tools-card{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .dashboard-hero-actions,
+    .dashboard-filters-compact{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .dashboard-hero-actions .platform-btn:nth-child(3){
+        grid-column:1 / -1;
+    }
+
+    .dashboard-filters-compact .form-control{
+        width:100%;
+        max-width:none;
+    }
+
+    .kpi-grid-clean{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width:575px){
+    .dashboard-title{
+        font-size:1.55rem;
+    }
+
+    .dashboard-hero-actions,
+    .dashboard-filters-compact,
+    .kpi-grid-clean{
+        grid-template-columns:1fr;
+    }
 }
 
 /* =========================================================

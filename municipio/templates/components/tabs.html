@@ -1,0 +1,16 @@
+<nav class="platform-tabs"
+     data-platform-tabs="{{ group }}"
+     aria-label="{{ label|default:'Navegación' }}">
+
+    {% for tab in tabs %}
+        <button type="button"
+                class="platform-tab {% if forloop.first %}is-active{% endif %}"
+                data-platform-tab="{{ tab.id }}">
+            {% if tab.icon %}
+                <i class="bi {{ tab.icon }}"></i>
+            {% endif %}
+            <span>{{ tab.label }}</span>
+        </button>
+    {% endfor %}
+
+</nav>

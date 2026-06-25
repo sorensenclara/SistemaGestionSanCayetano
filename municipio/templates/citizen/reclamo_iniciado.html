@@ -21,12 +21,12 @@
         <p>Fecha: {{ gestion.creada|date:"d/m/Y H:i" }}</p>
         <p>Estado inicial: {{ gestion.estado.nombre }}</p>
 
-        <div class="platform-form-actions">
+        <div class="platform-form-actions platform-form-actions-center">
             <a href="{% url 'citizen_home' %}" class="btn platform-btn platform-btn-outline-primary">
                 Volver al inicio
             </a>
 
-            <a href="{% url 'citizen_mis_reclamos' %}" class="btn platform-btn platform-btn-primary">
+            <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="btn platform-btn platform-btn-primary">
                 Ver seguimiento
             </a>
         </div>
