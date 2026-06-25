@@ -1,5 +1,6 @@
 /* =========================================================
    SAN CAYETANO - PLATAFORMA MUNICIPAL
+   Coop GENEOS Lta.
 
    ÍNDICE DE SECCIONES
    ─────────────────────────────────────────────────────────
@@ -89,12 +90,12 @@
     */
     --sc-z-base:    1;
     --sc-z-sticky:  20;
-    --sc-z-header:  100;
-    --sc-z-overlay: 200;
-    --sc-z-sidebar: 300;
-    --sc-z-nav:     300;
-    --sc-z-modal:   400;
-    --sc-z-preview: 900;
+    --sc-z-header:  1100;
+    --sc-z-overlay: 1200;
+    --sc-z-sidebar: 1300;
+    --sc-z-nav:     1300;
+    --sc-z-modal:   1400;
+    --sc-z-preview: 9000;
 
     /* Escala tipográfica
        Regla: usar siempre estas variables para font-size.
@@ -146,6 +147,44 @@
 
     --sc-priority-high: #f97316;
     --sc-priority-high-bg: #fff3e8;
+
+    /* Colores de estado de gestión — sistema unificado
+       Cada estado tiene: bg (fondo suave), text (texto), dot (punto sólido)
+       ─────────────────────────────────────────────────────────────────────
+       Usados en .status-*, .status-dot-*, .citizen-status-*
+    */
+    --sc-status-registrado-bg:   #f0f0f0;
+    --sc-status-registrado-text: #555555;
+    --sc-status-registrado-dot:  #909090;
+
+    --sc-status-analisis-bg:     #fff3cd;
+    --sc-status-analisis-text:   #9a6700;
+    --sc-status-analisis-dot:    #f6aa1c;
+
+    --sc-status-programada-bg:   #fff0e6;
+    --sc-status-programada-text: #c45000;
+    --sc-status-programada-dot:  #f97316;
+
+    --sc-status-ejecucion-bg:    #dff3ff;
+    --sc-status-ejecucion-text:  #0c6fa8;
+    --sc-status-ejecucion-dot:   #1594c9;
+
+    --sc-status-finalizada-bg:   #dff4e7;
+    --sc-status-finalizada-text: #0f6b35;
+    --sc-status-finalizada-dot:  #097009;
+
+    --sc-status-rechazada-bg:    #fde1e4;
+    --sc-status-rechazada-text:  #9f3446;
+    --sc-status-rechazada-dot:   #dc3545;
+
+    --sc-status-reabierta-bg:    #f0e6ff;
+    --sc-status-reabierta-text:  #6b21a8;
+    --sc-status-reabierta-dot:   #7e22ce;
+
+    /* Kanban — colores de encabezado de columna */
+    --sc-kanban-pending:  #f9ae20;
+    --sc-kanban-progress: #008dc2;
+    --sc-kanban-done:     #7fa12c;
 }
 
 /* =========================================================
@@ -3479,13 +3518,16 @@ body:not(.authenticated)
     margin: 0;
 }
 
-.kpi-blue { background: #0d6efd; }
-.kpi-yellow { background: #f6aa1c; }
-.kpi-cyan { background: #19b9d2; }
-.kpi-green { background: #1f9d55; }
-.kpi-red { background: #dc3545; }
-.kpi-purple { background: #7e57c2; }
-.kpi-teal { background: #00796b; }
+/* kpi-* — colores de ícono alineados con el sistema de estado --sc-status-* */
+.kpi-teal   { background: var(--sc-status-registrado-dot); }  /* iniciadas — gris */
+.kpi-yellow { background: var(--sc-status-analisis-dot); }    /* en análisis — amarillo */
+.kpi-orange { background: var(--sc-status-programada-dot); }  /* programadas — naranja */
+.kpi-cyan   { background: var(--sc-status-ejecucion-dot); }   /* en ejecución — azul */
+.kpi-green  { background: var(--sc-status-finalizada-dot); }  /* finalizadas — verde */
+.kpi-violet { background: var(--sc-status-reabierta-dot); }   /* reabiertas — violeta */
+.kpi-red    { background: var(--sc-status-rechazada-dot); }   /* rechazadas — rojo */
+.kpi-purple { background: var(--sc-purple); }                 /* genérico — violeta Bootstrap */
+.kpi-blue   { background: var(--sc-blue); }                   /* genérico — azul */
 
 /* Métricas operativas */
 
@@ -5345,23 +5387,23 @@ body:not(.authenticated)
 }
 
 .citizen-status-pending {
-    background: #fff1c7;
-    color:var(--sc-warning-text);
+    background: var(--sc-status-analisis-bg);
+    color: var(--sc-status-analisis-text);
 }
 
 .citizen-status-progress {
-    background: #dff3ff;
-    color:var(--sc-blue);
+    background: var(--sc-status-ejecucion-bg);
+    color: var(--sc-status-ejecucion-text);
 }
 
 .citizen-status-done {
-    background: #dff4e7;
-    color:var(--sc-green-dark);
+    background: var(--sc-status-finalizada-bg);
+    color: var(--sc-status-finalizada-text);
 }
 
 .citizen-status-rejected {
-    background: #fde1e4;
-    color:var(--sc-red);
+    background: var(--sc-status-rechazada-bg);
+    color: var(--sc-status-rechazada-text);
 }
 
 
@@ -6172,49 +6214,43 @@ body:not(.authenticated)
     line-height: 1;
 }
 
-.status-iniciada {
-    background: rgba(197, 197, 197, 0);
-    color: #e0e0e0;
+.status-iniciada,
+.status-registrado {
+    background: var(--sc-status-registrado-bg);
+    color: var(--sc-status-registrado-text);
 }
 
 .status-analisis {
-    background: #ffe2ab;;
-    color:var(--sc-yellow);
+    background: var(--sc-status-analisis-bg);
+    color: var(--sc-status-analisis-text);
 }
 
 .status-programada {
-    background: #ffd2b3;;
-    color:var(--sc-orange);;
+    background: var(--sc-status-programada-bg);
+    color: var(--sc-status-programada-text);
 }
 
 .status-ejecucion {
-    background: rgb(160, 193, 255);
-    color: var(--sc-blue);
+    background: var(--sc-status-ejecucion-bg);
+    color: var(--sc-status-ejecucion-text);
 }
 
 .status-finalizada {
-    background: var(--sc-green-light);
-    color: var(--sc-green-dark);
+    background: var(--sc-status-finalizada-bg);
+    color: var(--sc-status-finalizada-text);
 }
 
 .status-rechazada {
-    background: rgba(220, 53, 69, .12);
-    color: var(--sc-red) ;
+    background: var(--sc-status-rechazada-bg);
+    color: var(--sc-status-rechazada-text);
 }
 
 .status-reabierta {
-    background: rgba(126, 87, 194, .12);
-    color: var(--sc-purple) !important;
+    background: var(--sc-status-reabierta-bg);
+    color: var(--sc-status-reabierta-text);
 }
 
-.status-registrado {
-    background: rgba(21, 148, 201, .12);
-    color: var(--sc-blue) !important;
-}
 
-.status-dot-registrado {
-    background: var(--sc-blue);
-}
 
 .gestion-map-status-list label {
     display: flex;
@@ -6431,13 +6467,14 @@ body:not(.authenticated)
     font-size:var(--sc-text-sm);
 }
 
-.status-dot-iniciada { background: #646464; }
-.status-dot-analisis { background: #f6aa1c; }
-.status-dot-programada { background: #f97316; }
-.status-dot-ejecucion { background: var(--sc-blue); }
-.status-dot-finalizada { background: var(--sc-green); }
-.status-dot-rechazada { background: var(--sc-red); }
-.status-dot-reabierta { background: #7e22ce; }
+.status-dot-iniciada,
+.status-dot-registrado { background: var(--sc-status-registrado-dot); }
+.status-dot-analisis   { background: var(--sc-status-analisis-dot); }
+.status-dot-programada { background: var(--sc-status-programada-dot); }
+.status-dot-ejecucion  { background: var(--sc-status-ejecucion-dot); }
+.status-dot-finalizada { background: var(--sc-status-finalizada-dot); }
+.status-dot-rechazada  { background: var(--sc-status-rechazada-dot); }
+.status-dot-reabierta  { background: var(--sc-status-reabierta-dot); }
 
 .gestion-map-card {
     overflow: hidden;

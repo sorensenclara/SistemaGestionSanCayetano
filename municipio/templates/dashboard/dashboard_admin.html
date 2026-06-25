@@ -20,13 +20,13 @@
 
         {% include "components/kpi_card.html" with href="#" icon="bi-search" icon_class="kpi-yellow" label="En análisis" value=stats.analisis help_text="Revisión" caption_class="text-warning" %}
 
-        {% include "components/kpi_card.html" with href="#" icon="bi-calendar-check" icon_class="kpi-purple" label="Programadas" value=stats.programadas help_text="Planificadas" caption_class="text-purple" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-calendar-check" icon_class="kpi-orange" label="Programadas" value=stats.programadas help_text="Planificadas" caption_class="text-purple" %}
 
         {% include "components/kpi_card.html" with href="#" icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso" caption_class="text-info" %}
 
         {% include "components/kpi_card.html" with href="#" icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
 
-        {% include "components/kpi_card.html" with href="#" icon="bi-arrow-repeat" icon_class="kpi-purple" label="Reabiertas" value=stats.reabiertas help_text="Revisión" caption_class="text-purple" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-arrow-repeat" icon_class="kpi-violet" label="Reabiertas" value=stats.reabiertas help_text="Revisión" caption_class="text-purple" %}
 
         {% include "components/kpi_card.html" with href="#" icon="bi-x-circle" icon_class="kpi-red" label="Rechazadas" value=stats.rechazadas help_text="No admitidas" caption_class="text-danger" %}
 
