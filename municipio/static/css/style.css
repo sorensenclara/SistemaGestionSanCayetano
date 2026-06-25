@@ -699,14 +699,14 @@ a.platform-btn-outline-muted:hover{
     box-shadow:var(--sc-shadow-soft);
 }
 
-/* Evita azul Bootstrap/link */
-.activity-header a.platform-btn,
-.platform-form-card a.platform-btn{
+/* Evita azul Bootstrap/link en botones outline y neutros */
+.activity-header a.platform-btn:not(.platform-btn-primary):not(.platform-btn-danger),
+.platform-form-card a.platform-btn:not(.platform-btn-primary):not(.platform-btn-danger){
     color:var(--sc-green-dark);
 }
 
-.activity-header a.platform-btn:hover,
-.platform-form-card a.platform-btn:hover{
+.activity-header a.platform-btn:not(.platform-btn-primary):not(.platform-btn-danger):hover,
+.platform-form-card a.platform-btn:not(.platform-btn-primary):not(.platform-btn-danger):hover{
     color:var(--sc-green-dark);
 }
 
