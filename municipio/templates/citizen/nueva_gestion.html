@@ -7,16 +7,12 @@
 
 <section class="citizen-page citizen-new-page">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_home' %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p>Nueva gestión</p>
-            <h1>¿Qué necesitás hacer?</h1>
-        </div>
-    </div>
+    {% url 'citizen_home' as home_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=home_url
+        flow_label="Nueva gestión"
+        title="¿Qué necesitás hacer?"
+    %}
 
     <div class="citizen-search-box">
         <i class="bi bi-search"></i>

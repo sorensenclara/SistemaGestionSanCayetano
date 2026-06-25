@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page-wide platform-flow-solicitud">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_nueva_gestion' %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p class="flow-title solicitud">Solicitudes</p>
-            <h1>¿Qué servicio necesitás solicitar?</h1>
-        </div>
-    </div>
+    {% url 'citizen_nueva_gestion' as nueva_gestion_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=nueva_gestion_url
+        flow_type="solicitud"
+        flow_label="Solicitudes"
+        title="¿Qué servicio necesitás solicitar?"
+    %}
 
     <div class="platform-form-card">
 

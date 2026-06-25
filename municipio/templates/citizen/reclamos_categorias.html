@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page-wide platform-flow-reclamo">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_nueva_gestion' %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div class="platform-step-title">
-            <p class="flow-title reclamo">Reclamos</p>
-            <h1>¿Qué problema querés informar?</h1>
-        </div>
-    </div>
+    {% url 'citizen_nueva_gestion' as nueva_gestion_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=nueva_gestion_url
+        flow_type="reclamo"
+        flow_label="Reclamos"
+        title="¿Qué problema querés informar?"
+    %}
 
     <div class="platform-form-card">
 

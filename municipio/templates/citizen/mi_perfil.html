@@ -7,13 +7,12 @@
 
 <section class="citizen-profile-page">
 
-  <div class="citizen-page-head">
-    <div>
-      <span class="flow-title tramite">Mi cuenta</span>
-      <h1>Mi Perfil</h1>
-      <p>Actualizá tus datos, vínculos familiares, inmuebles y preferencias.</p>
-    </div>
-  </div>
+  {% include 'citizen/components/page_head.html' with
+    flow_type="tramite"
+    flow_label="Mi cuenta"
+    title="Mi Perfil"
+    subtitle="Actualizá tus datos, vínculos familiares, inmuebles y preferencias."
+  %}
 
   <nav class="platform-tabs" data-platform-tabs="perfil" aria-label="Navegación de perfil">
     <button type="button" class="platform-tab is-active" data-platform-tab="datos">

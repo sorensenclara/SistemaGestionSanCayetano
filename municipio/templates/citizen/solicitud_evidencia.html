@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page platform-flow-solicitud">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_solicitud_ubicacion' %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p class="flow-title solicitud">Evidencia</p>
-            <h1>Sumá fotos o documentos</h1>
-        </div>
-    </div>
+    {% url 'citizen_solicitud_ubicacion' as back_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=back_url
+        flow_type="solicitud"
+        flow_label="Evidencia"
+        title="Sumá fotos o documentos"
+    %}
 
     <div class="platform-selected-card">
         <i class="bi bi-camera"></i>

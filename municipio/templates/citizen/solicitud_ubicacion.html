@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page platform-flow-solicitud">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_solicitud_detalle' solicitud.categoria_id %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p class="flow-title solicitud">Ubicación</p>
-            <h1>¿Dónde necesitás el servicio?</h1>
-        </div>
-    </div>
+    {% url 'citizen_solicitud_detalle' solicitud.categoria_id as back_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=back_url
+        flow_type="solicitud"
+        flow_label="Ubicación"
+        title="¿Dónde necesitás el servicio?"
+    %}
 
     <div class="platform-selected-card">
         <i class="bi bi-geo-alt"></i>

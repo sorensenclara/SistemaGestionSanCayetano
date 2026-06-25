@@ -11,12 +11,11 @@
         Volver al inicio
     </a>
 
-    <div class="citizen-page-head">
-        <div>
-            <p class="flow-title tramite">Notificaciones</p>
-            <h1>Notificaciones</h1>
-        </div>
-    </div>
+    {% include 'citizen/components/page_head.html' with
+    flow_type="tramite"
+    flow_label="Notificaciones"
+    title="Notificaciones"
+    %}
 
     <div class="notifications-filter-card">
         <button type="button" class="notification-tab is-active">Todas</button>

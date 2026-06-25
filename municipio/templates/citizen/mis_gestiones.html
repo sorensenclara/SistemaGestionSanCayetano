@@ -6,15 +6,12 @@
 
 <section class="citizen-page platform-page-wide mis-gestiones-page">
 
-    <div class="citizen-page-head">
-        <div>
-            <p class="flow-title tramite">Mis Gestiones</p>
-            <h1>Seguimiento de gestiones</h1>
-            <p class="page-subtitle">
-                Consultá reclamos, solicitudes y turnos desde un único lugar.
-            </p>
-        </div>
-    </div>
+    {% include 'citizen/components/page_head.html' with
+    flow_type="tramite"
+    flow_label="Mis Gestiones"
+    title="Seguimiento de gestiones"
+    subtitle="Consultá reclamos, solicitudes y turnos desde un único lugar."
+    %}
 
     <div class="platform-form-card gestiones-filter-card">
 

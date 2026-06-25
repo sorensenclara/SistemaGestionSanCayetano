@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_reclamo_evidencia' %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p class="flow-title reclamo">Resumen</p>
-            <h1>Revisá antes de enviar</h1>
-        </div>
-    </div>
+    {% url 'citizen_reclamo_evidencia' as back_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=back_url
+        flow_type="reclamo"
+        flow_label="Resumen"
+        title="Revisá antes de enviar"
+    %}
 
     <form method="post" class="platform-form-card">
         {% csrf_token %}

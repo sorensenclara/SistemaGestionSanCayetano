@@ -6,16 +6,13 @@
 
 <section class="citizen-page platform-step-page platform-flow-reclamo">
 
-    <div class="citizen-page-head">
-        <a href="{% url 'citizen_reclamo_detalle' reclamo.categoria_id %}" class="citizen-back-link">
-            <i class="bi bi-arrow-left"></i>
-        </a>
-
-        <div>
-            <p class="flow-title reclamo">Ubicación</p>
-            <h1>¿Dónde ocurre el problema?</h1>
-        </div>
-    </div>
+    {% url 'citizen_reclamo_detalle' reclamo.categoria_id as back_url %}
+    {% include 'citizen/components/page_head.html' with
+        back_url=back_url
+        flow_type="reclamo"
+        flow_label="Ubicación"
+        title="¿Dónde ocurre el problema?"
+    %}
 
     <div class="platform-selected-card">
         <i class="bi bi-geo-alt"></i>

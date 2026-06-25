@@ -7,20 +7,17 @@
 
 <section class="citizen-page platform-page-wide app-booking-page">
 
-  <div class="citizen-page-head">
-    <div>
-      <p class="flow-title tramite">Turnos de salud</p>
-      <h1>Obtener turno</h1>
-      <p class="page-subtitle">
-        Buscá por especialidad, profesional, fecha, horario o modalidad.
-      </p>
-    </div>
-
-    <a href="/ciudadano/mis-turnos/" class="platform-btn platform-btn-outline-primary">
-      <i class="bi bi-arrow-left"></i>
-      Mis turnos
-    </a>
-  </div>
+  {% url 'citizen_turnos' as turnos_url %}
+  {% include 'citizen/components/page_head.html' with
+      flow_type="tramite"
+      flow_label="Turnos de salud"
+      title="Obtener turno"
+      subtitle="Buscá por especialidad, profesional, fecha, horario o modalidad."
+      action_url=turnos_url
+      action_label="Mis turnos"
+      action_icon="bi-arrow-left"
+      action_class="platform-btn-outline-primary"
+  %}
 
   <section class="platform-form-card app-filter-card">
     <form method="get" action="#">

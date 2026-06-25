@@ -1,0 +1,79 @@
+{# ============================================================
+   COMPONENTE: citizen/components/page_head.html
+
+   PARÁMETROS:
+     back_url     (opcional) URL del enlace volver. Si se omite, no se renderiza.
+     back_label   (opcional) Texto junto al ícono de volver. Default: solo ícono.
+     flow_type    (opcional) Clase del badge: "tramite" | "reclamo" | "solicitud"
+     flow_label   (opcional) Texto del badge. Ej: "Mis Gestiones", "Ubicación"
+     title        (requerido) Texto del <h1>.
+     subtitle     (opcional) Párrafo de apoyo debajo del título.
+     action_url   (opcional) URL del botón de acción derecho.
+     action_label (opcional) Texto del botón de acción.
+     action_icon  (opcional) Clase Bootstrap Icons. Ej: "bi-calendar-plus"
+     action_class (opcional) Clase CSS del botón. Default: "platform-btn-primary"
+
+   EJEMPLOS
+   ─────────────────────────────────────────────────────────────
+   1. Página de sección (sin volver, sin acción):
+      {% include 'citizen/components/page_head.html' with
+          flow_type="tramite" flow_label="Mis Gestiones"
+          title="Seguimiento de gestiones"
+          subtitle="Consultá reclamos, solicitudes y turnos desde un único lugar."
+      %}
+
+   2. Paso de un flujo (con volver, sin acción):
+      {% include 'citizen/components/page_head.html' with
+          back_url=back_url
+          flow_type="reclamo" flow_label="Ubicación"
+          title="¿Dónde ocurre el problema?"
+      %}
+
+   3. Página con botón de acción (sin volver):
+      {% include 'citizen/components/page_head.html' with
+          flow_type="tramite" flow_label="Mis Turnos"
+          title="Turnos Hospital Municipal"
+          subtitle="Consultá u obtené nuevos turnos desde la app."
+          action_url=obtener_turno_url
+          action_label="Obtener turno"
+          action_icon="bi-calendar-plus"
+          action_class="platform-btn-primary"
+      %}
+
+   4. Solo título, sin badge ni volver (ej: notificaciones):
+      {% include 'citizen/components/page_head.html' with
+          flow_type="tramite" flow_label="Notificaciones"
+          title="Notificaciones"
+      %}
+   ============================================================ #}
+
+<div class="citizen-page-head">
+
+    {% if back_url %}
+        <a href="{{ back_url }}" class="citizen-back-link" aria-label="Volver">
+            <i class="bi bi-arrow-left"></i>
+            {% if back_label %}<span>{{ back_label }}</span>{% endif %}
+        </a>
+    {% endif %}
+
+    <div>
+        {% if flow_label %}
+            <p class="flow-title {% if flow_type %}{{ flow_type }}{% endif %}">{{ flow_label }}</p>
+        {% endif %}
+
+        <h1>{{ title }}</h1>
+
+        {% if subtitle %}
+            <p class="page-subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+
+    {% if action_url %}
+        <a href="{{ action_url }}"
+           class="platform-btn {% if action_class %}{{ action_class }}{% else %}platform-btn-primary{% endif %}">
+            {% if action_icon %}<i class="bi {{ action_icon }}"></i>{% endif %}
+            {{ action_label }}
+        </a>
+    {% endif %}
+
+</div>

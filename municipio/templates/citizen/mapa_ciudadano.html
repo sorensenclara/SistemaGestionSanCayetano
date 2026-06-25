@@ -10,15 +10,12 @@
 
 <section class="citizen-page platform-page-wide mis-gestiones-page">
 
-    <div class="citizen-page-head">
-        <div>
-            <p class="flow-title tramite">Mapa ciudadano</p>
-            <h1>Gestiones georreferenciadas</h1>
-            <p class="page-subtitle">
-                Visualizá reclamos y solicitudes ubicadas en el mapa
-            </p>
-        </div>
-    </div>
+    {% include 'citizen/components/page_head.html' with
+    flow_type="tramite"
+    flow_label="Mapa ciudadano"
+    title="Gestiones georreferenciadas"
+    subtitle="Visualizá reclamos y solicitudes ubicadas en el mapa"
+    %}
 
     <div id="mapaView" class="gestiones-section">
 
