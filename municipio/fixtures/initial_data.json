@@ -1,0 +1,163 @@
+[
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$EMNso9maQRCwSSLfLoXp80$ewxgosFK3nAZ8UDEBsmh9Hsuyhn3FsWUXLXKfuJt7BI=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Admin",
+    "last_name": "Demo",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:10.464Z",
+    "dni": "99000001",
+    "role": "ADMIN",
+    "phone": "",
+    "email": "admin@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$bX0DjJTT0M8JSbjaaeTgwR$JTsbZrLyDoIdGxob8wkN5MngJ/nfiL3vIdXRV+I3GHs=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Secretario",
+    "last_name": "Demo",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:10.620Z",
+    "dni": "99000002",
+    "role": "FUNC",
+    "phone": "",
+    "email": "secretario@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$l6PzMEg2xKT89tDI8ykqhu$yZSqde8Q42btz/WNsdk28nIBSZw1gqg5JRS/c4I6y3E=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Funcionario",
+    "last_name": "Servicios Públicos",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:10.769Z",
+    "dni": "99000003",
+    "role": "FUNC",
+    "phone": "",
+    "email": "func.servicios@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$c6ZNNqOnppAUGP9RVepUpZ$J5Bl49QzX6QMwjeZEolpabQOmCaD3NhNT3bycD6uT4Y=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Funcionario",
+    "last_name": "Obras Públicas",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:10.931Z",
+    "dni": "99000004",
+    "role": "FUNC",
+    "phone": "",
+    "email": "func.obras@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Hi5llESR6fLiAsQJWsTyun$R020NLCjrtbmE550vskSsykxvRqOVTmr5TdQuto4yYA=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Operador",
+    "last_name": "García",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:11.082Z",
+    "dni": "99000005",
+    "role": "OPER",
+    "phone": "",
+    "email": "operador.garcia@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$BtM1iBpIPjcAXFfSqFWk5F$ASJlbmFWkkkpxSnkMLhWXPLuS8oVPyTKtkmWsKl1XpE=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Inspector",
+    "last_name": "López",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:11.233Z",
+    "dni": "99000006",
+    "role": "OPER",
+    "phone": "",
+    "email": "inspector.lopez@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$u6xnEE6hkWjHkXG8nqpsQC$Gw/DCJQcdZ7PCjHHNuQKK+1C5QacHUhZ/GF+wL5p7V0=",
+    "last_login": null,
+    "is_superuser": false,
+    "first_name": "Ciudadano",
+    "last_name": "Demo",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-26T20:01:11.381Z",
+    "dni": "99000007",
+    "role": "CIUD",
+    "phone": "",
+    "email": "ciudadano@sancayetano.demo",
+    "birth_date": null,
+    "address": "",
+    "city": "",
+    "photo": "",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

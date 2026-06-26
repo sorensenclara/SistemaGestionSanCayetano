@@ -1,42 +1,5 @@
-Mi roadmap sería
-Fase 1
-
-✅ page_head
-
-✅ tabs
-
-✅ filter_bar
-
-✅ activity_item
-
-✅ kpi_card
-
-✅ empty_state
-
-Fase 2
-
-Refactorizar:
-
-dashboard_admin
-dashboard index
-gestion_detail
-mis_turnos
-mis_gestiones
-
-Fase 3
-
-Crear:
-
-components/
-    card_list_item.html
-    modal_confirm.html
-    flow_success.html
-Fase 4
-
-Extraer JS:
-
-static/js/
-    platform.js      ✅
-    leaflet-utils.js ✅
-    modal.js
-    map.js
+django>=4.2
+pillow
+django-crispy-forms
+crispy-bootstrap5
+whitenoise
