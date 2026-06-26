@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Funcionario - Centro de Operaciones{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+    {% url 'dashboard' as dashboard_url %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Funcionario / Responsable de Área" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date show_area_filter=True clear_url=dashboard_url %}
+
+    {# ── FOCO DEL ROL ───────────────────────────────────────── #}
+    <div class="dashboard-section-title">
+        <i class="bi bi-speedometer2"></i>
+        <h2>Estado de mi área</h2>
+    </div>
+
+    {# KPIs centrados en gestión del área #}
+    <div class="kpi-grid kpi-grid-clean">
+        {% include "components/kpi_card.html" with href="#" icon="bi-exclamation-triangle" icon_class="kpi-red" label="Críticas" value=stats.criticas|default:"0" help_text="Atención inmediata" caption_class="text-danger" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-search" icon_class="kpi-yellow" label="En análisis" value=stats.analisis help_text="A priorizar" caption_class="text-warning" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-calendar-check" icon_class="kpi-orange" label="Programadas" value=stats.programadas help_text="Planificadas" caption_class="text-warning" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-play-circle" icon_class="kpi-teal" label="Iniciadas" value=stats.iniciadas help_text="Sin asignar" caption_class="text-muted" %}
+    </div>
+
+    <div class="dashboard-panel mb-4">
+
+        <div class="chart-section">
+            <h3><i class="bi bi-bar-chart"></i> Indicadores de mi área</h3>
+            <p class="chart-subtitle">Distribución de gestiones según estado.</p>
+            <canvas id="funcionarioStatusChart"></canvas>
+        </div>
+
+        <div class="activity-section">
+            <div class="activity-header">
+                <h3><i class="bi bi-bell"></i> Alertas y vencimientos</h3>
+                <a href="#" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="activity-list">
+                {% include "components/activity_item.html" with dot_class="bg-danger" title="Casos críticos" text=stats.criticas|default:"0"|stringformat:"s"|add:" gestiones requieren atención" badge="Crítico" badge_class="bg-soft-red" %}
+                {% include "components/activity_item.html" with dot_class="bg-warning" title="En análisis" text=stats.analisis|stringformat:"s"|add:" pendientes de evaluación" badge="Análisis" badge_class="bg-soft-yellow" %}
+                {% include "components/activity_item.html" with dot_class="bg-info" title="En ejecución" text=stats.ejecucion|default:stats.INP|stringformat:"s"|add:" activas" badge="En curso" badge_class="bg-soft-blue" %}
+                {% include "components/activity_item.html" with dot_class="bg-success" title="Finalizadas" text=stats.finalizadas|default:stats.COM|stringformat:"s"|add:" resueltas" badge="Resuelto" badge_class="bg-soft-green" %}
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="platform-tabs" data-platform-tabs="dashboard-funcionario" aria-label="Secciones del dashboard funcionario">
+        <button type="button" class="platform-tab is-active" data-platform-tab="gestiones">
+            <i class="bi bi-megaphone"></i>
+            <span>Gestiones</span>
+        </button>
+        <button type="button" class="platform-tab" data-platform-tab="tareas">
+            <i class="bi bi-card-checklist"></i>
+            <span>Tareas del área</span>
+        </button>
+        <button type="button" class="platform-tab" data-platform-tab="mapa">
+            <i class="bi bi-map"></i>
+            <span>Mapa</span>
+        </button>
+    </nav>
+
+    <div class="platform-tab-panel is-active" data-platform-panel-group="dashboard-funcionario" data-platform-panel="gestiones">
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="platform-form-card h-100">
+                    <div class="activity-header">
+                        <h3 class="platform-card-title"><i class="bi bi-megaphone"></i> Reclamos recientes</h3>
+                        <a href="{% url 'gestion_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todos</a>
+                    </div>
+                    <div class="activity-list">
+                        {% for gestion in reclamos_recientes %}
+                            {% include "components/activity_item.html" with dot_class="bg-warning" title=gestion.categoria.nombre text=gestion.estado.nombre badge=gestion.estado.nombre badge_class="bg-soft-yellow" %}
+                        {% empty %}
+                            {% include "components/empty_state.html" with icon="bi-megaphone" title="Sin reclamos recientes" %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="platform-form-card h-100">
+                    <div class="activity-header">
+                        <h3 class="platform-card-title"><i class="bi bi-inbox"></i> Solicitudes activas</h3>
+                        <a href="{% url 'gestion_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+                    </div>
+                    <div class="activity-list">
+                        {% for gestion in solicitudes_activas %}
+                            {% include "components/activity_item.html" with dot_class="bg-info" title=gestion.categoria.nombre text=gestion.estado.nombre badge=gestion.estado.nombre badge_class="bg-soft-blue" %}
+                        {% empty %}
+                            {% include "components/empty_state.html" with icon="bi-inbox" title="Sin solicitudes activas" %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="platform-tab-panel" data-platform-panel-group="dashboard-funcionario" data-platform-panel="tareas">
+        <div class="platform-form-card mb-4">
+            <div class="activity-header">
+                <h3 class="platform-card-title"><i class="bi bi-card-checklist"></i> Tareas del área</h3>
+                <a href="{% url 'task_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+            </div>
+            <div class="activity-list">
+                {% for tarea in tareas_pendientes %}
+                    {% include "components/activity_item.html" with dot_class="bg-info" title=tarea.title text=tarea.get_status_display badge=tarea.get_status_display badge_class="bg-soft-blue" %}
+                {% empty %}
+                    {% include "components/empty_state.html" with icon="bi-card-checklist" title="Sin tareas pendientes" %}
+                {% endfor %}
+            </div>
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+                <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary">
+                    <i class="bi bi-plus-circle"></i> Crear tarea
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="platform-tab-panel" data-platform-panel-group="dashboard-funcionario" data-platform-panel="mapa">
+        <div class="platform-form-card mb-4">
+            <h3 class="platform-card-title mb-3"><i class="bi bi-map"></i> Mapa operativo de mi área</h3>
+            <p class="text-muted mb-4">Visualizá las gestiones y tareas de tu área en el mapa.</p>
+            <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary">
+                <i class="bi bi-map"></i> Abrir mapa operativo
+            </a>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const canvas = document.getElementById('funcionarioStatusChart');
+    if (canvas) {
+        new Chart(canvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Iniciadas','En análisis','Programadas','En ejecución','Finalizadas','Rechazadas'],
+                datasets: [{
+                    data: [
+                        {{ stats.iniciadas|default:"0" }},
+                        {{ stats.analisis|default:"0" }},
+                        {{ stats.programadas|default:"0" }},
+                        {{ stats.ejecucion|default:stats.INP|default:"0" }},
+                        {{ stats.finalizadas|default:stats.COM|default:"0" }},
+                        {{ stats.rechazadas|default:"0" }}
+                    ],
+                    backgroundColor: ['#909090','#f6aa1c','#f97316','#1594c9','#097009','#dc3545'],
+                    borderRadius: 8, borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#e5e7eb' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

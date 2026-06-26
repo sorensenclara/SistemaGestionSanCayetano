@@ -1,0 +1,606 @@
+{% extends 'citizen/base_citizen.html' %}
+
+{% block title %}Mis Solicitudes - App Ciudadana{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page platform-page-wide mis-gestiones-page">
+
+    <div class="citizen-page-head">
+        <div>
+            <p class="flow-title solicitud">Mis Solicitudes</p>
+            <h1>Seguimiento de solicitudes</h1>
+            <p class="page-subtitle">
+                Consultá el estado de todas tus solicitudes ciudadanas.
+            </p>
+        </div>
+    </div>
+
+    <div class="platform-form-card gestiones-filter-card">
+
+        <div class="platform-search-field">
+            <i class="bi bi-search"></i>
+            <input
+                type="text"
+                id="gestionSearch"
+                class="platform-input"
+                placeholder="Buscar por número, descripción, categoría o área..."
+            >
+        </div>
+
+        <div class="gestion-filter-row">
+            <div class="gestion-status-select-wrap">
+                <select id="statusFilter" class="gestion-status-select">
+                    <option value="todos">Todos los estados</option>
+                    <option value="registrado">Iniciadas</option>
+                    <option value="analisis">En análisis</option>
+                    <option value="programada">Programadas</option>
+                    <option value="ejecucion">En ejecución</option>
+                    <option value="finalizada">Finalizadas</option>
+                    <option value="rechazada">Rechazadas</option>
+                    <option value="reabierta">Reabiertas</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="gestion-view-switch">
+            <button class="gestion-view-btn is-active" data-view="listado">
+                <i class="bi bi-list-ul"></i>
+                Listado
+            </button>
+
+            <button class="gestion-view-btn" data-view="mapa">
+                <i class="bi bi-map"></i>
+                Mapa
+            </button>
+        </div>
+
+    </div>
+
+    <div id="listadoView" class="gestiones-section">
+
+        <div class="platform-section-head">
+            <h2>Mis solicitudes</h2>
+            <span>Mostrando resultados</span>
+        </div>
+
+        <div class="gestiones-table-card">
+            <table class="gestiones-table">
+                <thead>
+                    <tr>
+                        <th><button type="button" class="gestion-sort-btn" data-sort="numero">Nº Solicitud <i class="bi bi-arrow-down-up"></i></button></th>
+                        <th><button type="button" class="gestion-sort-btn" data-sort="estado">Estado <i class="bi bi-arrow-down-up"></i></button></th>
+                        <th><button type="button" class="gestion-sort-btn" data-sort="area">Área / Servicio <i class="bi bi-arrow-down-up"></i></button></th>
+                        <th><button type="button" class="gestion-sort-btn" data-sort="actualizacion">Fecha <i class="bi bi-arrow-down-up"></i></button></th>
+                        <th><button type="button" class="gestion-sort-btn" data-sort="ubicacion">Ubicación <i class="bi bi-arrow-down-up"></i></button></th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for gestion in gestiones %}
+                        {% with estado=gestion.estado.codigo|lower %}
+
+                        <tr data-status="{{ estado }}">
+                            <td data-label="Solicitud">
+                                <strong>#{{ gestion.id }}</strong>
+                                <span>{{ gestion.categoria.nombre }}</span>
+                            </td>
+
+                            <td data-label="Estado">
+                                <span class="gestion-status status-{{ estado }}">
+                                    {{ gestion.estado.nombre }}
+                                </span>
+                            </td>
+
+                            <td data-label="Área / Servicio">
+                                {{ gestion.area_responsable.nombre }}
+                            </td>
+
+                            <td data-label="Fecha">
+                                {{ gestion.creada|date:"d/m/Y H:i" }}
+                            </td>
+
+                            <td data-label="Ubicación">
+                                {% if gestion.direccion %}
+                                    {{ gestion.direccion }}
+                                {% else %}
+                                    Sin dirección
+                                {% endif %}
+                            </td>
+
+                            <td data-label="Acciones">
+                                <div class="gestion-actions">
+                                    <a href="{% url 'citizen_gestion_detalle' gestion.id %}" class="gestion-action-btn gestion-action-detail-solicitud">
+                                        Ver detalle
+                                    </a>
+
+                                    {% if gestion.latitud and gestion.longitud %}
+                                        <button
+                                            type="button"
+                                            class="gestion-action-icon"
+                                            data-map-target="gestion-{{ gestion.id }}"
+                                            title="Ver en mapa"
+                                        >
+                                            <i class="bi bi-geo-alt"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endwith %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="empty-table">
+                                <i class="bi bi-inbox"></i>
+                                <strong>No tenés solicitudes cargadas todavía.</strong>
+                                <span>Cuando hagas una solicitud, aparecerá en este listado.</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="mapaView" class="gestiones-section d-none">
+
+        <div class="platform-section-head">
+            <h2>Mapa de solicitudes</h2>
+
+            <div class="gestion-map-actions">
+                <button type="button" class="gestion-map-scope-btn" id="btnCity">
+                    <i class="bi bi-building"></i>
+                    Ciudad
+                </button>
+                <button type="button" class="gestion-map-scope-btn is-active" id="btnDistrict">
+                    <i class="bi bi-map"></i>
+                    Partido
+                </button>
+            </div>
+        </div>
+
+        <div class="gestion-map-layout">
+
+            <aside class="gestion-map-panel">
+                <div class="gestion-map-box">
+                    <h3>
+                        <i class="bi bi-funnel"></i>
+                        Estados
+                    </h3>
+
+                    <div class="gestion-map-status-list">
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="registrado">
+                            <span class="status-dot status-dot-iniciada"></span>
+                            Iniciadas
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="analisis">
+                            <span class="status-dot status-dot-analisis"></span>
+                            En análisis
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="programada">
+                            <span class="status-dot status-dot-programada"></span>
+                            Programadas
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="ejecucion">
+                            <span class="status-dot status-dot-ejecucion"></span>
+                            En ejecución
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="finalizada">
+                            <span class="status-dot status-dot-finalizada"></span>
+                            Finalizadas
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="rechazada">
+                            <span class="status-dot status-dot-rechazada"></span>
+                            Rechazadas
+                        </label>
+                        <label class="gestion-layer-check">
+                            <input type="checkbox" checked data-map-status="reabierta">
+                            <span class="status-dot status-dot-reabierta"></span>
+                            Reabiertas
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="gestion-map-card">
+                <div id="misSolicitudesMap"></div>
+            </div>
+
+            <aside class="gestion-map-detail" id="gestionMapDetail">
+                <div class="gestion-map-detail-empty">
+                    <i class="bi bi-geo-alt"></i>
+                    <strong>Seleccioná una solicitud</strong>
+                    <span>Vas a ver el detalle de la solicitud.</span>
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const statusFilter = document.getElementById("statusFilter");
+    const tableBody = document.querySelector(".gestiones-table tbody");
+    const rows = Array.from(document.querySelectorAll(".gestiones-table tbody tr"));
+    const sortableRows = rows.filter(row => row.dataset.status !== undefined);
+    const search = document.getElementById("gestionSearch");
+
+    const viewButtons = document.querySelectorAll(".gestion-view-btn");
+    const listadoView = document.getElementById("listadoView");
+    const mapaView = document.getElementById("mapaView");
+
+    let currentStatus = "todos";
+    let currentSort = null;
+    let currentSortDirection = "asc";
+
+    let mapInitialized = false;
+    let map = null;
+    let markersById = {};
+    let mapMarkers = [];
+
+    const statusOrder = {
+        "registrado": 1,
+        "analisis": 2,
+        "programada": 3,
+        "ejecucion": 4,
+        "finalizada": 5,
+        "rechazada": 6,
+        "reabierta": 7
+    };
+
+    function normalize(value) {
+        return (value || "").toString().trim().toLowerCase();
+    }
+
+    function scrollToElement(element) {
+        if (!element) return;
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function applyFilters() {
+        const text = normalize(search.value);
+
+        rows.forEach(row => {
+            if (row.dataset.status === undefined) return;
+
+            const status = normalize(row.dataset.status);
+            const content = normalize(row.innerText);
+
+            const matchStatus = currentStatus === "todos" || status === currentStatus;
+            const matchText = content.includes(text);
+
+            row.style.display = matchStatus && matchText ? "" : "none";
+        });
+    }
+
+    function getCellText(row, label) {
+        const cell = row.querySelector(`td[data-label="${label}"]`);
+        return normalize(cell ? cell.innerText : "");
+    }
+
+    function getGestionNumber(row) {
+        const strong = row.querySelector('td[data-label="Solicitud"] strong');
+        return parseInt((strong ? strong.innerText : "").replace(/\D/g, ""), 10) || 0;
+    }
+
+    function getSortValue(row, sortType) {
+        if (sortType === "numero") return getGestionNumber(row);
+        if (sortType === "estado") return statusOrder[normalize(row.dataset.status)] || 99;
+        if (sortType === "area") return getCellText(row, "Área / Servicio");
+        if (sortType === "actualizacion") return getCellText(row, "Fecha");
+        if (sortType === "ubicacion") return getCellText(row, "Ubicación");
+        return "";
+    }
+
+    function sortRows(sortType) {
+        if (currentSort === sortType) {
+            currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+        } else {
+            currentSort = sortType;
+            currentSortDirection = "asc";
+        }
+
+        const sorted = [...sortableRows].sort((a, b) => {
+            const valueA = getSortValue(a, sortType);
+            const valueB = getSortValue(b, sortType);
+
+            let result;
+            if (typeof valueA === "number" && typeof valueB === "number") {
+                result = valueA - valueB;
+            } else {
+                result = valueA.localeCompare(valueB, "es", { numeric: true });
+            }
+
+            return currentSortDirection === "asc" ? result : -result;
+        });
+
+        sorted.forEach(row => tableBody.appendChild(row));
+        applyFilters();
+        scrollToElement(listadoView);
+    }
+
+    document.querySelectorAll(".gestion-sort-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            sortRows(button.dataset.sort);
+        });
+    });
+
+    statusFilter.addEventListener("change", function () {
+        currentStatus = normalize(statusFilter.value);
+        applyFilters();
+        setTimeout(() => scrollToElement(listadoView), 80);
+    });
+
+    search.addEventListener("input", applyFilters);
+
+    function markerIcon() {
+        return L.divIcon({
+            className: "",
+            html: `
+                <div style="
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50% 50% 50% 0;
+                    background: #1594c9;
+                    transform: rotate(-45deg);
+                    box-shadow: 0 8px 18px rgba(0,0,0,.22);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 3px solid white;
+                ">
+                    <span style="
+                        width: 9px;
+                        height: 9px;
+                        border-radius: 50%;
+                        background: white;
+                        display: block;
+                    "></span>
+                </div>
+            `,
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+    }
+
+    function showMapDetail(item) {
+        const detail = document.getElementById("gestionMapDetail");
+        detail.innerHTML = `
+            <div class="gestion-map-detail-content">
+                <span class="gestion-map-detail-type gestion-map-type-solicitud">
+                    Solicitud ciudadana
+                </span>
+
+                <h3>${item.title}</h3>
+
+                <span class="gestion-status ${item.statusClass}">
+                    ${item.status}
+                </span>
+
+                <div class="gestion-map-detail-list">
+                    <div>
+                        <i class="bi bi-building"></i>
+                        <span>Área</span>
+                        <p>${item.area}</p>
+                    </div>
+                    <div>
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Fecha</span>
+                        <p>${item.date}</p>
+                    </div>
+                    <div>
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Ubicación</span>
+                        <p>${item.address}</p>
+                    </div>
+                </div>
+
+                <a href="${item.detailUrl}" class="btn platform-btn platform-btn-primary w-100">
+                    <i class="bi bi-eye"></i>
+                    Ver detalle
+                </a>
+            </div>
+        `;
+    }
+
+    function fitMapToVisibleMarkers() {
+        if (!map || mapMarkers.length === 0) return;
+
+        const visibleMarkers = mapMarkers
+            .filter(item => map.hasLayer(item.marker))
+            .map(item => item.marker.getLatLng());
+
+        if (visibleMarkers.length === 0) return;
+
+        map.fitBounds(L.latLngBounds(visibleMarkers), {
+            padding: [40, 40],
+            maxZoom: 15
+        });
+    }
+
+    function refreshMapMarkers() {
+        if (!map) return;
+
+        const activeStatuses = Array.from(document.querySelectorAll("[data-map-status]:checked"))
+            .map(input => normalize(input.dataset.mapStatus));
+
+        mapMarkers.forEach(item => {
+            const shouldShow = activeStatuses.includes(item.status);
+
+            if (shouldShow) {
+                if (!map.hasLayer(item.marker)) item.marker.addTo(map);
+            } else {
+                if (map.hasLayer(item.marker)) map.removeLayer(item.marker);
+            }
+        });
+
+        fitMapToVisibleMarkers();
+    }
+
+    function setView(view) {
+        if (view === "listado") {
+            listadoView.classList.remove("d-none");
+            mapaView.classList.add("d-none");
+        }
+
+        if (view === "mapa") {
+            listadoView.classList.add("d-none");
+            mapaView.classList.remove("d-none");
+            initMap();
+
+            setTimeout(() => {
+                if (map) {
+                    map.invalidateSize();
+                    fitMapToVisibleMarkers();
+                }
+            }, 300);
+        }
+    }
+
+    viewButtons.forEach(btn => {
+        btn.addEventListener("click", function () {
+            viewButtons.forEach(b => b.classList.remove("is-active"));
+            btn.classList.add("is-active");
+            setView(btn.dataset.view);
+
+            if (btn.dataset.view === "mapa") {
+                setTimeout(() => scrollToElement(mapaView), 120);
+            }
+
+            if (btn.dataset.view === "listado") {
+                setTimeout(() => scrollToElement(listadoView), 120);
+            }
+        });
+    });
+
+    function initMap() {
+        if (mapInitialized) return;
+
+        mapInitialized = true;
+
+        const cityCenter = [-38.3167, -59.6167];
+        const districtCenter = [-38.4167, -59.6667];
+
+        map = L.map("misSolicitudesMap", {
+            zoomControl: false
+        }).setView(cityCenter, 13);
+
+        L.control.zoom({
+            position: "bottomright"
+        }).addTo(map);
+
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        }).addTo(map);
+
+        {% for gestion in gestiones %}
+            {% with estado=gestion.estado.codigo|lower %}
+                {% if gestion.latitud and gestion.longitud %}
+
+                    const marker{{ gestion.id }} = L.marker(
+                        [
+                            {{ gestion.latitud|stringformat:"f" }},
+                            {{ gestion.longitud|stringformat:"f" }}
+                        ],
+                        { icon: markerIcon() }
+                    );
+
+                    marker{{ gestion.id }}.on("click", function () {
+                        showMapDetail({
+                            title: "{{ gestion.categoria.nombre|escapejs }}",
+                            status: "{{ gestion.estado.nombre|escapejs }}",
+                            statusClass: "status-{{ estado }}",
+                            area: "{{ gestion.area_responsable.nombre|escapejs }}",
+                            date: "{{ gestion.creada|date:'d/m/Y H:i' }}",
+                            address: "{% if gestion.direccion %}{{ gestion.direccion|escapejs }}{% else %}Ubicación indicada en el mapa{% endif %}",
+                            detailUrl: "{% url 'citizen_gestion_detalle' gestion.id %}",
+                        });
+                    });
+
+                    mapMarkers.push({
+                        id: "gestion-{{ gestion.id }}",
+                        marker: marker{{ gestion.id }},
+                        status: "{{ estado }}"
+                    });
+
+                    markersById["gestion-{{ gestion.id }}"] = marker{{ gestion.id }};
+                    marker{{ gestion.id }}.addTo(map);
+
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+
+        document.querySelectorAll("[data-map-status]").forEach(input => {
+            input.addEventListener("change", refreshMapMarkers);
+        });
+
+        document.getElementById("btnCity").addEventListener("click", function () {
+            document.getElementById("btnCity").classList.add("is-active");
+            document.getElementById("btnDistrict").classList.remove("is-active");
+            map.setView(cityCenter, 14);
+        });
+
+        document.getElementById("btnDistrict").addEventListener("click", function () {
+            document.getElementById("btnDistrict").classList.add("is-active");
+            document.getElementById("btnCity").classList.remove("is-active");
+            map.setView(districtCenter, 10);
+        });
+
+        refreshMapMarkers();
+
+        setTimeout(() => {
+            map.invalidateSize();
+            fitMapToVisibleMarkers();
+        }, 300);
+    }
+
+    document.querySelectorAll("[data-map-target]").forEach(button => {
+        button.addEventListener("click", function () {
+            setView("mapa");
+
+            viewButtons.forEach(b => b.classList.remove("is-active"));
+            document.querySelector('[data-view="mapa"]').classList.add("is-active");
+
+            const id = button.dataset.mapTarget;
+
+            setTimeout(() => {
+                scrollToElement(mapaView);
+
+                if (markersById[id]) {
+                    map.setView(markersById[id].getLatLng(), 16);
+                    markersById[id].fire("click");
+                }
+            }, 350);
+        });
+    });
+
+    applyFilters();
+    setView("listado");
+});
+</script>
+{% endblock %}

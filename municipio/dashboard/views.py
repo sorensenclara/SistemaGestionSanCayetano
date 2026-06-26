@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Count
 import datetime
+import locale
 
 from tasks.models import Task
 from citizen.models import Gestion, CategoriaGestion
@@ -134,8 +135,16 @@ def dashboard_home(request):
         .order_by("area_responsable__nombre")
     )
 
+    # Fecha actual formateada en español
+    DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+    MESES = ["enero","febrero","marzo","abril","mayo","junio",
+             "julio","agosto","septiembre","octubre","noviembre","diciembre"]
+    hoy = timezone.now().date()
+    current_date_str = f"{DIAS[hoy.weekday()]}, {hoy.day} de {MESES[hoy.month-1]} de {hoy.year}"
+
     context = {
         "stats": stats,
+        "current_date": current_date_str,
         "start_date": start_date_str,
         "end_date": end_date_str,
         "selected_area": area,
@@ -146,7 +155,26 @@ def dashboard_home(request):
         "areas_stats": areas_stats,
     }
 
-    return render(request, "dashboard/dashboard_admin.html", context)
+    # Seleccionar template según role del usuario (campo User.Role)
+    user = request.user
+
+    # Ciudadanos no tienen acceso al Centro de Operaciones
+    if user.role == user.Role.CIUDADANO:
+        from django.shortcuts import redirect
+        return redirect('citizen_home')
+
+    if user.is_superuser or user.role == user.Role.ADMINISTRADOR:
+        template = "dashboard/dashboard_admin.html"
+    elif user.role == user.Role.FUNCIONARIO:
+        # FUNCIONARIO incluye secretario — si en el futuro se crea Role.SECRETARIO
+        # agregar elif aquí antes de FUNCIONARIO
+        template = "dashboard/dashboard_funcionario.html"
+    elif user.role == user.Role.OPERADOR:
+        template = "dashboard/dashboard_operador.html"
+    else:
+        template = "dashboard/dashboard_admin.html"
+
+    return render(request, template, context)
 
 
 @login_required

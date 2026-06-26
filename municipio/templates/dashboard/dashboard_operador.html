@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Operador - Centro de Operaciones{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+    {% url 'dashboard' as dashboard_url %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Operador / Inspector" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date clear_url=dashboard_url %}
+
+    {# ── FOCO DEL ROL ───────────────────────────────────────── #}
+    <div class="dashboard-section-title">
+        <i class="bi bi-clipboard-check"></i>
+        <h2>¿Qué tenés que hacer hoy?</h2>
+    </div>
+
+    {# KPIs centrados en acción inmediata #}
+    <div class="kpi-grid kpi-grid-clean">
+        {% include "components/kpi_card.html" with href="{% url 'task_list' %}" icon="bi-exclamation-triangle" icon_class="kpi-red" label="Vencidas" value=stats.overdue help_text="Atención urgente" caption_class="text-danger" %}
+        {% include "components/kpi_card.html" with href="{% url 'task_list' %}" icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso hoy" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-play-circle" icon_class="kpi-teal" label="Por revisar" value=stats.iniciadas help_text="Sin atender" caption_class="text-muted" %}
+        {% include "components/kpi_card.html" with href="{% url 'task_list' %}" icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+    </div>
+
+    <div class="dashboard-panel mb-4">
+
+        {# Tareas asignadas — acción principal del operador #}
+        <div class="platform-form-card h-100">
+            <div class="activity-header">
+                <h3 class="platform-card-title">
+                    <i class="bi bi-card-checklist"></i> Mis tareas pendientes
+                </h3>
+                <a href="{% url 'task_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+            </div>
+
+            <div class="activity-list">
+                {% for tarea in tareas_pendientes %}
+                    {% include "components/activity_item.html" with dot_class="bg-info" title=tarea.title text=tarea.get_status_display badge=tarea.get_status_display badge_class="bg-soft-blue" %}
+                {% empty %}
+                    {% include "components/empty_state.html" with icon="bi-check2-all" title="Sin tareas pendientes" text="No tenés tareas asignadas por el momento." %}
+                {% endfor %}
+            </div>
+
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+                <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary">
+                    <i class="bi bi-map"></i> Ver mapa operativo
+                </a>
+                <a href="{% url 'gestion_list' %}" class="btn platform-btn platform-btn-outline-primary">
+                    <i class="bi bi-megaphone"></i> Ver gestiones
+                </a>
+            </div>
+        </div>
+
+        {# Alertas — lo que necesita atención ahora #}
+        <div class="activity-section">
+            <div class="activity-header">
+                <h3><i class="bi bi-bell"></i> Alertas</h3>
+            </div>
+            <div class="activity-list">
+                {% include "components/activity_item.html" with dot_class="bg-danger" title="Tareas vencidas" text=stats.overdue|stringformat:"s"|add:" requieren atención inmediata" badge="Urgente" badge_class="bg-soft-red" %}
+                {% include "components/activity_item.html" with dot_class="bg-warning" title="Por revisar" text=stats.iniciadas|stringformat:"s"|add:" gestiones sin atender" badge="Pendiente" badge_class="bg-soft-yellow" %}
+                {% include "components/activity_item.html" with dot_class="bg-info" title="En ejecución" text=stats.ejecucion|default:"0"|stringformat:"s"|add:" activas" badge="En curso" badge_class="bg-soft-blue" %}
+            </div>
+        </div>
+
+    </div>
+
+    {# Tabs: gestiones propias + observaciones + mapa #}
+    <nav class="platform-tabs" data-platform-tabs="dashboard-operador" aria-label="Secciones del dashboard operador">
+        <button type="button" class="platform-tab is-active" data-platform-tab="gestiones">
+            <i class="bi bi-megaphone"></i>
+            <span>Gestiones asignadas</span>
+        </button>
+        <button type="button" class="platform-tab" data-platform-tab="mapa">
+            <i class="bi bi-map"></i>
+            <span>Mapa operativo</span>
+        </button>
+    </nav>
+
+    <div class="platform-tab-panel is-active" data-platform-panel-group="dashboard-operador" data-platform-panel="gestiones">
+        <div class="platform-form-card mb-4">
+            <div class="activity-header">
+                <h3 class="platform-card-title">
+                    <i class="bi bi-megaphone"></i> Reclamos recientes
+                </h3>
+                <a href="{% url 'gestion_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todos</a>
+            </div>
+            <div class="activity-list">
+                {% for gestion in reclamos_recientes %}
+                    {% include "components/activity_item.html" with dot_class="bg-warning" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-yellow" %}
+                {% empty %}
+                    {% include "components/empty_state.html" with icon="bi-megaphone" title="Sin reclamos asignados" text="No tenés reclamos asignados por el momento." %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="platform-tab-panel" data-platform-panel-group="dashboard-operador" data-platform-panel="mapa">
+        <div class="platform-form-card mb-4">
+            <h3 class="platform-card-title mb-3"><i class="bi bi-map"></i> Mapa operativo</h3>
+            <p class="text-muted mb-4">Visualizá las gestiones y tareas geolocalizadas de tu área.</p>
+            <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary">
+                <i class="bi bi-map"></i> Abrir mapa operativo
+            </a>
+        </div>
+    </div>
+
+</section>
+{% endblock %}
