@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -20,6 +21,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("role", User.Role.ADMINISTRADOR)
 
         return self.create_user(dni, password, **extra_fields)
+
 
 class User(AbstractUser):
     class Role(models.TextChoices):
@@ -42,6 +44,18 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.CIUDADANO,
         verbose_name="Rol",
+    )
+
+    # Área a la que pertenece el usuario (Funcionario, Operador, Secretario).
+    # No aplica para Administrador ni Ciudadano.
+    area = models.ForeignKey(
+        "citizen.Area",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="usuarios",
+        verbose_name="Área",
+        help_text="Área a la que pertenece este usuario (Funcionario, Operador o Secretario).",
     )
 
     # Datos de contacto
