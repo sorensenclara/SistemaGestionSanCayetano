@@ -1,45 +1,65 @@
-from django.shortcuts import render, get_object_or_404
-from citizen.models import Gestion, CategoriaGestion, AdjuntoGestion
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Count
+from django import forms
 import datetime
-import locale
 
 from tasks.models import Task
-from citizen.models import Gestion, CategoriaGestion
+from citizen.models import Gestion, CategoriaGestion, AdjuntoGestion, EstadoGestion
 
 
 @login_required
 def dashboard_home(request):
-    start_date_str = request.GET.get("start_date")
-    end_date_str = request.GET.get("end_date")
-    area = request.GET.get("area")
-    tipo = request.GET.get("tipo")
+    user = request.user
 
+    # Ciudadanos no tienen acceso al Centro de Operaciones
+    if user.role == user.Role.CIUDADANO:
+        return redirect('citizen_home')
+
+    start_date_str = request.GET.get("start_date")
+    end_date_str   = request.GET.get("end_date")
+    area           = request.GET.get("area")
+    tipo           = request.GET.get("tipo")
+
+    # ── Base querysets ──────────────────────────────────────────────────────
     gestiones = Gestion.objects.select_related(
-        "ciudadano",
-        "categoria",
-        "area_responsable",
-        "estado",
+        "ciudadano", "categoria", "area_responsable", "estado",
     ).all()
 
     tasks = Task.objects.all()
 
+    # ── Filtros por ROL ─────────────────────────────────────────────────────
+    # Operador: solo ve sus tareas asignadas y las gestiones de su área
+    if user.role == user.Role.OPERADOR:
+        tasks     = tasks.filter(assigned_to=user)
+        gestiones = gestiones.filter(area_responsable__operadores=user) if hasattr(Gestion, 'area_responsable') else gestiones
+
+    # Funcionario: solo ve gestiones de su área
+    elif user.role == user.Role.FUNCIONARIO:
+        if hasattr(user, 'area'):
+            gestiones = gestiones.filter(area_responsable=user.area)
+            tasks     = tasks.filter(area=user.area)
+
+    # Secretario: ve todo (sin filtro por área propia)
+    # Administrador: ve todo
+    # → ambos no necesitan filtro adicional aquí
+
+    # ── Filtros desde la UI (GET params) ────────────────────────────────────
     if start_date_str:
         try:
             start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d").date()
-            gestiones = gestiones.filter(creada__date__gte=start_date)
-            tasks = tasks.filter(created_at__date__gte=start_date)
+            gestiones  = gestiones.filter(creada__date__gte=start_date)
+            tasks      = tasks.filter(created_at__date__gte=start_date)
         except ValueError:
             pass
 
     if end_date_str:
         try:
-            end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            end_date  = datetime.datetime.strptime(end_date_str, "%Y-%m-%d").date()
             gestiones = gestiones.filter(creada__date__lte=end_date)
-            tasks = tasks.filter(created_at__date__lte=end_date)
+            tasks     = tasks.filter(created_at__date__lte=end_date)
         except ValueError:
             pass
 
@@ -49,7 +69,8 @@ def dashboard_home(request):
     if tipo:
         gestiones = gestiones.filter(categoria__tipo=tipo)
 
-    reclamos = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_RECLAMO)
+    # ── Subsets por tipo ────────────────────────────────────────────────────
+    reclamos   = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_RECLAMO)
     solicitudes = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_SOLICITUD)
 
     def count_estado(codigo):
@@ -57,13 +78,14 @@ def dashboard_home(request):
 
     today = timezone.now().date()
 
+    # ── Stats ───────────────────────────────────────────────────────────────
     stats = {
         "total": gestiones.count() + tasks.count(),
 
-        "gestiones_total": gestiones.count(),
-        "reclamos_total": reclamos.count(),
+        "gestiones_total":   gestiones.count(),
+        "reclamos_total":    reclamos.count(),
         "solicitudes_total": solicitudes.count(),
-        "tareas_total": tasks.count(),
+        "tareas_total":      tasks.count(),
 
         "iniciadas": (
             count_estado("registrado")
@@ -100,29 +122,27 @@ def dashboard_home(request):
             count_estado("rechazada")
             + count_estado("rechazado")
         ),
-
         "criticas": tasks.exclude(
             status=Task.Status.COMPLETED
-        ).filter(
-            due_date__lt=today
-        ).count(),
-
+        ).filter(due_date__lt=today).count(),
         "overdue": tasks.exclude(
             status=Task.Status.COMPLETED
-        ).filter(
-            due_date__lt=today
-        ).count(),
+        ).filter(due_date__lt=today).count(),
 
-        # Compatibilidad con dashboard viejo
-        Task.Status.REGISTERED: tasks.filter(status=Task.Status.REGISTERED).count(),
-        Task.Status.PENDING: tasks.filter(status=Task.Status.PENDING).count(),
+        # Compatibilidad con keys de Task.Status
+        Task.Status.REGISTERED:  tasks.filter(status=Task.Status.REGISTERED).count(),
+        Task.Status.PENDING:     tasks.filter(status=Task.Status.PENDING).count(),
         Task.Status.IN_PROGRESS: tasks.filter(status=Task.Status.IN_PROGRESS).count(),
-        Task.Status.COMPLETED: tasks.filter(status=Task.Status.COMPLETED).count(),
+        Task.Status.COMPLETED:   tasks.filter(status=Task.Status.COMPLETED).count(),
     }
 
-    reclamos_recientes = reclamos.order_by("-creada")[:5]
+    # ── Listas recientes ─────────────────────────────────────────────────────
+    reclamos_recientes  = reclamos.order_by("-creada")[:5]
     solicitudes_activas = solicitudes.exclude(
-        estado__codigo__in=["finalizada", "finalizado", "resuelta", "resuelto", "rechazada", "rechazado"]
+        estado__codigo__in=[
+            "finalizada", "finalizado", "resuelta", "resuelto",
+            "rechazada", "rechazado",
+        ]
     ).order_by("-creada")[:5]
 
     tareas_pendientes = tasks.exclude(
@@ -130,44 +150,38 @@ def dashboard_home(request):
     ).order_by("due_date", "-created_at")[:5]
 
     areas_stats = (
-        gestiones.values("area_responsable__id", "area_responsable__nombre")
+        gestiones
+        .values("area_responsable__id", "area_responsable__nombre")
         .annotate(total=Count("id"))
         .order_by("area_responsable__nombre")
     )
 
-    # Fecha actual formateada en español
-    DIAS = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+    # ── Fecha en español ─────────────────────────────────────────────────────
+    DIAS  = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
     MESES = ["enero","febrero","marzo","abril","mayo","junio",
              "julio","agosto","septiembre","octubre","noviembre","diciembre"]
     hoy = timezone.now().date()
     current_date_str = f"{DIAS[hoy.weekday()]}, {hoy.day} de {MESES[hoy.month-1]} de {hoy.year}"
 
     context = {
-        "stats": stats,
-        "current_date": current_date_str,
-        "start_date": start_date_str,
-        "end_date": end_date_str,
-        "selected_area": area,
-        "selected_tipo": tipo,
-        "reclamos_recientes": reclamos_recientes,
+        "stats":              stats,
+        "current_date":       current_date_str,
+        "start_date":         start_date_str,
+        "end_date":           end_date_str,
+        "selected_area":      area,
+        "selected_tipo":      tipo,
+        "reclamos_recientes":  reclamos_recientes,
         "solicitudes_activas": solicitudes_activas,
-        "tareas_pendientes": tareas_pendientes,
-        "areas_stats": areas_stats,
+        "tareas_pendientes":   tareas_pendientes,
+        "areas_stats":         areas_stats,
     }
 
-    # Seleccionar template según role del usuario (campo User.Role)
-    user = request.user
-
-    # Ciudadanos no tienen acceso al Centro de Operaciones
-    if user.role == user.Role.CIUDADANO:
-        from django.shortcuts import redirect
-        return redirect('citizen_home')
-
+    # ── Selección de template por rol ────────────────────────────────────────
     if user.is_superuser or user.role == user.Role.ADMINISTRADOR:
         template = "dashboard/dashboard_admin.html"
+    elif user.role == user.Role.SECRETARIO:
+        template = "dashboard/dashboard_secretario.html"
     elif user.role == user.Role.FUNCIONARIO:
-        # FUNCIONARIO incluye secretario — si en el futuro se crea Role.SECRETARIO
-        # agregar elif aquí antes de FUNCIONARIO
         template = "dashboard/dashboard_funcionario.html"
     elif user.role == user.Role.OPERADOR:
         template = "dashboard/dashboard_operador.html"
@@ -180,47 +194,38 @@ def dashboard_home(request):
 @login_required
 def mapa_operativo(request):
     gestiones = Gestion.objects.select_related(
-        "categoria",
-        "area_responsable",
-        "estado",
-        "ciudadano",
+        "categoria", "area_responsable", "estado", "ciudadano",
     ).filter(
         latitud__isnull=False,
         longitud__isnull=False,
     ).order_by("-creada")
 
-    return render(request, "dashboard/mapa_operativo.html", {
-        "gestiones": gestiones
-    })
+    return render(request, "dashboard/mapa_operativo.html", {"gestiones": gestiones})
+
 
 @login_required
 def gestion_list(request):
-    tipo = request.GET.get("tipo")
+    tipo   = request.GET.get("tipo")
     estado = request.GET.get("estado")
-    area = request.GET.get("area")
+    area   = request.GET.get("area")
 
     gestiones = Gestion.objects.select_related(
-        "ciudadano",
-        "categoria",
-        "area_responsable",
-        "estado",
+        "ciudadano", "categoria", "area_responsable", "estado",
     ).order_by("-creada")
 
     if tipo:
         gestiones = gestiones.filter(categoria__tipo=tipo)
-
     if estado:
         gestiones = gestiones.filter(estado__codigo=estado)
-
     if area:
         gestiones = gestiones.filter(area_responsable_id=area)
 
     return render(request, "gestiones/gestion_list.html", {
-        "gestiones": gestiones,
-        "selected_tipo": tipo,
+        "gestiones":      gestiones,
+        "selected_tipo":  tipo,
         "selected_estado": estado,
-        "selected_area": area,
-        "tipo_reclamo": CategoriaGestion.TIPO_RECLAMO,
+        "selected_area":  area,
+        "tipo_reclamo":   CategoriaGestion.TIPO_RECLAMO,
         "tipo_solicitud": CategoriaGestion.TIPO_SOLICITUD,
     })
 
@@ -229,20 +234,14 @@ def gestion_list(request):
 def gestion_detail(request, gestion_id):
     gestion = get_object_or_404(
         Gestion.objects.select_related(
-            "ciudadano",
-            "categoria",
-            "area_responsable",
-            "estado",
+            "ciudadano", "categoria", "area_responsable", "estado",
         ),
         id=gestion_id,
     )
-
-    adjuntos = AdjuntoGestion.objects.filter(
-        gestion=gestion
-    ).order_by("creado")
+    adjuntos = AdjuntoGestion.objects.filter(gestion=gestion).order_by("creado")
 
     return render(request, "gestiones/gestion_detail.html", {
-        "gestion": gestion,
+        "gestion":  gestion,
         "adjuntos": adjuntos,
     })
 
@@ -259,3 +258,56 @@ def solicitudes_list(request):
     request.GET = request.GET.copy()
     request.GET["tipo"] = CategoriaGestion.TIPO_SOLICITUD
     return gestion_list(request)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# Cambiar estado de gestión
+# ════════════════════════════════════════════════════════════════════════════
+
+class CambiarEstadoForm(forms.Form):
+    estado = forms.ModelChoiceField(
+        queryset=EstadoGestion.objects.filter(activo=True).order_by("orden"),
+        label="Nuevo estado",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    comentario = forms.CharField(
+        label="Comentario (opcional)",
+        required=False,
+        widget=forms.Textarea(attrs={
+            "class": "form-control",
+            "rows": 3,
+            "placeholder": "Agregá una nota sobre este cambio de estado...",
+        }),
+    )
+
+
+@login_required
+def gestion_cambiar_estado(request, gestion_id):
+    gestion = get_object_or_404(Gestion, id=gestion_id)
+    user = request.user
+
+    # Permisos: ciudadanos no pueden cambiar estado.
+    # Operador, Funcionario, Secretario y Administrador sí pueden.
+    if user.role == user.Role.CIUDADANO:
+        messages.error(request, "No tenés permisos para cambiar el estado de esta gestión.")
+        return redirect('gestion_detail', gestion_id=gestion.id)
+
+    if request.method == "POST":
+        form = CambiarEstadoForm(request.POST)
+        if form.is_valid():
+            estado_anterior = gestion.estado
+            gestion.estado = form.cleaned_data["estado"]
+            gestion.save(update_fields=["estado", "actualizada"])
+
+            messages.success(
+                request,
+                f"Estado actualizado: {estado_anterior.nombre} → {gestion.estado.nombre}"
+            )
+            return redirect('gestion_detail', gestion_id=gestion.id)
+    else:
+        form = CambiarEstadoForm(initial={"estado": gestion.estado_id})
+
+    return render(request, "gestiones/gestion_cambiar_estado.html", {
+        "gestion": gestion,
+        "form": form,
+    })
