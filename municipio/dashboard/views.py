@@ -31,18 +31,19 @@ def dashboard_home(request):
     tasks = Task.objects.all()
 
     # ── Filtros por ROL ─────────────────────────────────────────────────────
-    # Operador: solo ve sus tareas asignadas y las gestiones de su área
+    # Operador: solo ve sus tareas asignadas, y las gestiones de su área
     if user.role == user.Role.OPERADOR:
-        tasks     = tasks.filter(assigned_to=user)
-        gestiones = gestiones.filter(area_responsable__operadores=user) if hasattr(Gestion, 'area_responsable') else gestiones
-
-    # Funcionario: solo ve gestiones de su área
-    elif user.role == user.Role.FUNCIONARIO:
-        if hasattr(user, 'area'):
+        tasks = tasks.filter(assigned_to=user)
+        if user.area:
             gestiones = gestiones.filter(area_responsable=user.area)
-            tasks     = tasks.filter(area=user.area)
 
-    # Secretario: ve todo (sin filtro por área propia)
+    # Funcionario: solo ve gestiones y tareas de su área
+    elif user.role == user.Role.FUNCIONARIO:
+        if user.area:
+            gestiones = gestiones.filter(area_responsable=user.area)
+            tasks     = tasks.filter(assigned_to__area=user.area)
+
+    # Secretario: ve todo (supervisa todas las áreas)
     # Administrador: ve todo
     # → ambos no necesitan filtro adicional aquí
 
