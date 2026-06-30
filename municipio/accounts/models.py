@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -22,13 +21,13 @@ class UserManager(BaseUserManager):
 
         return self.create_user(dni, password, **extra_fields)
 
-
 class User(AbstractUser):
     class Role(models.TextChoices):
         ADMINISTRADOR = "ADMIN", "Administrador"
-        FUNCIONARIO = "FUNC", "Funcionario"
-        OPERADOR = "OPER", "Operador"
-        CIUDADANO = "CIUD", "Ciudadano"
+        SECRETARIO    = "SECR", "Secretario"
+        FUNCIONARIO   = "FUNC", "Funcionario"
+        OPERADOR      = "OPER", "Operador"
+        CIUDADANO     = "CIUD", "Ciudadano"
 
     username = None
 
@@ -46,47 +45,20 @@ class User(AbstractUser):
     )
 
     # Datos de contacto
-    phone = models.CharField(
-        "Celular",
-        max_length=20,
-        blank=True
-    )
-
-    email = models.EmailField(
-        "Email",
-        blank=True
-    )
+    phone = models.CharField("Celular", max_length=20, blank=True)
+    email = models.EmailField("Email", blank=True)
 
     # Datos complementarios
-    birth_date = models.DateField(
-        "Fecha de nacimiento",
-        null=True,
-        blank=True
-    )
-
-    address = models.CharField(
-        "Domicilio",
-        max_length=255,
-        blank=True
-    )
-
-    city = models.CharField(
-        "Localidad",
-        max_length=100,
-        blank=True
-    )
+    birth_date = models.DateField("Fecha de nacimiento", null=True, blank=True)
+    address    = models.CharField("Domicilio", max_length=255, blank=True)
+    city       = models.CharField("Localidad", max_length=100, blank=True)
 
     # Foto perfil
-    photo = models.ImageField(
-        "Foto de perfil",
-        upload_to="profiles/",
-        null=True,
-        blank=True
-    )
-    
+    photo = models.ImageField("Foto de perfil", upload_to="profiles/", null=True, blank=True)
+
     objects = UserManager()
 
-    USERNAME_FIELD = "dni"
+    USERNAME_FIELD  = "dni"
     REQUIRED_FIELDS = []
 
     def __str__(self):
@@ -95,6 +67,9 @@ class User(AbstractUser):
 
     def is_administrador(self):
         return self.role == self.Role.ADMINISTRADOR
+
+    def is_secretario(self):
+        return self.role == self.Role.SECRETARIO
 
     def is_funcionario(self):
         return self.role == self.Role.FUNCIONARIO

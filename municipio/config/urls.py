@@ -7,9 +7,7 @@ from tasks import views as tasks_views
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
-
     # Pantalla inicial
     path("", acceso_inicial, name="acceso_inicial"),
 
@@ -46,13 +44,13 @@ urlpatterns = [
     # Gestiones
     path("gestiones/", dashboard_views.gestion_list, name="gestion_list"),
     path("gestiones/<int:gestion_id>/", dashboard_views.gestion_detail, name="gestion_detail"),
+    path("gestiones/<int:gestion_id>/cambiar-estado/", dashboard_views.gestion_cambiar_estado, name="gestion_cambiar_estado"),
     path("reclamos/", dashboard_views.reclamos_list, name="reclamos_list"),
     path("solicitudes/", dashboard_views.solicitudes_list, name="solicitudes_list"),
 
     # App Ciudadana
     path("ciudadano/", include("citizen.urls")),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(
