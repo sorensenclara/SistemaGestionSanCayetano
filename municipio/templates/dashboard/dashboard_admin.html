@@ -16,14 +16,15 @@
 </div>
 
 {# ── KPIs REALES ─────────────────────────────────────────── #}
+{% url 'gestion_list' as gestion_list_url %}
 <div class="kpi-grid kpi-grid-clean">
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-play-circle"     icon_class="kpi-teal"   label="Iniciadas"    value=stats.iniciadas              help_text="Ingresadas"   caption_class="text-muted"    %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-search"          icon_class="kpi-yellow" label="En análisis"  value=stats.analisis               help_text="Revisión"     caption_class="text-warning"  %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-calendar-check"  icon_class="kpi-orange" label="Programadas"  value=stats.programadas             help_text="Planificadas" caption_class="text-warning"  %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-tools"           icon_class="kpi-cyan"   label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso"  caption_class="text-info"    %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-check-circle"    icon_class="kpi-green"  label="Finalizadas"  value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-arrow-repeat"    icon_class="kpi-violet" label="Reabiertas"   value=stats.reabiertas             help_text="Revisión"     caption_class="text-purple"   %}
-  {% include "components/kpi_card.html" with href="{% url 'gestion_list' %}" icon="bi-x-circle"        icon_class="kpi-red"    label="Rechazadas"   value=stats.rechazadas             help_text="No admitidas" caption_class="text-danger"   %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-play-circle"     icon_class="kpi-teal"   label="Iniciadas"    value=stats.iniciadas              help_text="Ingresadas"   caption_class="text-muted"    %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-search"          icon_class="kpi-yellow" label="En análisis"  value=stats.analisis               help_text="Revisión"     caption_class="text-warning"  %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-calendar-check"  icon_class="kpi-orange" label="Programadas"  value=stats.programadas             help_text="Planificadas" caption_class="text-warning"  %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-tools"           icon_class="kpi-cyan"   label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso"  caption_class="text-info"    %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-check-circle"    icon_class="kpi-green"  label="Finalizadas"  value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-arrow-repeat"    icon_class="kpi-violet" label="Reabiertas"   value=stats.reabiertas             help_text="Revisión"     caption_class="text-purple"   %}
+  {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-x-circle"        icon_class="kpi-red"    label="Rechazadas"   value=stats.rechazadas             help_text="No admitidas" caption_class="text-danger"   %}
 </div>
 
 {# ── PANEL: GRÁFICO + ALERTAS REALES ────────────────────── #}
