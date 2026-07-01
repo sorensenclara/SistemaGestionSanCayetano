@@ -1,0 +1,156 @@
+{% extends 'citizen/base_citizen.html' %}
+{% load static %}
+
+{% block title %}App Ciudadana - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="citizen-page citizen-home">
+
+    <!-- HERO -->
+    <section class="citizen-home-hero">
+        <div>
+            <p class="citizen-home-date">Martes, 16 de Junio</p>
+            <h1>Hola, {{ user.first_name|default:user.username }}</h1>
+            <p>¿En qué podemos ayudarte hoy?</p>
+        </div>
+    </section>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <section class="citizen-section">
+        <div class="citizen-section-head">
+            <h2>Accesos rápidos</h2>
+        </div>
+
+        <div class="citizen-grid citizen-grid-home">
+
+            <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-green">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <strong>Mis reclamos</strong>
+                <span>{{ reclamos_count }}</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <a href="{% url 'citizen_mis_gestiones' %}?tipo=solicitud" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-blue">
+                    <i class="bi bi-clipboard-check"></i>
+                </div>
+                <strong>Mis solicitudes</strong>
+                <span>{{ solicitudes_count }}</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <a href="{% url 'citizen_turnos' %}" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-orange">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <strong>Mis turnos</strong>
+                <span>1</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <!-- TRAMITES 
+            <a href="{% url 'citizen_mis_gestiones' %}" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-purple">
+                    <i class="bi bi-folder"></i>
+                </div>
+                <strong>Mis trámites en curso</strong>
+                <span>1</span>
+                <i class="bi bi-chevron-right"></i>
+            </a> -->
+
+            <a href="{% url 'citizen_notificaciones' %}" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-yellow">
+                    <i class="bi bi-bell"></i>
+                </div>
+                <strong>Notificaciones</strong>
+                <span>3</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <a href="{% url 'citizen_mapa' %}" class="citizen-card-link citizen-quick-card">
+                <div class="citizen-icon-box citizen-icon-map">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <strong>Mapa ciudadano</strong>
+                <span></span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- NUEVA GESTIÓN -->
+    <a href="{% url 'citizen_nueva_gestion' %}" class="citizen-new-request">
+        <div>
+            <i class="bi bi-plus-circle"></i>
+        </div>
+        <div>
+            <strong>Iniciar nueva gestión</strong>
+            <span>Reclamo, solicitud o turno médico</span>
+        </div>
+        <i class="bi bi-chevron-right"></i>
+    </a>
+
+    <!-- ESTADO DE SERVICIOS 
+    <section class="citizen-section">
+        <div class="citizen-section-head">
+            <h2>Estado de Servicios</h2>
+            <a href="{% url 'citizen_estado_servicios' %}">Ver todos</a>
+        </div>
+
+        <div class="citizen-service-list">
+            <article>
+                <span class="service-dot ok"></span>
+                <div>
+                    <strong>Recolección</strong>
+                    <p>Servicio normal</p>
+                </div>
+            </article>
+
+            <article>
+                <span class="service-dot warning"></span>
+                <div>
+                    <strong>Regador</strong>
+                    <p>Interrumpido hasta el 16/06</p>
+                </div>
+            </article>
+
+            <article>
+                <span class="service-dot ok"></span>
+                <div>
+                    <strong>Hospital Municipal</strong>
+                    <p>Atención normal</p>
+                </div>
+            </article>
+        </div>
+    </section> -->
+
+    <!-- NOTICIAS 
+    <section class="citizen-section">
+        <div class="citizen-section-head">
+            <h2>Noticias y Eventos</h2>
+            <a href="#">Ver más</a>
+        </div>
+
+        <article class="citizen-news-card">
+            <span>Evento municipal</span>
+            <strong>Actividades culturales y deportivas de invierno</strong>
+            <p>Consultá las propuestas disponibles para la comunidad.</p>
+        </article>
+    </section> -->
+
+    <!-- MAPA -->
+    <section class="citizen-map-card">
+        <div>
+            <strong>Mapa Ciudadano</strong>
+            <span>Consultá servicios, dependencias y reclamos georreferenciados.</span>
+        </div>
+        <a href="{% url 'citizen_mapa' %}">Ver mapa</a>
+    </section>
+
+</section>
+
+{% endblock %}

@@ -5281,6 +5281,12 @@ body:not(.authenticated)
     flex-shrink: 0;
 }
 
+.citizen-icon-box {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+}
+
 .citizen-icon-box i {
     line-height: 1;
 }
@@ -5294,6 +5300,16 @@ body:not(.authenticated)
 .citizen-icon-map { background:var(--sc-green); }
 
 /* Grillas */
+
+.citizen-grid-home {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.citizen-icon-box {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+}
 
 .citizen-grid {
     display: grid;
@@ -5471,47 +5487,19 @@ body:not(.authenticated)
     font-weight:var(--sc-weight-normal);
 }
 
-.citizen-quick-card {
-    padding: 18px;
-    min-height: 138px;
-    position: relative;
-    display: grid;
-    grid-template-columns: 52px 1fr 24px;
-    grid-template-rows: auto 1fr;
-    gap: 12px;
-    align-items: start;
-}
 
-.citizen-quick-card .citizen-icon-box,
-.citizen-quick-icon {
-    width: 52px;
-    height: 52px;
-    font-size:var(--sc-text-xl);
-    grid-row: 1 / 3;
-}
-
-.citizen-quick-card strong {
-    font-size:var(--sc-text-base);
-    font-weight:var(--sc-weight-black);
-    line-height: 1.25;
-    align-self: center;
-}
-
-.citizen-quick-card span {
-    position: absolute;
-    top: 18px;
-    right: 44px;
+/* Cards de estadísticas */
+.citizen-stat-card h3 {
+    font-size: 1.6rem;
+    font-weight: var(--sc-weight-black);
     color: var(--sc-green-dark);
-    font-size:var(--sc-text-xl);
-    font-weight:var(--sc-weight-black);
+    margin: 0 0 2px;
+    line-height: 1;
 }
-
-.citizen-quick-card > .bi-chevron-right {
-    position: absolute;
-    right: 18px;
-    bottom: 20px;
-    color: var(--sc-green-dark);
-    font-size:var(--sc-text-lg);
+.citizen-stat-card p {
+    font-size: var(--sc-text-sm);
+    color: var(--sc-muted);
+    margin: 0;
 }
 
 .citizen-new-request {
@@ -5897,22 +5885,15 @@ body:not(.authenticated)
         width: 100%;
         text-align: center;
     }
+
+    .citizen-grid-home {
+    grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* TABLET */
 
 @media (min-width: 768px) and (max-width: 1199px) {
-
-
-
-
-
-
-
-
-
-
-
 
     .citizen-grid,
     .citizen-grid-2,
@@ -5988,12 +5969,6 @@ body:not(.authenticated)
         bottom: 18px;
     }
 }
-
-
-
-/* =========================================================
-   09. UTILIDADES
-========================================================= */
 
 /* =========================================================
    09. UTILIDADES
@@ -7852,6 +7827,166 @@ body:not(.authenticated)
     }
 }
 
+
+/* ── citizen/components/action_card ────────────────────────────────────────
+   Card de acción principal del home ciudadano
+   ──────────────────────────────────────────────────────────────────────── */
+.citizen-action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.citizen-action-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--sc-white);
+    border: 1px solid var(--sc-border);
+    border-radius: var(--sc-radius-lg);
+    text-decoration: none;
+    color: var(--sc-dark);
+    transition: box-shadow .15s, border-color .15s;
+}
+.citizen-action-card:hover {
+    border-color: var(--sc-green-dark);
+    box-shadow: 0 2px 12px rgba(0,0,0,.07);
+}
+.citizen-action-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--sc-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.citizen-action-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.citizen-action-card-body strong {
+    font-size: var(--sc-text-base);
+    font-weight: var(--sc-weight-bold);
+    color: var(--sc-dark);
+}
+.citizen-action-card-body span {
+    font-size: var(--sc-text-sm);
+    color: var(--sc-muted);
+}
+.citizen-action-card-arrow {
+    color: var(--sc-muted);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ── citizen/components/status_summary ──────────────────────────────────────
+   Resumen compacto de gestiones activas
+   ──────────────────────────────────────────────────────────────────────── */
+.citizen-status-summary {
+    margin-top: 28px;
+}
+.citizen-status-summary-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.citizen-status-summary-head h2 {
+    font-size: var(--sc-text-lg);
+    font-weight: var(--sc-weight-bold);
+    color: var(--sc-dark);
+    margin: 0;
+}
+.citizen-status-summary-link {
+    font-size: var(--sc-text-sm);
+    color: var(--sc-green-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.citizen-status-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.citizen-status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 8px;
+    background: var(--sc-white);
+    border: 1px solid var(--sc-border);
+    border-radius: var(--sc-radius-lg);
+    text-decoration: none;
+    color: var(--sc-dark);
+    text-align: center;
+    transition: border-color .15s;
+}
+.citizen-status-item:hover {
+    border-color: var(--sc-green-dark);
+}
+.citizen-status-item-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--sc-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+.citizen-status-item strong {
+    font-size: 1.4rem;
+    font-weight: var(--sc-weight-black);
+    color: var(--sc-dark);
+    line-height: 1;
+}
+.citizen-status-item span {
+    font-size: var(--sc-text-xs);
+    color: var(--sc-muted);
+}
+
+/* Cards de acción con fondo de color */
+.citizen-action-colored {
+    color: #fff !important;
+}
+.citizen-action-colored h3,
+.citizen-action-colored p,
+.citizen-action-colored .bi-chevron-right {
+    color: #fff !important;
+}
+.citizen-action-colored .citizen-icon-box {
+    background: rgba(255,255,255,0.25) !important;
+}
+.citizen-action-colored:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+}
+.citizen-action-green  { background: var(--sc-green); border-color: var(--sc-green); }
+.citizen-action-blue   { background: var(--sc-blue);  border-color: var(--sc-blue);  }
+.citizen-action-orange { background: var(--sc-orange); border-color: var(--sc-orange); }
+
+/* Responsive */
+@media (max-width: 480px) {
+    .citizen-status-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .citizen-action-card-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+    }
+}
+
+
+
+
 /* =========================================================
    10. LEGACY - BORRAR PROGRESIVAMENTE
    Estos estilos quedan sólo para no romper templates viejos.
@@ -7861,11 +7996,6 @@ body:not(.authenticated)
 /* =========================================================
    10.01 HEADER PRINCIPAL (legacy)
    ========================================================= */
-
-
-
-
-
 
 .municipal-logo {
     height: 60px;
@@ -8581,6 +8711,58 @@ body:not(.authenticated)
     color: var(--sc-green-dark);
 }
 
+.citizen-map-card-new {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--sc-white);
+    border: 1px solid var(--sc-border);
+    border-radius: var(--sc-radius-xl);
+    box-shadow: var(--sc-shadow-soft);
+    margin-top: 8px;
+}
+.citizen-map-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--sc-radius-lg);
+    background: var(--sc-green-dark);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.citizen-map-card-body {
+    flex: 1;
+}
+.citizen-map-card-body strong {
+    display: block;
+    font-weight: var(--sc-weight-bold);
+    color: var(--sc-dark);
+    margin-bottom: 4px;
+}
+.citizen-map-card-body span {
+    font-size: var(--sc-text-sm);
+    color: var(--sc-muted);
+}
+.citizen-map-card-btn {
+    background: var(--sc-green-dark);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--sc-radius-pill);
+    text-decoration: none;
+    font-weight: var(--sc-weight-semibold);
+    font-size: var(--sc-text-sm);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.citizen-map-card-btn:hover {
+    opacity: 0.9;
+    color: #fff;
+}
+
 /* ==========================================================
    07.05 RESPONSIVE
 ========================================================== */
@@ -8625,10 +8807,6 @@ body:not(.authenticated)
         justify-content: space-around;
         align-items: center;
     }
-
-
-
-
 
     .citizen-nav-add {
         width: 58px;

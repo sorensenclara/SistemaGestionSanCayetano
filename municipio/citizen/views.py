@@ -32,17 +32,31 @@ citizen_login = CitizenLoginView.as_view()
 
 @login_required(login_url="citizen_login")
 def home(request):
-    gestiones = Gestion.objects.filter(ciudadano=request.user)
+    from django.utils import timezone
+    from django.urls import reverse
 
-    reclamos_count = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_RECLAMO).count()
+    gestiones = Gestion.objects.filter(ciudadano=request.user)
+    reclamos_count    = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_RECLAMO).count()
     solicitudes_count = gestiones.filter(categoria__tipo=CategoriaGestion.TIPO_SOLICITUD).count()
 
+    # Fecha en español
+    DIAS  = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+    MESES = ["enero","febrero","marzo","abril","mayo","junio",
+             "julio","agosto","septiembre","octubre","noviembre","diciembre"]
+    hoy = timezone.now().date()
+    current_date = f"{DIAS[hoy.weekday()]}, {hoy.day} de {MESES[hoy.month-1]}"
+
     return render(request, "citizen/home.html", {
-        "reclamos_count": reclamos_count,
+        "reclamos_count":    reclamos_count,
         "solicitudes_count": solicitudes_count,
-        "turnos_count": 1,
-        "notificaciones_count": 3,
+        "turnos_count":      1,
+        "notif_count":       3,
+        "current_date":      current_date,
+        "reclamo_url":       reverse("citizen_reclamos_categorias"),
+        "solicitud_url":     reverse("citizen_solicitudes_categorias"),
+        "turno_url":         reverse("citizen_obtener_turno"),
     })
+
 
 
 @login_required(login_url="citizen_login")

@@ -1,0 +1,46 @@
+<section class="citizen-status-summary">
+    <div class="citizen-status-summary-head">
+        <h2>Mis gestiones</h2>
+        <a href="{% url 'citizen_mis_gestiones' %}" class="citizen-status-summary-link">
+            Ver todas <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    <div class="citizen-status-summary-grid">
+        <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="citizen-status-item">
+            <div class="citizen-status-item-icon citizen-icon-green">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <div>
+                <strong>{{ reclamos_count }}</strong>
+                <span>Reclamos</span>
+            </div>
+        </a>
+        <a href="{% url 'citizen_mis_gestiones' %}?tipo=solicitud" class="citizen-status-item">
+            <div class="citizen-status-item-icon citizen-icon-blue">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+            <div>
+                <strong>{{ solicitudes_count }}</strong>
+                <span>Solicitudes</span>
+            </div>
+        </a>
+        <a href="{% url 'citizen_turnos' %}" class="citizen-status-item">
+            <div class="citizen-status-item-icon citizen-icon-orange">
+                <i class="bi bi-heart-pulse"></i>
+            </div>
+            <div>
+                <strong>{{ turnos_count|default:"0" }}</strong>
+                <span>Turnos</span>
+            </div>
+        </a>
+        <a href="{% url 'citizen_notificaciones' %}" class="citizen-status-item">
+            <div class="citizen-status-item-icon citizen-icon-yellow">
+                <i class="bi bi-bell"></i>
+            </div>
+            <div>
+                <strong>{{ notif_count|default:"3" }}</strong>
+                <span>Notif.</span>
+            </div>
+        </a>
+    </div>
+</section>
