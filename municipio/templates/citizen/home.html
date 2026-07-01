@@ -16,101 +16,35 @@
         </div>
     </section>
 
-    {# ── 1. ACCIONES CON FONDO DE COLOR ───────────────────────────────────── #}
+    {# ── 1. ACCIONES — usa components/platform_action_card.html ──────────── #}
     <section class="citizen-section">
         <div class="citizen-section-head">
             <h2>¿Qué necesitás hacer?</h2>
         </div>
-        <div class="citizen-grid citizen-grid-home">
-
-            <a href="{{ reclamo_url }}" class="citizen-card-link citizen-quick-card citizen-action-colored citizen-action-green">
-                <div class="citizen-icon-box">
-                    <i class="bi bi-exclamation-circle"></i>
-                </div>
-                <div>
-                    <h3>Nuevo reclamo</h3>
-                    <p>Reportá un problema en tu barrio o ciudad</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{{ solicitud_url }}" class="citizen-card-link citizen-quick-card citizen-action-colored citizen-action-blue">
-                <div class="citizen-icon-box">
-                    <i class="bi bi-clipboard-check"></i>
-                </div>
-                <div>
-                    <h3>Nueva solicitud</h3>
-                    <p>Solicitá un servicio o intervención</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{{ turno_url }}" class="citizen-card-link citizen-quick-card citizen-action-colored citizen-action-orange">
-                <div class="citizen-icon-box">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div>
-                    <h3>Sacar turno</h3>
-                    <p>Reservá tu turno para atención presencial</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
+        <div class="citizen-action-grid">
+            {% url 'citizen_reclamos_categorias' as reclamo_url %}
+            {% url 'citizen_solicitudes_categorias' as solicitud_url %}
+            {% url 'citizen_obtener_turno' as turno_url %}
+            {% include "components/platform_action_card.html" with href=reclamo_url icon="bi-exclamation-circle" color="green" title="Nuevo reclamo" description="Reportá un problema en tu barrio o ciudad" %}
+            {% include "components/platform_action_card.html" with href=solicitud_url icon="bi-clipboard-check" color="blue" title="Nueva solicitud" description="Solicitá un servicio o intervención" %}
+            {% include "components/platform_action_card.html" with href=turno_url icon="bi-heart-pulse" color="orange" title="Sacar turno" description="Reservá tu turno para atención presencial" %}
         </div>
     </section>
 
-    {# ── 2. MIS GESTIONES (seguimiento) ──────────────────────────────────── #}
+    {# ── 2. MIS GESTIONES — kpi-card-pastel ──────────────────────────────── #}
     <section class="citizen-section">
         <div class="citizen-section-head">
             <h2>Mis gestiones</h2>
-            <a href="{% url 'citizen_mis_gestiones' %}">Ver todas mis gestiones →</a>
+            <a href="{% url 'citizen_mis_gestiones' %}">Ver todas →</a>
         </div>
-        <div class="citizen-grid citizen-grid-home">
-
-            <a href="{% url 'citizen_mis_gestiones' %}?tipo=reclamo" class="citizen-card-link citizen-quick-card citizen-stat-card">
-                <div class="citizen-icon-box citizen-icon-green">
-                    <i class="bi bi-exclamation-circle"></i>
-                </div>
-                <div>
-                    <h3>{{ reclamos_count }}</h3>
-                    <p>Mis reclamos</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{% url 'citizen_mis_gestiones' %}?tipo=solicitud" class="citizen-card-link citizen-quick-card citizen-stat-card">
-                <div class="citizen-icon-box citizen-icon-blue">
-                    <i class="bi bi-clipboard-check"></i>
-                </div>
-                <div>
-                    <h3>{{ solicitudes_count }}</h3>
-                    <p>Mis solicitudes</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{% url 'citizen_turnos' %}" class="citizen-card-link citizen-quick-card citizen-stat-card">
-                <div class="citizen-icon-box citizen-icon-orange">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div>
-                    <h3>{{ turnos_count }}</h3>
-                    <p>Mis turnos</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
-            <a href="{% url 'citizen_notificaciones' %}" class="citizen-card-link citizen-quick-card citizen-stat-card">
-                <div class="citizen-icon-box citizen-icon-yellow">
-                    <i class="bi bi-bell"></i>
-                </div>
-                <div>
-                    <h3>{{ notif_count }}</h3>
-                    <p>Notificaciones</p>
-                </div>
-                <i class="bi bi-chevron-right"></i>
-            </a>
-
+        <div class="citizen-kpi-grid">
+            {% url 'citizen_mis_gestiones' as mis_gestiones_url %}
+            {% url 'citizen_turnos' as turnos_url %}
+            {% url 'citizen_notificaciones' as notif_url %}
+            {% include "components/kpi_card.html" with href=mis_gestiones_url icon="bi-exclamation-circle" icon_class="kpi-green" label="Mis reclamos" value=reclamos_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-green" %}
+            {% include "components/kpi_card.html" with href=mis_gestiones_url icon="bi-clipboard-check" icon_class="kpi-blue" label="Mis solicitudes" value=solicitudes_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-blue" %}
+            {% include "components/kpi_card.html" with href=turnos_url icon="bi-heart-pulse" icon_class="kpi-orange" label="Mis turnos" value=turnos_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-orange" %}
+            {% include "components/kpi_card.html" with href=notif_url icon="bi-bell" icon_class="kpi-yellow" label="Notificaciones" value=notif_count help_text="Ver todas →" extra_class="kpi-card-pastel kpi-pastel-yellow" %}
         </div>
     </section>
 

@@ -134,6 +134,27 @@
     --sc-danger-text:   #9f3446;
     --sc-success-text:  #0f6b35;
 
+    /* Colores pastel 
+       ────────────────────────────────────────────────────────────────────── */
+    --sc-green-pastel:        #dcfce7;
+    --sc-green-pastel-bg:     #f0fdf4;
+    --sc-green-pastel-text:   var(--sc-green);
+
+    --sc-blue-pastel:         #dbeafe;
+    --sc-blue-pastel-bg:      #eff6ff;
+    --sc-blue-pastel-text:    var(--sc-blue);
+
+    --sc-orange-pastel:       #ffedd5;
+    --sc-orange-pastel-bg:    #fff7ed;
+    --sc-orange-pastel-text:  var(--sc-orange);
+
+    /* Amber — versión oscura del amarillo para contrastar sobre pastel claro */
+    --sc-amber:               #f6aa1c;
+    --sc-amber-dark:          #d78c01;
+    --sc-yellow-pastel:       #fef3c7;
+    --sc-yellow-pastel-bg:    #fffbeb;
+    --sc-yellow-pastel-text:  #f39e00;
+
 
 
 
@@ -845,6 +866,90 @@ a.platform-btn-outline-muted:hover{
     }
 }
 
+/* ================================================================
+   PLATFORM ACTION CARD — componente unificado para acciones
+   ================================================================ */
+
+.platform-action-card {
+    display: grid;
+    grid-template-columns: 56px 1fr 24px;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: var(--sc-radius-xl);
+    text-decoration: none;
+    color: #fff;
+    transition: opacity .15s, transform .15s;
+    border: none;
+}
+.platform-action-card:hover {
+    opacity: .92;
+    transform: translateY(-2px);
+    color: #fff;
+}
+.platform-action-card h3 {
+    margin: 0 0 4px;
+    font-size: var(--sc-text-base);
+    font-weight: var(--sc-weight-black);
+    color: #fff;
+}
+.platform-action-card p {
+    margin: 0;
+    font-size: var(--sc-text-sm);
+    color: rgba(255,255,255,.85);
+}
+.platform-action-card > .bi-chevron-right {
+    color: rgba(255,255,255,.7);
+    font-size: 1.1rem;
+    justify-self: end;
+}
+
+/* Ícono circular */
+.platform-action-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+/* Variantes de color */
+.platform-action-card--green  { background: var(--sc-green); }
+.platform-action-card--blue   { background: var(--sc-blue); }
+.platform-action-card--orange { background: var(--sc-orange); }
+
+/* ================================================================
+   KPI CARD en grilla ciudadana — las stat cards de "Mis gestiones"
+   usan kpi_card.html que ya existe, solo necesitamos la grilla
+   ================================================================ */
+
+.citizen-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.citizen-action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+@media (max-width: 767px) {
+    .citizen-action-grid {
+        grid-template-columns: 1fr;
+    }
+    .citizen-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
 /* 04.03 FORMULARIOS */
 
 .platform-form-group{
@@ -1424,8 +1529,7 @@ a.platform-btn-outline-muted:hover{
     gap:16px;
 }
 
-.platform-action-card,
-.citizen-quick-card,
+/* platform-area-card y platform-category-card — cards de plataforma COM */
 .platform-area-card,
 .platform-category-card{
     border:1px solid var(--sc-border);
@@ -1441,8 +1545,6 @@ a.platform-btn-outline-muted:hover{
     align-items:center;
 }
 
-.platform-action-card,
-.citizen-quick-card,
 .platform-area-card{
     padding:22px;
     display:grid;
@@ -1452,8 +1554,6 @@ a.platform-btn-outline-muted:hover{
     box-shadow:var(--sc-shadow-soft);
 }
 
-.platform-action-card:hover,
-.citizen-quick-card:hover,
 .platform-area-card:hover,
 .platform-category-card:hover{
     border-color:var(--sc-green);
@@ -1476,8 +1576,6 @@ a.platform-btn-outline-muted:hover{
     font-size:var(--sc-text-xl);
 }
 
-.platform-action-card h3,
-.citizen-quick-card h3,
 .platform-area-card strong{
     margin:0 0 6px;
     color:var(--sc-text);
@@ -1485,16 +1583,12 @@ a.platform-btn-outline-muted:hover{
     font-weight:var(--sc-weight-black);
 }
 
-.platform-action-card p,
-.citizen-quick-card p,
 .platform-area-card span{
     margin:0;
     color:var(--sc-muted);
     font-size:var(--sc-text-sm);
 }
 
-.platform-action-card > i,
-.citizen-quick-card > i,
 .platform-area-card > i{
     color:var(--sc-green-dark);
 }
@@ -3555,6 +3649,85 @@ body:not(.authenticated)
 .kpi-purple { background: var(--sc-purple); }                 /* genérico — violeta Bootstrap */
 .kpi-blue   { background: var(--sc-blue); }                   /* genérico — azul */
 
+
+/* ── kpi-card-pastel — variante para App Ciudadana ────────────────────────
+   Ícono circular pastel, número grande de color, "Ver detalles" abajo.
+   Usar con: {% include "components/kpi_card.html" with extra_class="kpi-card-pastel kpi-pastel-green" ... %}
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* kpi-card-pastel — resetea el grid del kpi-card-clean padre con !important */
+.kpi-card-pastel {
+    padding: 20px 16px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+    gap: 0 !important;
+    min-height: 130px;
+}
+.kpi-card-pastel .kpi-icon {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    font-size: 1.2rem !important;
+    flex-shrink: 0;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    margin-bottom: 10px;
+    align-self: auto !important;
+}
+.kpi-card-pastel .kpi-label {
+    font-size: var(--sc-text-xs) !important;
+    font-weight: var(--sc-weight-semibold) !important;
+    color: var(--sc-muted) !important;
+    min-height: unset !important;
+    margin: 0 0 2px !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    align-items: unset !important;
+}
+.kpi-card-pastel .kpi-number {
+    font-size: 2rem !important;
+    font-weight: var(--sc-weight-black) !important;
+    line-height: 1 !important;
+    margin: 0 0 auto !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    align-items: unset !important;
+}
+.kpi-card-pastel .kpi-caption {
+    font-size: var(--sc-text-xs) !important;
+    font-weight: var(--sc-weight-semibold) !important;
+    min-height: unset !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px;
+    padding: 7px 10px !important;
+    border-radius: var(--sc-radius-pill) !important;
+    margin-top: 14px !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+}
+
+/* ── Variantes de color — usan tokens --sc-*-pastel del :root ────────────── */
+.kpi-pastel-green .kpi-icon    { background: var(--sc-green-pastel);       color: var(--sc-green-pastel-text); }
+.kpi-pastel-green .kpi-number  { color: var(--sc-green-pastel-text); }
+.kpi-pastel-green .kpi-caption { background: var(--sc-green-pastel-bg);    color: var(--sc-green-pastel-text); }
+
+.kpi-pastel-blue .kpi-icon    { background: var(--sc-blue-pastel);         color: var(--sc-blue-pastel-text); }
+.kpi-pastel-blue .kpi-number  { color: var(--sc-blue-pastel-text); }
+.kpi-pastel-blue .kpi-caption { background: var(--sc-blue-pastel-bg);      color: var(--sc-blue-pastel-text); }
+
+.kpi-pastel-orange .kpi-icon    { background: var(--sc-orange-pastel);     color: var(--sc-orange-pastel-text); }
+.kpi-pastel-orange .kpi-number  { color: var(--sc-orange-pastel-text); }
+.kpi-pastel-orange .kpi-caption { background: var(--sc-orange-pastel-bg);  color: var(--sc-orange-pastel-text); }
+
+/* Amber — amarillo oscuro para contrastar sobre fondo pastel claro */
+.kpi-pastel-yellow .kpi-icon    { background: var(--sc-yellow-pastel);     color: var(--sc-yellow-pastel-text); }
+.kpi-pastel-yellow .kpi-number  { color: var(--sc-yellow-pastel-text); }
+.kpi-pastel-yellow .kpi-caption { background: var(--sc-yellow-pastel-bg);  color: var(--sc-yellow-pastel-text); }
+
 /* Métricas operativas */
 
 .operational-metrics {
@@ -5273,17 +5446,14 @@ body:not(.authenticated)
 /* Iconos */
 
 .citizen-icon-box {
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
     flex-shrink: 0;
-}
-
-.citizen-icon-box {
-    width: 52px;
-    height: 52px;
     font-size: 1.3rem;
 }
 
@@ -5303,12 +5473,6 @@ body:not(.authenticated)
 
 .citizen-grid-home {
     grid-template-columns: repeat(3, 1fr);
-}
-
-.citizen-icon-box {
-    width: 52px;
-    height: 52px;
-    font-size: 1.3rem;
 }
 
 .citizen-grid {
@@ -7837,52 +8001,7 @@ body:not(.authenticated)
     gap: 10px;
 }
 
-.citizen-action-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
-    background: var(--sc-white);
-    border: 1px solid var(--sc-border);
-    border-radius: var(--sc-radius-lg);
-    text-decoration: none;
-    color: var(--sc-dark);
-    transition: box-shadow .15s, border-color .15s;
-}
-.citizen-action-card:hover {
-    border-color: var(--sc-green-dark);
-    box-shadow: 0 2px 12px rgba(0,0,0,.07);
-}
-.citizen-action-card-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: var(--sc-radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
-    flex-shrink: 0;
-}
-.citizen-action-card-body {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-.citizen-action-card-body strong {
-    font-size: var(--sc-text-base);
-    font-weight: var(--sc-weight-bold);
-    color: var(--sc-dark);
-}
-.citizen-action-card-body span {
-    font-size: var(--sc-text-sm);
-    color: var(--sc-muted);
-}
-.citizen-action-card-arrow {
-    color: var(--sc-muted);
-    font-size: 1rem;
-    flex-shrink: 0;
-}
+/* citizen-action-card eliminado — usar platform-action-card */
 
 /* ── citizen/components/status_summary ──────────────────────────────────────
    Resumen compacto de gestiones activas
@@ -7952,25 +8071,7 @@ body:not(.authenticated)
     color: var(--sc-muted);
 }
 
-/* Cards de acción con fondo de color */
-.citizen-action-colored {
-    color: #fff !important;
-}
-.citizen-action-colored h3,
-.citizen-action-colored p,
-.citizen-action-colored .bi-chevron-right {
-    color: #fff !important;
-}
-.citizen-action-colored .citizen-icon-box {
-    background: rgba(255,255,255,0.25) !important;
-}
-.citizen-action-colored:hover {
-    opacity: 0.92;
-    transform: translateY(-2px);
-}
-.citizen-action-green  { background: var(--sc-green); border-color: var(--sc-green); }
-.citizen-action-blue   { background: var(--sc-blue);  border-color: var(--sc-blue);  }
-.citizen-action-orange { background: var(--sc-orange); border-color: var(--sc-orange); }
+/* citizen-action-colored eliminado — usar platform-action-card--{color} */
 
 /* Responsive */
 @media (max-width: 480px) {
