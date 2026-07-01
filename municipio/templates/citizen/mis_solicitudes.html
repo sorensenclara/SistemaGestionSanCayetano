@@ -6,15 +6,7 @@
 
 <section class="citizen-page platform-page-wide mis-gestiones-page">
 
-    <div class="citizen-page-head">
-        <div>
-            <p class="flow-title solicitud">Mis Solicitudes</p>
-            <h1>Seguimiento de solicitudes</h1>
-            <p class="page-subtitle">
-                Consultá el estado de todas tus solicitudes ciudadanas.
-            </p>
-        </div>
-    </div>
+    {% include 'citizen/components/page_head.html' with flow_type="solicitud" flow_label="Mis Solicitudes" title="Seguimiento de solicitudes" subtitle="Consultá el estado de todas tus solicitudes ciudadanas." %}
 
     <div class="platform-form-card gestiones-filter-card">
 
