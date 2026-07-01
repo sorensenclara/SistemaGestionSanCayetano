@@ -7,55 +7,45 @@
 {% block content %}
 
 <div class="citizen-login-page">
+<div class="citizen-login-card">
 
-    <div class="citizen-login-card">
+  <div class="text-center mb-4">
+    <img src="{% static 'img/logo-sancaap-horizontal.svg' %}" alt="SancApp" class="citizen-login-logo">
+  </div>
 
-        <div class="text-center">
+  <form method="post" class="citizen-login-form">
+    {% csrf_token %}
+    {{ form|crispy }}
 
-            <img
-                src="{% static 'img/logo-sancaap-horizontal.svg' %}"
-                alt="SancApp"
-                class="citizen-login-logo">
-
-        </div>
-
-        <form method="post" class="citizen-login-form">
-            {% csrf_token %}
-
-            {{ form|crispy }}
-
-            <button
-                type="submit"
-                class="login-btn">
-                Ingresar
-            </button>
-
-        </form>
-
-        <div class="citizen-login-links">
-
-            <a href="#" class="citizen-login-register">
-                Registrarse
-            </a>
-
-            <div class="citizen-login-links-grid">
-
-                <a href="#">
-                    <i class="bi bi-key"></i>
-                    ¿Olvidaste la contraseña?
-                </a>
-
-                <a href="#">
-                    <i class="bi bi-question-circle"></i>
-                    Ayuda
-                </a>
-
-            </div>
-
-        </div>
-
+    <div class="login-remember-row">
+      <label class="login-remember-label">
+        <input type="checkbox" name="remember" id="remember">
+        <span>Recordar sesión</span>
+      </label>
+      <a href="#" class="login-forgot">¿Olvidaste la contraseña?</a>
     </div>
 
+    <button type="submit" class="login-btn">
+      Ingresar <i class="bi bi-arrow-right"></i>
+    </button>
+
+  </form>
+
+<div class="citizen-login-links">
+  <p class="citizen-login-register-text">
+    ¿No tenés cuenta? <a href="#" class="login-forgot"><strong>Registrarte</strong></a>
+  </p>
+  <a href="#" class="citizen-login-help">
+    <i class="bi bi-question-circle"></i>
+    <div>
+      <strong>Ayuda</strong>
+      <span>Centro de ayuda y contacto</span>
+    </div>
+    <i class="bi bi-chevron-right ms-auto"></i>
+  </a>
+</div>
+
+</div>
 </div>
 
 {% endblock %}
