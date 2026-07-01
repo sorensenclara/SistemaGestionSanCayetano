@@ -1152,19 +1152,32 @@ a.platform-btn-outline-muted:hover{
         overflow-x:auto;
         border-radius:var(--sc-radius-xl);
         scrollbar-width:none;
+        gap:6px;
+        padding:6px;
     }
-
     .platform-tabs::-webkit-scrollbar,
     .citizen-profile-nav::-webkit-scrollbar{
         display:none;
     }
-
     .platform-tab,
     .citizen-profile-nav-btn{
-        flex:0 0 auto;
-        min-width:138px;
-        min-height:46px;
-        font-size:var(--sc-text-sm);
+        flex:1 1 0;
+        min-width:100px;
+        min-height:56px;
+        font-size:var(--sc-text-xs);
+        flex-direction:column;
+        gap:4px;
+        padding:8px 10px;
+    }
+    .platform-tab i,
+    .citizen-profile-nav-btn i{
+        font-size:1.1rem;
+    }
+
+    .platform-tabs,
+    .citizen-profile-nav {
+        background: var(--sc-bg);
+        backdrop-filter: none;
     }
 }
 
@@ -2948,19 +2961,6 @@ body:not(.authenticated)
 }
 
 /* Tabs sticky genéricas */
-.platform-tabs,
-
-
-.platform-tab,
-
-
-.platform-tab.is-active,
-.citizen-profile-nav-btn.is-active {
-    background: var(--sc-green-dark);
-    border-color: var(--sc-green-dark);
-    color: var(--sc-white);
-}
-
 .platform-tab-panel,
 .citizen-profile-tab-panel,
 .citizen-family-panel {
