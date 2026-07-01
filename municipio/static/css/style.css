@@ -923,6 +923,11 @@ a.platform-btn-outline-muted:hover{
 .platform-action-card--blue   { background: var(--sc-blue); }
 .platform-action-card--orange { background: var(--sc-orange); }
 
+/* Variantes de color del ícono — pisa el fondo/color neutro de línea 1565 */
+.platform-action-icon--green  { background: var(--sc-green-pastel)  !important; color: var(--sc-green)  !important; }
+.platform-action-icon--blue   { background: var(--sc-blue-pastel)   !important; color: var(--sc-blue)   !important; }
+.platform-action-icon--orange { background: var(--sc-orange-pastel) !important; color: var(--sc-orange) !important; }
+
 /* ================================================================
    KPI CARD en grilla ciudadana — las stat cards de "Mis gestiones"
    usan kpi_card.html que ya existe, solo necesitamos la grilla
@@ -3679,6 +3684,7 @@ body:not(.authenticated)
     align-self: center !important;
 }
 .kpi-card-pastel .kpi-number {
+    display: block !important;
     font-size: 2rem !important;
     font-weight: var(--sc-weight-black) !important;
     line-height: 1 !important;
@@ -3691,6 +3697,7 @@ body:not(.authenticated)
     width: 100%;
 }
 .kpi-card-pastel .kpi-label {
+    display: block !important;
     font-size: var(--sc-text-xs) !important;
     font-weight: var(--sc-weight-semibold) !important;
     color: var(--sc-muted) !important;
@@ -5630,9 +5637,10 @@ body:not(.authenticated)
     border-radius: var(--sc-radius-xl);
     overflow: hidden;
     background:
-        linear-gradient(90deg, rgba(4,63,27,.88), rgba(6,79,34,.64)),
-        url("../img/background-login.png") center bottom / cover no-repeat;
-    color: #fff;
+        linear-gradient(90deg, rgba(238,248,241,.97) 0%, rgba(238,248,241,.75) 40%, rgba(238,248,241,.15) 75%),
+        url("../img/background-login-white.png") center bottom / cover no-repeat,
+        var(--sc-green-light);
+    color: var(--sc-green-dark);
     display: flex;
     align-items: center;
     padding: 34px;
@@ -5643,7 +5651,7 @@ body:not(.authenticated)
     margin: 0 0 12px;
     font-size:var(--sc-text-sm);
     font-weight:var(--sc-weight-medium);
-    color: rgba(255,255,255,.86);
+    color: var(--sc-green-soft);
 }
 
 .citizen-home-hero h1 {
@@ -5651,12 +5659,14 @@ body:not(.authenticated)
     font-size:var(--sc-text-2xl);
     font-weight:var(--sc-weight-black);
     line-height: 1.1;
+    color: var(--sc-green-dark);
 }
 
 .citizen-home-hero p:last-child {
     margin: 10px 0 0;
     font-size:var(--sc-text-lg);
     font-weight:var(--sc-weight-normal);
+    color: var(--sc-green-dark);
 }
 
 

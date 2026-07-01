@@ -11,7 +11,7 @@
     <section class="citizen-home-hero">
         <div>
             <p class="citizen-home-date">{{ current_date }}</p>
-            <h1>Hola, {{ user.first_name|default:user.username }}</h1>
+            <h1>¡Hola, {{ user.first_name|default:user.username }}! 👋</h1>
             <p>¿En qué podemos ayudarte hoy?</p>
         </div>
     </section>
@@ -41,8 +41,8 @@
             {% url 'citizen_mis_gestiones' as mis_gestiones_url %}
             {% url 'citizen_turnos' as turnos_url %}
             {% url 'citizen_notificaciones' as notif_url %}
-            {% include "components/kpi_card.html" with href=mis_gestiones_url icon="bi-exclamation-circle" icon_class="kpi-green" label="Mis reclamos" value=reclamos_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-green" %}
-            {% include "components/kpi_card.html" with href=mis_gestiones_url icon="bi-clipboard-check" icon_class="kpi-blue" label="Mis solicitudes" value=solicitudes_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-blue" %}
+            {% include "components/kpi_card.html" with href=mis_gestiones_url|add:"?tipo=reclamo" icon="bi-exclamation-circle" icon_class="kpi-green" label="Mis reclamos" value=reclamos_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-green" %}
+            {% include "components/kpi_card.html" with href=mis_gestiones_url|add:"?tipo=solicitud" icon="bi-clipboard-check" icon_class="kpi-blue" label="Mis solicitudes" value=solicitudes_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-blue" %}
             {% include "components/kpi_card.html" with href=turnos_url icon="bi-heart-pulse" icon_class="kpi-orange" label="Mis turnos" value=turnos_count help_text="Ver detalles →" extra_class="kpi-card-pastel kpi-pastel-orange" %}
             {% include "components/kpi_card.html" with href=notif_url icon="bi-bell" icon_class="kpi-yellow" label="Notificaciones" value=notif_count help_text="Ver todas →" extra_class="kpi-card-pastel kpi-pastel-yellow" %}
         </div>
