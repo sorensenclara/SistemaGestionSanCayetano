@@ -1060,6 +1060,31 @@ a.platform-btn-outline-muted:hover{
     }
 }
 
+/* ── Header SancApp citizen ─────────────────────────── */
+.citizen-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+.citizen-header-logo-full {
+    height: 44px;
+    width: auto;
+    display: block;
+}
+.citizen-header-logo-mini {
+    height: 36px;
+    width: auto;
+    display: none;
+}
+.platform-header-spacer {
+    flex: 1;
+}
+/* En mobile: mostrar solo el ícono del logo */
+@media (max-width: 767px) {
+    .citizen-header-logo-full { display: none; }
+    .citizen-header-logo-mini { display: block; }
+}
+
 /* 04.06 TABS */
 
 .platform-page-narrow,
