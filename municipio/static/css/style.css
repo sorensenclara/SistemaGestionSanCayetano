@@ -1154,6 +1154,8 @@ a.platform-btn-outline-muted:hover{
         scrollbar-width:none;
         gap:6px;
         padding:6px;
+        background: var(--sc-bg);
+        backdrop-filter: none;
     }
     .platform-tabs::-webkit-scrollbar,
     .citizen-profile-nav::-webkit-scrollbar{
