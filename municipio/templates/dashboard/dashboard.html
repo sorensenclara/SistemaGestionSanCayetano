@@ -1,0 +1,428 @@
+{% extends 'base.html' %}
+
+{% block title %}Centro de Operaciones - San Cayetano{% endblock %}
+
+{% block content %}
+
+<section class="operation-dashboard">
+
+{% url 'dashboard' as dashboard_url %}
+
+{# ── ENCABEZADO: eyebrow y filtros varían por rol ─────────────────────────── #}
+{% if user.is_superuser or user.role == user.Role.ADMINISTRADOR %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Administrador del Sistema" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date show_area_filter=True show_tipo_filter=True clear_url=dashboard_url %}
+{% elif user.role == user.Role.SECRETARIO %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Secretario / Visión ejecutiva" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date show_area_filter=True show_tipo_filter=True clear_url=dashboard_url %}
+{% elif user.role == user.Role.FUNCIONARIO %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Funcionario / Responsable de área" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date show_area_filter=True show_tipo_filter=True clear_url=dashboard_url %}
+{% elif user.role == user.Role.OPERADOR %}
+    {% include 'dashboard/components/dashboard_head.html' with eyebrow="Operador / Inspector" title=user.get_full_name|default:user.username update_text="Última actualización: hoy" current_date=current_date clear_url=dashboard_url %}
+{% endif %}
+
+{# ── TÍTULO DE SECCIÓN ─────────────────────────────────────────────────────── #}
+<div class="dashboard-section-title">
+    {% if user.role == user.Role.OPERADOR %}
+        <i class="bi bi-clipboard-check"></i>
+        <h2>¿Qué tenés que hacer hoy?</h2>
+    {% elif user.role == user.Role.SECRETARIO %}
+        <i class="bi bi-binoculars"></i>
+        <h2>Visión ejecutiva</h2>
+    {% elif user.role == user.Role.FUNCIONARIO %}
+        <i class="bi bi-speedometer2"></i>
+        <h2>Estado de mi área</h2>
+    {% else %}
+        <i class="bi bi-speedometer2"></i>
+        <h2>Gestiones operativas</h2>
+    {% endif %}
+</div>
+
+{# ── KPIs: cada rol ve un subconjunto distinto ────────────────────────────── #}
+{% url 'gestion_list' as gestion_list_url %}
+{% url 'task_list' as task_list_url %}
+
+<div class="kpi-grid kpi-grid-clean">
+
+    {% if user.role == user.Role.OPERADOR %}
+        {% include "components/kpi_card.html" with href=task_list_url icon="bi-exclamation-triangle" icon_class="kpi-red" label="Vencidas" value=stats.overdue help_text="Atención urgente" caption_class="text-danger" %}
+        {% include "components/kpi_card.html" with href=task_list_url icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso hoy" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-play-circle" icon_class="kpi-teal" label="Por revisar" value=stats.iniciadas help_text="Sin atender" caption_class="text-muted" %}
+        {% include "components/kpi_card.html" with href=task_list_url icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+
+    {% elif user.role == user.Role.SECRETARIO %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-exclamation-triangle" icon_class="kpi-red" label="Críticas" value=stats.criticas|default:"0" help_text="Atención inmediata" caption_class="text-danger" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-layers" icon_class="kpi-teal" label="Total gestiones" value=stats.gestiones_total help_text="Todas las áreas" caption_class="text-muted" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-megaphone" icon_class="kpi-orange" label="Reclamos" value=stats.reclamos_total help_text="Activos" caption_class="text-warning" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-clipboard-check" icon_class="kpi-blue" label="Solicitudes" value=stats.solicitudes_total help_text="Activas" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+
+    {% elif user.role == user.Role.FUNCIONARIO %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-play-circle" icon_class="kpi-teal" label="Iniciadas" value=stats.iniciadas help_text="Sin asignar" caption_class="text-muted" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-exclamation-triangle" icon_class="kpi-red" label="Críticas" value=stats.criticas|default:"0" help_text="Atención inmediata" caption_class="text-danger" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-search" icon_class="kpi-yellow" label="En análisis" value=stats.analisis help_text="A priorizar" caption_class="text-warning" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-calendar-check" icon_class="kpi-orange" label="Programadas" value=stats.programadas help_text="Planificadas" caption_class="text-warning" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-tools" icon_class="kpi-cyan" label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso" caption_class="text-info" %}
+        {% include "components/kpi_card.html" with href="#" icon="bi-check-circle" icon_class="kpi-green" label="Finalizadas" value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+
+    {% else %}{# Administrador #}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-play-circle"     icon_class="kpi-teal"   label="Iniciadas"    value=stats.iniciadas              help_text="Ingresadas"   caption_class="text-muted"    %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-search"          icon_class="kpi-yellow" label="En análisis"  value=stats.analisis               help_text="Revisión"     caption_class="text-warning"  %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-calendar-check"  icon_class="kpi-orange" label="Programadas"  value=stats.programadas             help_text="Planificadas" caption_class="text-warning"  %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-tools"           icon_class="kpi-cyan"   label="En ejecución" value=stats.ejecucion|default:stats.INP help_text="En curso"  caption_class="text-info"    %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-check-circle"    icon_class="kpi-green"  label="Finalizadas"  value=stats.finalizadas|default:stats.COM help_text="Resueltas" caption_class="text-success" %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-arrow-repeat"    icon_class="kpi-violet" label="Reabiertas"   value=stats.reabiertas             help_text="Revisión"     caption_class="text-purple"   %}
+        {% include "components/kpi_card.html" with href=gestion_list_url icon="bi-x-circle"        icon_class="kpi-red"    label="Rechazadas"   value=stats.rechazadas             help_text="No admitidas" caption_class="text-danger"   %}
+    {% endif %}
+
+</div>
+
+{# ── PANEL: GRÁFICO + ALERTAS / TAREAS (varía contenido, estructura similar) ─ #}
+<div class="dashboard-panel mb-4">
+
+    {% if user.role == user.Role.OPERADOR %}
+        {# El operador no tiene gráfico — en su lugar, foco en sus tareas #}
+        <div class="platform-form-card h-100">
+            <div class="activity-header">
+                <h3 class="platform-card-title"><i class="bi bi-card-checklist"></i> Mis tareas pendientes</h3>
+                <a href="{{ task_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+            </div>
+            <div class="activity-list">
+                {% for tarea in tareas_pendientes %}
+                    {% include "components/activity_item.html" with dot_class="bg-info" title=tarea.title text=tarea.get_status_display badge=tarea.get_status_display badge_class="bg-soft-blue" %}
+                {% empty %}
+                    {% include "components/empty_state.html" with icon="bi-check2-all" title="Sin tareas pendientes" text="No tenés tareas asignadas por el momento." %}
+                {% endfor %}
+            </div>
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+                <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary"><i class="bi bi-map"></i> Ver mapa operativo</a>
+                <a href="{{ gestion_list_url }}" class="btn platform-btn platform-btn-outline-primary"><i class="bi bi-megaphone"></i> Ver gestiones</a>
+                <a href="{% url 'reclamos_list' %}" class="btn platform-btn platform-btn-outline-primary"><i class="bi bi-plus-circle"></i> Nuevo reclamo</a>
+            </div>
+        </div>
+
+        <div class="activity-section">
+            <div class="activity-header"><h3><i class="bi bi-bell"></i> Alertas</h3></div>
+            <div class="activity-list">
+                {% include "components/activity_item.html" with dot_class="bg-danger" title="Tareas vencidas" text=stats.overdue|stringformat:"s"|add:" requieren atención inmediata" badge="Urgente" badge_class="bg-soft-red" %}
+                {% include "components/activity_item.html" with dot_class="bg-warning" title="Por revisar" text=stats.iniciadas|stringformat:"s"|add:" gestiones sin atender" badge="Pendiente" badge_class="bg-soft-yellow" %}
+                {% include "components/activity_item.html" with dot_class="bg-info" title="En ejecución" text=stats.ejecucion|default:"0"|stringformat:"s"|add:" activas" badge="En curso" badge_class="bg-soft-blue" %}
+            </div>
+        </div>
+
+    {% else %}
+        {# Admin, Secretario y Funcionario comparten el layout de gráfico + alertas #}
+        <div class="chart-section">
+            <h3><i class="bi bi-bar-chart"></i> Indicadores {% if user.role == user.Role.FUNCIONARIO %}de mi área{% elif user.role == user.Role.SECRETARIO %}generales{% else %}generales{% endif %}</h3>
+            <p class="chart-subtitle">Distribución de gestiones según estado.</p>
+            <canvas id="dashboardStatusChart"></canvas>
+        </div>
+
+        <div class="activity-section">
+            <div class="activity-header">
+                <h3><i class="bi bi-bell"></i> {% if user.role == user.Role.SECRETARIO %}Alertas ejecutivas{% else %}Alertas y vencimientos{% endif %}</h3>
+                <a href="{{ task_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="activity-list">
+                {% include "components/activity_item.html" with dot_class="bg-danger"  title="Casos críticos"      text=stats.criticas|default:"0"|stringformat:"s"|add:" gestiones requieren atención"  badge="Crítico"  badge_class="bg-soft-red"    %}
+                {% include "components/activity_item.html" with dot_class="bg-warning" title="En análisis"         text=stats.analisis|stringformat:"s"|add:" pendientes de evaluación"                  badge="Análisis" badge_class="bg-soft-yellow" %}
+                {% include "components/activity_item.html" with dot_class="bg-info"    title="Tareas en ejecución" text=stats.ejecucion|default:stats.INP|stringformat:"s"|add:" activas"               badge="En curso" badge_class="bg-soft-blue"   %}
+                {% include "components/activity_item.html" with dot_class="bg-success" title="Finalizadas"         text=stats.finalizadas|default:stats.COM|stringformat:"s"|add:" gestiones resueltas"  badge="Resuelto" badge_class="bg-soft-green"  %}
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+
+{# ── TABS: cantidad y contenido cambia según rol ──────────────────────────── #}
+<nav class="platform-tabs" data-platform-tabs="dashboard-com" aria-label="Secciones del dashboard">
+
+    {% if user.role == user.Role.OPERADOR %}
+        <button type="button" class="platform-tab is-active" data-platform-tab="gestiones"><i class="bi bi-megaphone"></i><span>Gestiones asignadas</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="mapa"><i class="bi bi-map"></i><span>Mapa operativo</span></button>
+
+    {% elif user.role == user.Role.SECRETARIO %}
+        <button type="button" class="platform-tab is-active" data-platform-tab="areas"><i class="bi bi-building"></i><span>Por área</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="gestiones"><i class="bi bi-megaphone"></i><span>Gestiones</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="mapa"><i class="bi bi-map"></i><span>Mapa completo</span></button>
+
+    {% elif user.role == user.Role.FUNCIONARIO %}
+        <button type="button" class="platform-tab is-active" data-platform-tab="reclamos"><i class="bi bi-megaphone"></i><span>Reclamos</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="solicitudes"><i class="bi bi-inbox"></i><span>Solicitudes</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="tareas"><i class="bi bi-card-checklist"></i><span>Tareas del área</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="mapa"><i class="bi bi-map"></i><span>Mapa</span></button>
+
+    {% else %}{# Administrador #}
+        <button type="button" class="platform-tab is-active" data-platform-tab="reclamos"><i class="bi bi-megaphone"></i><span>Reclamos</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="solicitudes"><i class="bi bi-inbox"></i><span>Solicitudes</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="tareas"><i class="bi bi-card-checklist"></i><span>Tareas</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="areas"><i class="bi bi-building"></i><span>Áreas</span></button>
+        <button type="button" class="platform-tab" data-platform-tab="sistema"><i class="bi bi-gear"></i><span>Sistema</span></button>
+    {% endif %}
+
+</nav>
+
+{# ── PANEL: RECLAMOS (Admin, Funcionario) ─────────────────────────────────── #}
+{% if user.role == user.Role.ADMINISTRADOR or user.is_superuser or user.role == user.Role.FUNCIONARIO %}
+<div class="platform-tab-panel is-active" data-platform-panel-group="dashboard-com" data-platform-panel="reclamos">
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-card-title"><i class="bi bi-megaphone"></i> Reclamos recientes <span class="activity-badge bg-soft-red ms-2">{{ stats.reclamos_total }}</span></h3>
+            <a href="{% url 'reclamos_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todos</a>
+        </div>
+        <div class="activity-list">
+            {% for gestion in reclamos_recientes %}
+                {% url 'gestion_detail' gestion.id as gestion_url %}
+                {% include "components/activity_item.html" with href=gestion_url dot_class="bg-warning" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-yellow" %}
+            {% empty %}
+                {% include "components/empty_state.html" with icon="bi-megaphone" title="Sin reclamos recientes" text="No hay reclamos registrados." %}
+            {% endfor %}
+        </div>
+        <div class="mt-3"><a href="{% url 'reclamos_list' %}" class="btn platform-btn platform-btn-outline-primary"><i class="bi bi-list"></i> Ver todos los reclamos</a></div>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: SOLICITUDES (Admin, Funcionario) ─────────────────────────────── #}
+{% if user.role == user.Role.ADMINISTRADOR or user.is_superuser or user.role == user.Role.FUNCIONARIO %}
+<div class="platform-tab-panel" data-platform-panel-group="dashboard-com" data-platform-panel="solicitudes">
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-card-title"><i class="bi bi-inbox"></i> Solicitudes activas <span class="activity-badge bg-soft-blue ms-2">{{ stats.solicitudes_total }}</span></h3>
+            <a href="{% url 'solicitudes_list' %}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+        </div>
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-3 py-2 px-3" style="font-size:.875rem; border-radius: var(--sc-radius);">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>Las solicitudes siguen un flujo diferente al de los reclamos y pueden requerir pago.</span>
+        </div>
+        <div class="activity-list">
+            {% for gestion in solicitudes_activas %}
+                {% url 'gestion_detail' gestion.id as gestion_url %}
+                {% include "components/activity_item.html" with href=gestion_url dot_class="bg-info" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-blue" %}
+            {% empty %}
+                {% include "components/empty_state.html" with icon="bi-inbox" title="Sin solicitudes activas" text="No hay solicitudes activas en este momento." %}
+            {% endfor %}
+        </div>
+        <div class="mt-3"><a href="{% url 'solicitudes_list' %}" class="btn platform-btn platform-btn-outline-primary"><i class="bi bi-list"></i> Ver todas las solicitudes</a></div>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: TAREAS (Admin, Funcionario) ───────────────────────────────────── #}
+{% if user.role == user.Role.ADMINISTRADOR or user.is_superuser or user.role == user.Role.FUNCIONARIO %}
+<div class="platform-tab-panel" data-platform-panel-group="dashboard-com" data-platform-panel="tareas">
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-card-title"><i class="bi bi-card-checklist"></i> Tareas {% if user.role == user.Role.FUNCIONARIO %}del área{% endif %} <span class="activity-badge bg-soft-blue ms-2">{{ stats.tareas_total }}</span></h3>
+            <a href="{{ task_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+        </div>
+        <div class="activity-list">
+            {% for tarea in tareas_pendientes %}
+                {% url 'task_detail' tarea.pk as tarea_url %}
+                {% include "components/activity_item.html" with href=tarea_url dot_class="bg-info" title=tarea.title text=tarea.get_status_display badge=tarea.get_status_display badge_class="bg-soft-blue" %}
+            {% empty %}
+                {% include "components/empty_state.html" with icon="bi-card-checklist" title="Sin tareas pendientes" text="No hay tareas pendientes asignadas." %}
+            {% endfor %}
+        </div>
+        <div class="mt-4 d-flex gap-2 flex-wrap">
+            <a href="{% url 'task_create' %}" class="btn platform-btn platform-btn-primary"><i class="bi bi-plus-circle"></i> Crear tarea</a>
+            <a href="{% url 'kanban' %}" class="btn platform-btn platform-btn-outline-primary"><i class="bi bi-kanban"></i> Ver kanban</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: GESTIONES (Operador, Secretario) ─────────────────────────────── #}
+{% if user.role == user.Role.OPERADOR %}
+<div class="platform-tab-panel is-active" data-platform-panel-group="dashboard-com" data-platform-panel="gestiones">
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-card-title"><i class="bi bi-megaphone"></i> Reclamos recientes</h3>
+            <a href="{{ gestion_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todos</a>
+        </div>
+        <div class="activity-list">
+            {% for gestion in reclamos_recientes %}
+                {% url 'gestion_detail' gestion.id as gestion_url %}
+                {% include "components/activity_item.html" with href=gestion_url dot_class="bg-warning" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-yellow" %}
+            {% empty %}
+                {% include "components/empty_state.html" with icon="bi-megaphone" title="Sin reclamos asignados" text="No tenés reclamos asignados por el momento." %}
+            {% endfor %}
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <a href="{% url 'reclamos_list' %}" class="btn platform-btn platform-btn-primary"><i class="bi bi-plus-circle"></i> Cargar nuevo reclamo</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if user.role == user.Role.SECRETARIO %}
+<div class="platform-tab-panel" data-platform-panel-group="dashboard-com" data-platform-panel="gestiones">
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="platform-form-card h-100">
+                <div class="activity-header">
+                    <h3 class="platform-card-title"><i class="bi bi-megaphone"></i> Reclamos recientes</h3>
+                    <a href="{{ gestion_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todos</a>
+                </div>
+                <div class="activity-list">
+                    {% for gestion in reclamos_recientes %}
+                        {% url 'gestion_detail' gestion.id as gestion_url %}
+                        {% include "components/activity_item.html" with href=gestion_url dot_class="bg-warning" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-yellow" %}
+                    {% empty %}
+                        {% include "components/empty_state.html" with icon="bi-megaphone" title="Sin reclamos recientes" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="platform-form-card h-100">
+                <div class="activity-header">
+                    <h3 class="platform-card-title"><i class="bi bi-inbox"></i> Solicitudes activas</h3>
+                    <a href="{{ gestion_list_url }}" class="platform-btn platform-btn-xs platform-btn-outline-muted">Ver todas</a>
+                </div>
+                <div class="activity-list">
+                    {% for gestion in solicitudes_activas %}
+                        {% url 'gestion_detail' gestion.id as gestion_url %}
+                        {% include "components/activity_item.html" with href=gestion_url dot_class="bg-info" title=gestion.categoria.nombre text=gestion.area_responsable.nombre badge=gestion.estado.nombre badge_class="bg-soft-blue" %}
+                    {% empty %}
+                        {% include "components/empty_state.html" with icon="bi-inbox" title="Sin solicitudes activas" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: ÁREAS (Admin, Secretario) ─────────────────────────────────────── #}
+{% if user.role == user.Role.ADMINISTRADOR or user.is_superuser or user.role == user.Role.SECRETARIO %}
+<div class="platform-tab-panel {% if user.role == user.Role.SECRETARIO %}is-active{% endif %}" data-platform-panel-group="dashboard-com" data-platform-panel="areas">
+    <div class="platform-form-card mb-4">
+        <div class="activity-header">
+            <h3 class="platform-card-title"><i class="bi bi-building"></i> Operación por área</h3>
+            <a href="#" class="platform-btn platform-btn-xs platform-btn-outline-muted">Reporte completo</a>
+        </div>
+        <div class="platform-table-wrap">
+            <table class="platform-table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Área</th>
+                        <th class="text-center">Total</th>
+                        {% if user.role == user.Role.SECRETARIO %}
+                            <th class="text-center">En ejecución</th>
+                            <th class="text-center">Finalizadas</th>
+                            <th class="text-center">Críticas</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for area in areas_stats %}
+                    <tr>
+                        <td><strong>{{ area.area_responsable__nombre|default:"Sin área" }}</strong></td>
+                        <td class="text-center">{{ area.total }}</td>
+                        {% if user.role == user.Role.SECRETARIO %}
+                            <td class="text-center">{{ area.en_ejecucion|default:"—" }}</td>
+                            <td class="text-center">{{ area.finalizadas|default:"—" }}</td>
+                            <td class="text-center">{% if area.criticas %}<span class="badge bg-danger">{{ area.criticas }}</span>{% else %}—{% endif %}</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5">{% include "components/empty_state.html" with icon="bi-building" title="Sin datos de áreas" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: MAPA (Operador, Secretario, Funcionario) ──────────────────────── #}
+{% if user.role == user.Role.OPERADOR or user.role == user.Role.SECRETARIO or user.role == user.Role.FUNCIONARIO %}
+<div class="platform-tab-panel" data-platform-panel-group="dashboard-com" data-platform-panel="mapa">
+    <div class="platform-form-card mb-4">
+        <h3 class="platform-card-title mb-3"><i class="bi bi-map"></i> Mapa operativo{% if user.role == user.Role.SECRETARIO %} completo{% endif %}</h3>
+        <p class="text-muted mb-4">
+            {% if user.role == user.Role.SECRETARIO %}Visualizá todas las gestiones de las áreas bajo tu supervisión.
+            {% elif user.role == user.Role.FUNCIONARIO %}Visualizá las gestiones georreferenciadas de tu área.
+            {% else %}Visualizá las gestiones y tareas geolocalizadas de tu área.{% endif %}
+        </p>
+        <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary"><i class="bi bi-map"></i> Abrir mapa operativo</a>
+    </div>
+</div>
+{% endif %}
+
+{# ── PANEL: SISTEMA (Solo Administrador) ──────────────────────────────────── #}
+{% if user.role == user.Role.ADMINISTRADOR or user.is_superuser %}
+<div class="platform-tab-panel" data-platform-panel-group="dashboard-com" data-platform-panel="sistema">
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-5">
+            <div class="platform-form-card h-100">
+                <h3 class="platform-card-title"><i class="bi bi-map"></i> Mapa operativo</h3>
+                <p class="text-muted mb-4">Visualización georreferenciada de reclamos, solicitudes y tareas en territorio.</p>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="activity-badge bg-soft-yellow">Reclamos</span>
+                    <span class="activity-badge bg-soft-blue">Solicitudes</span>
+                    <span class="activity-badge bg-soft-green">Tareas</span>
+                </div>
+                <a href="{% url 'mapa_operativo' %}" class="btn platform-btn platform-btn-primary"><i class="bi bi-map"></i> Abrir mapa operativo</a>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="platform-form-card h-100">
+                <h3 class="platform-card-title"><i class="bi bi-gear"></i> Administración del sistema</h3>
+                <div class="platform-area-grid mt-3">
+                    <a href="{% url 'admin:accounts_user_changelist' %}" class="platform-category-card"><strong>Usuarios</strong><i class="bi bi-chevron-right"></i></a>
+                    <a href="{% url 'admin:accounts_user_changelist' %}" class="platform-category-card"><strong>Roles y permisos</strong><i class="bi bi-chevron-right"></i></a>
+                    <a href="{% url 'admin:citizen_area_changelist' %}" class="platform-category-card"><strong>Áreas</strong><i class="bi bi-chevron-right"></i></a>
+                    <a href="{% url 'admin:citizen_categoriagestion_changelist' %}" class="platform-category-card"><strong>Categorías</strong><i class="bi bi-chevron-right"></i></a>
+                    <a href="{% url 'admin:citizen_estadogestion_changelist' %}" class="platform-category-card"><strong>Estados</strong><i class="bi bi-chevron-right"></i></a>
+                    <a href="{% url 'citizen_home' %}" class="platform-category-card"><strong>App Ciudadana</strong><i class="bi bi-chevron-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+{% if user.role != user.Role.OPERADOR %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const dashboardCanvas = document.getElementById('dashboardStatusChart');
+if (dashboardCanvas) {
+    new Chart(dashboardCanvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Iniciadas','En análisis','Programadas','En ejecución','Finalizadas','Rechazadas','Reabiertas'],
+            datasets: [{
+                data: [
+                    {{ stats.iniciadas|default:"0" }},
+                    {{ stats.analisis|default:"0" }},
+                    {{ stats.programadas|default:"0" }},
+                    {{ stats.ejecucion|default:stats.INP|default:"0" }},
+                    {{ stats.finalizadas|default:stats.COM|default:"0" }},
+                    {{ stats.rechazadas|default:"0" }},
+                    {{ stats.reabiertas|default:"0" }}
+                ],
+                backgroundColor: ['#6b7280','#f6aa1c','#7e57c2','#19b9d2','#1f9d55','#dc3545','#7e57c2'],
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#e5e7eb' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+</script>
+{% endif %}
+{% endblock %}

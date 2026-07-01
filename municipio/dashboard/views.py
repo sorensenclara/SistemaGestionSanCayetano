@@ -177,17 +177,9 @@ def dashboard_home(request):
         "areas_stats":         areas_stats,
     }
 
-    # ── Selección de template por rol ────────────────────────────────────────
-    if user.is_superuser or user.role == user.Role.ADMINISTRADOR:
-        template = "dashboard/dashboard_admin.html"
-    elif user.role == user.Role.SECRETARIO:
-        template = "dashboard/dashboard_secretario.html"
-    elif user.role == user.Role.FUNCIONARIO:
-        template = "dashboard/dashboard_funcionario.html"
-    elif user.role == user.Role.OPERADOR:
-        template = "dashboard/dashboard_operador.html"
-    else:
-        template = "dashboard/dashboard_admin.html"
+    # ── Template único: dashboard.html decide internamente qué mostrar
+    # a cada rol mediante bloques {% if %} ──────────────────────────────────
+    template = "dashboard/dashboard.html"
 
     return render(request, template, context)
 
